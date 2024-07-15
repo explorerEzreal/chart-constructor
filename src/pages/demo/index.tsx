@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useSize } from 'ahooks';
+import { OverviewContextProvider } from './context';
 import { ChartView } from './Chart';
 import { Settings } from './Setting';
 
@@ -46,22 +47,25 @@ const Index = () => {
   };
 
   return (
-    <div className='page_demo'>
-      <div
-        ref={leftRef}
-        style={{ width: leftWidth }}
-        className='container left_chartContainer'
-      >
-        <ChartView />
+    <OverviewContextProvider>
+      <div className='page_demo'>
+        <div
+          ref={leftRef}
+          style={{ width: leftWidth }}
+          className='container left_chartContainer'
+        >
+          <ChartView />
+        </div>
+        <div className='handler' onMouseDown={handleMouseDown} />
+        <div
+          style={{ width: rightWidth }}
+          className='container rignt_settingContainer'
+        >
+          <Settings />
+        </div>
       </div>
-      <div className='handler' onMouseDown={handleMouseDown} />
-      <div
-        style={{ width: rightWidth }}
-        className='container rignt_settingContainer'
-      >
-        <Settings />
-      </div>
-    </div>
+    </OverviewContextProvider>
   );
 };
+
 export default Index;

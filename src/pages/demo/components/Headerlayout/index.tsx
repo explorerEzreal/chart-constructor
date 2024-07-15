@@ -2,8 +2,8 @@ import React from 'react';
 import './index.less';
 
 type SettingProps = {
-  [key: string]: string;
+  children: React.ReactNode;
 };
-export const Header: React.FC<SettingProps> = () => {
-  return <div className='hearder_layout'>header</div>;
+export const Header: React.FC<SettingProps> = ({ children }) => {
+  return <div className='hearder_layout'>{children}</div>;
 };
