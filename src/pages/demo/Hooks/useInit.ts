@@ -1,6 +1,8 @@
 import * as metas from '@/chart-constructor/metas';
 import * as items from '../Setting/Edit/items';
 import { useEffect, useState } from 'react';
+import { useLatest } from 'ahooks';
+import { cloneDeep } from 'lodash';
 
 export const useInit = (
   type: 'pie',
@@ -10,14 +12,17 @@ export const useInit = (
   const configurations = metas[type].configurations;
   const [settings, setSettings] = useState(metas[type].defaultSettings);
   const [itemsList, setItemsList] = useState([]);
+  const latestCountRef = useLatest(itemsList);
 
   const onItemChange = (e, key) => {
     console.log('----onItemChange----', e, key);
-    
-    // const updateFun = configurations[key].updateOptions;
+    console.log('----onItemChange----', latestCountRef.current);
 
-    // const currentOptions = updateFun(e, options);
-    // console.log('-----currentOptions---', currentOptions);
+    const index = latestCountRef.current.findIndex((item) => item.key === key);
+    const list = cloneDeep(latestCountRef.current);
+    list[index].value = e;
+    setItemsList(list);
+
     onChange({ e, key });
   };
 
@@ -37,8 +42,6 @@ export const useInit = (
     });
     setItemsList(list);
   }, []);
-
- 
 
   return { itemsList };
 };
