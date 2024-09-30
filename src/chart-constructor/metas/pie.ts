@@ -10,6 +10,13 @@ export const option: EChartsOption = {
     text: 'Referer of a Website',
     subtext: 'Fake Data',
     left: 'center',
+    textStyle: {
+      color: '#333',
+      fontWeight: 'bolder',
+      fontSize: 18,
+      textBorderColor: '#333',
+      textBorderType: 'solid',
+    },
   },
   tooltip: {
     trigger: 'item',
@@ -48,26 +55,24 @@ export const defaultSettings = {
 
 export const configurations = {
   title: {
-    title: '标题',
+    title: '图表标题',
     uniqueConfig: {},
     defaultValue: {
       text: 'Referer of a Website',
+      link: '',
       subtext: 'Fake Data',
       left: 'center',
+      textStyle: {
+        color: '#333',
+        fontWeight: 'bolder',
+        fontSize: 18,
+        textBorderColor: '#333',
+        textBorderType: 'solid',
+      },
     },
     updateOptions: (value, options) => {
-      console.log('-----updateOptions----', options);
-      console.log('-----value----', value);
-
       const newOptions = { ...options };
-
       set(newOptions, 'title', value);
-
-      // const {}
-      console.log('-----newOptions----', newOptions);
-
-
-
       return newOptions;
     },
   },

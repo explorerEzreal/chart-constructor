@@ -23,20 +23,12 @@ export const Settings: React.FC<SettingProps> = (props) => {
   optionsRef.current = options;
 
   const onChange = (e) => {
-    console.log('---e----', e);
-    console.log('---options----', optionsRef.current);
-
     const updateFun = configurations[e.key].updateOptions;
-
     const currentOptions = updateFun(e.e, optionsRef.current);
-    console.log('---currentOptions----', currentOptions);
-
     props.onChange(currentOptions);
   };
 
-  const { itemsList: items } = useInit(type, onChange, optionsRef.current);
-
-  console.log('----items-----', items);
+  const { itemsList: items } = useInit(type, onChange);
 
   useEffect(() => {
     type && props.onChange(metas[type]['option']);

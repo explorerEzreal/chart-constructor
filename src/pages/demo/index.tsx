@@ -53,7 +53,6 @@ const Index = () => {
     setOptions(e);
   };
 
-  console.log('-----options----', options)
 
   return (
     <OverviewContextProvider>

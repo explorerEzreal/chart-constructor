@@ -7,7 +7,6 @@ import { cloneDeep } from 'lodash';
 export const useInit = (
   type: 'pie',
   onChange: (val: any) => void,
-  options: any
 ) => {
   const configurations = metas[type].configurations;
   const [settings, setSettings] = useState(metas[type].defaultSettings);
@@ -15,9 +14,6 @@ export const useInit = (
   const latestCountRef = useLatest(itemsList);
 
   const onItemChange = (e, key) => {
-    console.log('----onItemChange----', e, key);
-    console.log('----onItemChange----', latestCountRef.current);
-
     const index = latestCountRef.current.findIndex((item) => item.key === key);
     const list = cloneDeep(latestCountRef.current);
     list[index].value = e;
