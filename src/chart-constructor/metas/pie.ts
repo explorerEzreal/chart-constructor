@@ -1,9 +1,11 @@
-import type { PieSeriesOption } from 'echarts/charts';
+import { EChartsOption } from 'echarts';
+// import { set } from 'lodash';
+import { set } from 'lodash';
 
 export const name = '饼图';
 export const type = 'pie';
 
-export const option: PieSeriesOption = {
+export const option: EChartsOption = {
   title: {
     text: 'Referer of a Website',
     subtext: 'Fake Data',
@@ -40,10 +42,35 @@ export const option: PieSeriesOption = {
 };
 
 export const defaultSettings = {
+  title: {},
   label: {},
 };
 
 export const configurations = {
+  title: {
+    title: '标题',
+    uniqueConfig: {},
+    defaultValue: {
+      text: 'Referer of a Website',
+      subtext: 'Fake Data',
+      left: 'center',
+    },
+    updateOptions: (value, options) => {
+      console.log('-----updateOptions----', options);
+      console.log('-----value----', value);
+
+      const newOptions = { ...options };
+
+      set(newOptions, 'title', value);
+
+      // const {}
+      console.log('-----newOptions----', newOptions);
+
+
+
+      return newOptions;
+    },
+  },
   label: {
     title: '数值标签',
     uniqueConfig: {},

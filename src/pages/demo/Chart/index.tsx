@@ -3,7 +3,6 @@ import { EChartsOption } from 'echarts';
 import { Chart } from '@/chart-constructor/view';
 import { Button, Flex } from 'antd';
 import { VerticalAlignBottomOutlined } from '@ant-design/icons';
-
 import { Header } from '../components/Headerlayout';
 
 import './index.less';
@@ -46,8 +45,9 @@ const option: EChartsOption = {
 
 type SettingProps = {
   [key: string]: string;
+  options: EChartsOption;
 };
-export const ChartView: React.FC<SettingProps> = () => {
+export const ChartView: React.FC<SettingProps> = (props) => {
   const HeaderBtns = () => {
     return (
       <Flex gap={8} style={{ paddingLeft: 24 }}>
@@ -65,7 +65,7 @@ export const ChartView: React.FC<SettingProps> = () => {
         <HeaderBtns />
       </Header>
       <div className='chart_wrapper'>
-        <Chart option={option} />
+        <Chart options={props.options} />
       </div>
     </div>
   );

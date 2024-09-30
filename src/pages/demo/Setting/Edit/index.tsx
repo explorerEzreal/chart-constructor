@@ -3,13 +3,11 @@ import React, { createElement } from 'react';
 import './index.less';
 
 type EditProps = {
-  [key: string]: string;
+  [key: string]: any;
 };
 
 const Edit: React.FC<EditProps> = (props) => {
   const { items } = props;
-
-  const onItemChange = () => {};
 
   return (
     <div className='edit_wrapper'>
@@ -18,7 +16,7 @@ const Edit: React.FC<EditProps> = (props) => {
           <ChartSettingItem
             key={item.key}
             item={item}
-            onChange={onItemChange}
+            onChange={item.onChange}
           />
         );
       })}
@@ -29,6 +27,7 @@ const Edit: React.FC<EditProps> = (props) => {
 function ChartSettingItem(props) {
   const { item, onChange } = props;
   const { value, uniqueConfig, component } = item;
+  console.log('--->>>>>>>>>>>>>item>>>>>>>>>>>>', item);
   return createElement(component, { value, uniqueConfig, onChange });
 }
 

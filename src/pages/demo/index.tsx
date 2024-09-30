@@ -10,6 +10,8 @@ const Index = () => {
   const [leftWidth, setLeftWidth] = useState('calc(50% - 7.5px)');
   const [rightWidth, setRightWidth] = useState('calc(50% - 7.5px)');
 
+  const [options, setOptions] = useState();
+
   const leftRef = useRef(null);
   const size = useSize(leftRef);
 
@@ -46,6 +48,13 @@ const Index = () => {
     document.documentElement.addEventListener('mouseup', stopResize, false);
   };
 
+  const onChange = (e) => {
+    console.log('-----Index----', e);
+    setOptions(e);
+  };
+
+  console.log('-----options----', options)
+
   return (
     <OverviewContextProvider>
       <div className='page_demo'>
@@ -54,14 +63,14 @@ const Index = () => {
           style={{ width: leftWidth }}
           className='container left_chartContainer'
         >
-          <ChartView />
+          <ChartView options={options} />
         </div>
         <div className='handler' onMouseDown={handleMouseDown} />
         <div
           style={{ width: rightWidth }}
           className='container rignt_settingContainer'
         >
-          <Settings />
+          <Settings onChange={onChange} options={options} />
         </div>
       </div>
     </OverviewContextProvider>

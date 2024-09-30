@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Flex, Tag } from 'antd';
+import * as metas from '@/chart-constructor/metas';
+
 import { Header } from '../components/Headerlayout';
 import { useOverviewContext } from '../context';
 import { useInit } from '../Hooks/useInit';
@@ -7,13 +9,38 @@ import Edit from './Edit';
 
 type SettingProps = {
   [key: string]: string;
+  onChange: (v: any) => void;
+  options: any;
 };
-export const Settings: React.FC<SettingProps> = () => {
+export const Settings: React.FC<SettingProps> = (props) => {
+  const { options } = props;
   const { state, dispatch } = useOverviewContext();
   const { type } = state;
-  const { itemsList: items } = useInit(type);
+
+  const configurations = metas[type].configurations;
+
+  const optionsRef = useRef();
+  optionsRef.current = options;
+
+  const onChange = (e) => {
+    console.log('---e----', e);
+    console.log('---options----', optionsRef.current);
+
+    const updateFun = configurations[e.key].updateOptions;
+
+    const currentOptions = updateFun(e.e, optionsRef.current);
+    console.log('---currentOptions----', currentOptions);
+
+    props.onChange(currentOptions);
+  };
+
+  const { itemsList: items } = useInit(type, onChange, optionsRef.current);
 
   console.log('----items-----', items);
+
+  useEffect(() => {
+    type && props.onChange(metas[type]['option']);
+  }, [type]);
 
   const HeaderBtns = () => {
     return (

@@ -4,12 +4,12 @@ import { EChartsOption, ECharts } from 'echarts';
 import { useSize } from 'ahooks';
 
 type Props = {
-  option: EChartsOption;
+  options: EChartsOption;
 };
 
 export const Chart: React.FC<Props> = (Props) => {
   const entityClassname = 'chartview-wrapper';
-  const { option } = Props;
+  const { options } = Props;
   const ref: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
   const chartRef: RefObject<ECharts | null> = useRef<ECharts | null>(null);
   const chart: ECharts | null = chartRef.current;
@@ -19,13 +19,13 @@ export const Chart: React.FC<Props> = (Props) => {
   useEffect(() => {
     if (ref.current) {
       chartRef.current = echarts.init(ref.current);
-      chartRef.current.setOption(option);
+      options && chartRef.current.setOption(options);
     }
 
     return () => {
       chart?.dispose();
     };
-  }, [ref]);
+  }, [ref, options]);
 
   useEffect(() => {
     chart && chart.resize(size);
