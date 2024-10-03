@@ -1,4 +1,4 @@
-import { Input, Select, ColorPicker, InputNumber } from 'antd';
+import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 import React from 'react';
 
 const LEFT_OPTIONS = [
@@ -48,15 +48,11 @@ export type Event = {
   payload: unknown;
 };
 
-export const State = {
-  name: 'title',
-  value: {},
-};
-
-export const component = (props) => {
-  // console.log('-----props----', props);
+export const component = (props: {
+  value: any;
+  onChange: (e: Event) => void;
+}) => {
   const { onChange, value } = props;
-
   const { textStyle } = value;
 
   const onItemChange = (e: { name: string; payload: unknown }) => {
@@ -66,29 +62,7 @@ export const component = (props) => {
     });
   };
 
-  const onTextChange = (e) => {
-    onItemChange({
-      name: 'text',
-      payload: e.target.value,
-    });
-  };
-
-  const onSubTextChange = (e) => {
-    onItemChange({
-      name: 'subtext',
-      payload: e.target.value,
-    });
-  };
-
-  const onLeftChange = (e) => {
-    onItemChange({
-      name: 'left',
-      payload: e,
-    });
-  };
-
-  const onTextStyleChange = (e, key) => {
-    // debugger
+  const onTextStyleChange = (e: unknown, key: string) => {
     onItemChange({
       name: 'textStyle',
       payload: { ...textStyle, [key]: e },
@@ -98,9 +72,18 @@ export const component = (props) => {
   return (
     <div>
       <p>图表标题</p>
+      <Switch
+        value={value.show}
+        onChange={(e) => onItemChange({ name: 'show', payload: e })}
+      />
       <div>
         <label>标题</label>
-        <Input onChange={onTextChange} value={value.text} />
+        <Input
+          onChange={(e) =>
+            onItemChange({ name: 'text', payload: e.target.value })
+          }
+          value={value.text}
+        />
       </div>
       <div>
         <label>标题样式</label>
@@ -132,13 +115,18 @@ export const component = (props) => {
       </div>
       <div>
         <label>副标题</label>
-        <Input onChange={onSubTextChange} value={value.subtext} />
+        <Input
+          onChange={(e) =>
+            onItemChange({ name: 'subtext', payload: e.target.value })
+          }
+          value={value.subtext}
+        />
       </div>
       <div>
         <label>位置</label>
         <Select
           style={{ width: '100%' }}
-          onChange={onLeftChange}
+          onChange={(e) => onItemChange({ name: 'left', payload: e })}
           options={LEFT_OPTIONS}
           value={value.left}
         />

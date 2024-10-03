@@ -58,6 +58,7 @@ export const configurations: ConfigurationType = {
     title: '图表标题',
     uniqueConfig: {},
     defaultValue: {
+      show: true,
       text: 'Referer of a Website',
       link: '',
       subtext: 'Fake Data',

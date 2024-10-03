@@ -8,3 +8,8 @@ export type Item = {
   component: React.FC;
   onChange: (e: EventMap[ItemKey]) => void;
 };
+
+export type ComProps = {
+  value: unknown;
+  onChange: (e: EventMap[ItemKey]) => void;
+};
