@@ -42,48 +42,48 @@ export type State = {
   };
 };
 
+export type Event = {
+  field: 'title';
+  name: string;
+  payload: unknown;
+};
+
 export const State = {
   name: 'title',
   value: {},
 };
 
-export const listener = {
-  receiver(settings) {
-    return {};
-  },
-  report(value, settings) {
-    return settings;
-  },
-};
-
 export const component = (props) => {
-  console.log('-----props----', props);
+  // console.log('-----props----', props);
   const { onChange, value } = props;
 
   const { textStyle } = value;
 
-  const onItemChange = (e) => {
-    onChange({ ...value, [e.name]: e.payloadt });
+  const onItemChange = (e: { name: string; payload: unknown }) => {
+    onChange({
+      ...e,
+      field: 'title',
+    });
   };
 
   const onTextChange = (e) => {
     onItemChange({
       name: 'text',
-      payloadt: e.target.value,
+      payload: e.target.value,
     });
   };
 
   const onSubTextChange = (e) => {
     onItemChange({
       name: 'subtext',
-      payloadt: e.target.value,
+      payload: e.target.value,
     });
   };
 
   const onLeftChange = (e) => {
     onItemChange({
       name: 'left',
-      payloadt: e,
+      payload: e,
     });
   };
 
@@ -91,7 +91,7 @@ export const component = (props) => {
     // debugger
     onItemChange({
       name: 'textStyle',
-      payloadt: { ...textStyle, [key]: e },
+      payload: { ...textStyle, [key]: e },
     });
   };
 

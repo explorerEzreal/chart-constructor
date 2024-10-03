@@ -1,6 +1,6 @@
 import { EChartsOption } from 'echarts';
-// import { set } from 'lodash';
 import { set } from 'lodash';
+import { ConfigurationType } from './type';
 
 export const name = '饼图';
 export const type = 'pie';
@@ -53,7 +53,7 @@ export const defaultSettings = {
   label: {},
 };
 
-export const configurations = {
+export const configurations: ConfigurationType = {
   title: {
     title: '图表标题',
     uniqueConfig: {},
@@ -70,7 +70,7 @@ export const configurations = {
         textBorderType: 'solid',
       },
     },
-    updateOptions: (value, options) => {
+    updateOptions: (value: unknown, options: EChartsOption) => {
       const newOptions = { ...options };
       set(newOptions, 'title', value);
       return newOptions;
@@ -80,7 +80,7 @@ export const configurations = {
     title: '数值标签',
     uniqueConfig: {},
     defaultValue: {},
-    updateOptions: (value, options) => {
+    updateOptions: (value: unknown, options: EChartsOption) => {
       return options;
     },
   },
@@ -88,7 +88,7 @@ export const configurations = {
     title: '提示',
     uniqueConfig: {},
     defaultValue: {},
-    updateOptions: (value, options) => {
+    updateOptions: (value: unknown, options: EChartsOption) => {
       return options;
     },
   },

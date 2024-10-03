@@ -6,33 +6,14 @@ import { Header } from '../components/Headerlayout';
 import { useOverviewContext } from '../context';
 import { useInit } from '../Hooks/useInit';
 import Edit from './Edit';
+import { Item } from '../type';
+import { EChartsOption } from 'echarts';
 
 type SettingProps = {
-  [key: string]: string;
-  onChange: (v: any) => void;
-  options: any;
+  items: Item[];
 };
 export const Settings: React.FC<SettingProps> = (props) => {
-  const { options } = props;
-  const { state, dispatch } = useOverviewContext();
-  const { type } = state;
-
-  const configurations = metas[type].configurations;
-
-  const optionsRef = useRef();
-  optionsRef.current = options;
-
-  const onChange = (e) => {
-    const updateFun = configurations[e.key].updateOptions;
-    const currentOptions = updateFun(e.e, optionsRef.current);
-    props.onChange(currentOptions);
-  };
-
-  const { itemsList: items } = useInit(type, onChange);
-
-  useEffect(() => {
-    type && props.onChange(metas[type]['option']);
-  }, [type]);
+  const { items } = props;
 
   const HeaderBtns = () => {
     return (

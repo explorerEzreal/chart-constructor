@@ -7,6 +7,12 @@ export type State = {
   };
 };
 
+export type Event = {
+  field: 'label';
+  name: string;
+  payload: unknown;
+};
+
 export const State = {
   name: 'label',
   value: {},

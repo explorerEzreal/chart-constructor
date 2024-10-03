@@ -7,8 +7,14 @@ export type State = {
   };
 };
 
+export type Event = {
+  field: 'toolTip';
+  name: string;
+  payload: unknown;
+};
+
 export const State = {
-  name: 'label',
+  name: 'toolTip',
   value: {},
 };
 

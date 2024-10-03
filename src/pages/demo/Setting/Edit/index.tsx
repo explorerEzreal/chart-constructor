@@ -1,9 +1,10 @@
 import React, { createElement } from 'react';
+import { Item } from '@pages/demo/type';
 
 import './index.less';
 
 type EditProps = {
-  [key: string]: any;
+  items: Item[];
 };
 
 const Edit: React.FC<EditProps> = (props) => {
@@ -12,22 +13,15 @@ const Edit: React.FC<EditProps> = (props) => {
   return (
     <div className='edit_wrapper'>
       {items.map((item) => {
-        return (
-          <ChartSettingItem
-            key={item.key}
-            item={item}
-            onChange={item.onChange}
-          />
-        );
+        return <ChartSettingItem key={item.key} item={item} />;
       })}
     </div>
   );
 };
 
-function ChartSettingItem(props) {
-  const { item, onChange } = props;
-  const { value, uniqueConfig, component } = item;
-  console.log('--->>>>>>>>>>>>>item>>>>>>>>>>>>', item);
+function ChartSettingItem(props: { item: Item }) {
+  const { item } = props;
+  const { value, uniqueConfig, component, onChange } = item;
   return createElement(component, { value, uniqueConfig, onChange });
 }
 
