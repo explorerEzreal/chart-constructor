@@ -71,7 +71,6 @@ export const component = (props: {
 
   return (
     <div>
-      <p>图表标题</p>
       <Switch
         value={value.show}
         onChange={(e) => onItemChange({ name: 'show', payload: e })}

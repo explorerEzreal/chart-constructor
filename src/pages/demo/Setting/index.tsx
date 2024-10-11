@@ -22,11 +22,11 @@ export const Settings: React.FC<SettingProps> = (props) => {
   };
 
   return (
-    <div>
+    <>
       <Header>
         <HeaderBtns />
       </Header>
       <Edit items={items} />
-    </div>
+    </>
   );
 };
