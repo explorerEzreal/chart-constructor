@@ -7,7 +7,7 @@ type Props = {
   options: EChartsOption;
 };
 
-export const Chart: React.FC<Props> = (Props) => {
+const Index: React.FC<Props> = (Props) => {
   const entityClassname = 'chartview-wrapper';
   const { options } = Props;
   const ref: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
@@ -19,13 +19,18 @@ export const Chart: React.FC<Props> = (Props) => {
   useEffect(() => {
     if (ref.current) {
       chartRef.current = echarts.init(ref.current);
-      options && chartRef.current.setOption(options);
     }
 
     return () => {
-      chart?.dispose();
+      chartRef.current?.dispose();
     };
-  }, [ref, options]);
+  }, [ref]);
+
+  useEffect(() => {
+    if (options && chartRef.current) {
+      chartRef.current.setOption(options);
+    }
+  }, [options]);
 
   useEffect(() => {
     chart && chart.resize(size);
@@ -40,3 +45,5 @@ export const Chart: React.FC<Props> = (Props) => {
     ref,
   });
 };
+
+export const Chart = React.memo(Index);
