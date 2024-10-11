@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { useSize } from 'ahooks';
-// import { OverviewContextProvider } from './context';
 import { ChartView } from './Chart';
 import { Settings } from './Setting';
 

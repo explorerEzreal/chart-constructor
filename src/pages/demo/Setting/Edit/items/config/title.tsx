@@ -1,5 +1,5 @@
-import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 import React from 'react';
+import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 
 const LEFT_OPTIONS = [
   {
@@ -55,14 +55,14 @@ export const component = (props: {
   const { onChange, value } = props;
   const { textStyle } = value;
 
-  const onItemChange = (e: { name: string; payload: unknown }) => {
+  const onItemChange = (e: { name: string; payload: string | boolean }) => {
     onChange({
       ...e,
       field: 'title',
     });
   };
 
-  const onTextStyleChange = (e: unknown, key: string) => {
+  const onTextStyleChange = (e: string, key: string) => {
     onItemChange({
       name: 'textStyle',
       payload: { ...textStyle, [key]: e },
