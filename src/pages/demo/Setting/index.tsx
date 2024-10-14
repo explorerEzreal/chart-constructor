@@ -3,7 +3,7 @@ import { Flex, Tag } from 'antd';
 
 import { Header } from '../components/Headerlayout';
 import Edit from './Edit';
-import { Item } from '../type';
+import { Item } from '../Hooks/useInit';
 
 type SettingProps = {
   items: Item[];

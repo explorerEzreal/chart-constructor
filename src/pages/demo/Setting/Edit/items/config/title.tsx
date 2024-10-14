@@ -1,86 +1,56 @@
 import React from 'react';
 import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
+import { ItemProps } from '../../../../Hooks/useInit';
 
-const LEFT_OPTIONS = [
-  {
-    label: '左',
-    value: 'left',
-  },
-  {
-    label: '右',
-    value: 'right',
-  },
-  {
-    label: '中',
-    value: 'center',
-  },
-];
-
-const FONT_WEIGHT = [
-  {
-    label: 'normal',
-    value: 'normal',
-  },
-  {
-    label: 'bold',
-    value: 'bold',
-  },
-  {
-    label: 'bolder',
-    value: 'bolder',
-  },
-  {
-    label: 'lighter',
-    value: 'lighter',
-  },
-];
-
-export type State = {
-  name: string;
-  value: {
-    [key: string]: string;
-  };
-};
+export type FieldKey = 'title';
 
 export type Event = {
   field: 'title';
-  name: string;
-  payload: unknown;
+  payload: ItemProps<'title'>['value'];
 };
 
-export const component = (props: {
-  value: any;
-  onChange: (e: Event) => void;
-}) => {
-  const { onChange, value } = props;
+// export const transition
+
+export const component: React.FC<ItemProps<FieldKey>> = (props) => {
+  const { onChange, value, settings } = props;
   const { textStyle } = value;
 
-  const onItemChange = (e: { name: string; payload: string | boolean }) => {
+  const onItemChange = (payload: Event['payload']) => {
     onChange({
-      ...e,
+      payload,
       field: 'title',
     });
   };
 
-  const onTextStyleChange = (e: string, key: string) => {
-    onItemChange({
-      name: 'textStyle',
-      payload: { ...textStyle, [key]: e },
-    });
+  const onConfigItemChange = (e: string | boolean, key: string) => {
+    const payload = {
+      ...value,
+      [key]: e,
+    };
+    onItemChange(payload);
+  };
+
+  const onTextStyleChange = (e: string | number | null, key: string) => {
+    const payload = {
+      ...value,
+      textStyle: {
+        ...textStyle,
+        [key]: e,
+      },
+    };
+    onItemChange(payload);
   };
 
   return (
     <div>
       <Switch
         value={value.show}
-        onChange={(e) => onItemChange({ name: 'show', payload: e })}
+        onChange={(e) => onConfigItemChange(e, 'show')}
       />
       <div>
         <label>标题</label>
         <Input
-          onChange={(e) =>
-            onItemChange({ name: 'text', payload: e.target.value })
-          }
+          onChange={(e) => onConfigItemChange(e.target.value, 'text')}
           value={value.text}
         />
       </div>
@@ -106,7 +76,7 @@ export const component = (props: {
         <div>
           <label>字体粗细</label>
           <Select
-            options={FONT_WEIGHT}
+            options={settings?.fontWeightOptions}
             value={textStyle.fontWeight}
             onChange={(e) => onTextStyleChange(e, 'fontWeight')}
           />
@@ -115,9 +85,7 @@ export const component = (props: {
       <div>
         <label>副标题</label>
         <Input
-          onChange={(e) =>
-            onItemChange({ name: 'subtext', payload: e.target.value })
-          }
+          onChange={(e) => onConfigItemChange(e.target.value, 'subtext')}
           value={value.subtext}
         />
       </div>
@@ -125,8 +93,8 @@ export const component = (props: {
         <label>位置</label>
         <Select
           style={{ width: '100%' }}
-          onChange={(e) => onItemChange({ name: 'left', payload: e })}
-          options={LEFT_OPTIONS}
+          onChange={(e) => onConfigItemChange(e, 'left')}
+          options={settings?.leftOptions}
           value={value.left}
         />
       </div>

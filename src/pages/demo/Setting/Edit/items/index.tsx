@@ -10,8 +10,8 @@ const items = {
 
 export type EventMap = {
   label: label.Event;
-  toolTip: label.Event;
-  title: label.Event;
+  toolTip: toolTip.Event;
+  title: title.Event;
 };
 
 export type ItemKey = keyof EventMap;

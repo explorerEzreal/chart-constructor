@@ -1,3 +1,4 @@
+import { ItemProps } from '@pages/demo/Hooks/useInit';
 import React from 'react';
 
 export type State = {
@@ -9,23 +10,10 @@ export type State = {
 
 export type Event = {
   field: 'toolTip';
-  name: string;
-  payload: unknown;
+  payload: ItemProps<'toolTip'>['value'];
 };
 
-export const State = {
-  name: 'toolTip',
-  value: {},
-};
 
-export const listener = {
-  receiver(settings) {
-    return {};
-  },
-  report(value, settings) {
-    return settings;
-  },
-};
 
 export const component = (props) => {
   return <div>toolTip</div>;

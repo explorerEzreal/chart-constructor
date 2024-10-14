@@ -1,6 +1,8 @@
 import React, { createElement } from 'react';
-import { Item } from '@pages/demo/type';
+// import { Item } from '@pages/demo/type';
 import { CaretRightOutlined } from '@ant-design/icons';
+
+import { Item } from '../../Hooks/useInit';
 
 import './index.less';
 import { Collapse, theme } from 'antd';
@@ -26,7 +28,7 @@ const Edit: React.FC<EditProps> = (props) => {
       key: item.key,
       label: item.title,
       children: <ChartSettingItem key={item.key} item={item} />,
-      style:panelStyle
+      style: panelStyle,
     };
   });
 
@@ -48,8 +50,9 @@ const Edit: React.FC<EditProps> = (props) => {
 
 function ChartSettingItem(props: { item: Item }) {
   const { item } = props;
-  const { value, uniqueConfig, component, onChange } = item;
-  return createElement(component, { value, uniqueConfig, onChange });
+  const { value, uniqueConfig, component, onChange, settings } = item;
+
+  return createElement(component, { value, uniqueConfig, settings, onChange });
 }
 
 export default Edit;

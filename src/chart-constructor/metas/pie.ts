@@ -1,5 +1,7 @@
 import { EChartsOption } from 'echarts';
-import { set } from 'lodash';
+import { get, set } from 'lodash';
+import { TITLE_LEFT_OPTIONS, TITLE_FONT_WEIGHT } from '../settings/base';
+/** */
 import { ConfigurationType } from './type';
 
 export const name = '饼图';
@@ -7,11 +9,12 @@ export const type = 'pie';
 
 export const option: EChartsOption = {
   title: {
+    show: true,
     text: 'Referer of a Website',
     subtext: 'Fake Data',
     left: 'center',
     textStyle: {
-      color: '#333',
+      color: '#c91818',
       fontWeight: 'bolder',
       fontSize: 18,
       textBorderColor: '#333',
@@ -56,25 +59,19 @@ export const defaultSettings = {
 export const configurations: ConfigurationType = {
   title: {
     title: '图表标题',
-    uniqueConfig: {},
-    defaultValue: {
-      show: true,
-      text: 'Referer of a Website',
-      link: '',
-      subtext: 'Fake Data',
-      left: 'center',
-      textStyle: {
-        color: '#333',
-        fontWeight: 'bolder',
-        fontSize: 18,
-        textBorderColor: '#333',
-        textBorderType: 'solid',
-      },
+    setttings: {
+      leftOptions: TITLE_LEFT_OPTIONS,
+      fontWeightOptions: TITLE_FONT_WEIGHT,
     },
+    uniqueConfig: {},
+    defaultValue: {},
     updateOptions: (value: unknown, options: EChartsOption) => {
       const newOptions = { ...options };
       set(newOptions, 'title', value);
       return newOptions;
+    },
+    transform: (options: EChartsOption) => {
+      return { ...options.title };
     },
   },
   label: {
@@ -84,6 +81,9 @@ export const configurations: ConfigurationType = {
     updateOptions: (value: unknown, options: EChartsOption) => {
       return options;
     },
+    transform: (options: EChartsOption) => {
+      return {};
+    },
   },
   toolTip: {
     title: '提示',
@@ -91,6 +91,9 @@ export const configurations: ConfigurationType = {
     defaultValue: {},
     updateOptions: (value: unknown, options: EChartsOption) => {
       return options;
+    },
+    transform: (options: EChartsOption) => {
+      return {};
     },
   },
 };
