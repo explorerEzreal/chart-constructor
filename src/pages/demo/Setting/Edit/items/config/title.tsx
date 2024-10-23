@@ -1,6 +1,7 @@
 import React from 'react';
 import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 import { ItemProps } from '../../../../Hooks/useInit';
+import { EChartsOption } from 'echarts';
 
 export type FieldKey = 'title';
 
@@ -9,7 +10,10 @@ export type Event = {
   payload: ItemProps<'title'>['value'];
 };
 
-// export const transition
+
+export const transform = (options: EChartsOption) => {
+  return { ...options.title };
+};
 
 export const component: React.FC<ItemProps<FieldKey>> = (props) => {
   const { onChange, value, settings } = props;

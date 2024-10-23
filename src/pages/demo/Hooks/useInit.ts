@@ -1,4 +1,4 @@
-import * as metas from '@/chart-constructor/metas';
+import * as meats from '@/chart-constructor/meats';
 import items, { EventMap, ItemKey } from '../Setting/Edit/items';
 import React, { useEffect, useState } from 'react';
 import { useLatest } from 'ahooks';
@@ -12,7 +12,7 @@ import {
   SettingsType,
   ConfigurationKeys,
   ValueType,
-} from '@/chart-constructor/metas/type';
+} from '@/chart-constructor/meats/type';
 
 export type Item<K extends ConfigurationKeys = ConfigurationKeys> = {
   key: string;
@@ -20,7 +20,7 @@ export type Item<K extends ConfigurationKeys = ConfigurationKeys> = {
   value: ValueType[K];
   uniqueConfig?: UniqueConfigType[K];
   settings?: SettingsType[K];
-  component: React.FC<any>;
+  component: React.FC<ValueType[K]>;
   onChange: (e: EventMap[ItemKey]) => void;
 };
 
@@ -32,8 +32,8 @@ export type ItemProps<K extends ConfigurationKeys = ConfigurationKeys> = {
 };
 
 export const useInit = (type: ChartType) => {
-  const configurations: ConfigurationType = metas[type].configurations;
-  const initOptions: EChartsOption = metas[type].option;
+  const configurations: ConfigurationType = meats[type].configurations;
+  const initOptions: EChartsOption = meats[type].option;
 
   const [itemsList, setItemsList] = useState<Item<ConfigurationKeys>[]>([]);
   const latestItemsListRef = useLatest(itemsList);
@@ -56,20 +56,19 @@ export const useInit = (type: ChartType) => {
 
   useEffect(() => {
     const list = Object.entries(configurations).map(([key, config]) => {
-      const configuKey = key as keyof ConfigurationType;
+      const configKey = key as keyof ConfigurationType;
 
-      const transform = configurations[configuKey].transform;
-      const initValue = transform(initOptions);
+      const initValue = items[configKey].transform(initOptions);
       return {
         key,
         title: config.title,
         value: {
           ...initValue,
-          ...(configurations[configuKey]?.defaultValue || {}),
+          ...(configurations[configKey]?.defaultValue || {}),
         },
-        uniqueConfig: configurations[configuKey].uniqueConfig,
-        settings: configurations[configuKey].setttings,
-        component: items[configuKey].component,
+        uniqueConfig: configurations[configKey].uniqueConfig,
+        settings: configurations[configKey].settings,
+        component: items[configKey].component,
         onChange: onItemChange,
       };
     });

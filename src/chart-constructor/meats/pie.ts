@@ -1,5 +1,5 @@
 import { EChartsOption } from 'echarts';
-import { get, set } from 'lodash';
+import { set } from 'lodash';
 import { TITLE_LEFT_OPTIONS, TITLE_FONT_WEIGHT } from '../settings/base';
 /** */
 import { ConfigurationType } from './type';
@@ -59,7 +59,7 @@ export const defaultSettings = {
 export const configurations: ConfigurationType = {
   title: {
     title: '图表标题',
-    setttings: {
+    settings: {
       leftOptions: TITLE_LEFT_OPTIONS,
       fontWeightOptions: TITLE_FONT_WEIGHT,
     },
@@ -70,9 +70,9 @@ export const configurations: ConfigurationType = {
       set(newOptions, 'title', value);
       return newOptions;
     },
-    transform: (options: EChartsOption) => {
-      return { ...options.title };
-    },
+    // transform: (options: EChartsOption) => {
+    //   return { ...options.title };
+    // },
   },
   label: {
     title: '数值标签',
@@ -81,9 +81,9 @@ export const configurations: ConfigurationType = {
     updateOptions: (value: unknown, options: EChartsOption) => {
       return options;
     },
-    transform: (options: EChartsOption) => {
-      return {};
-    },
+    // transform: (options: EChartsOption) => {
+    //   return {};
+    // },
   },
   toolTip: {
     title: '提示',
@@ -92,8 +92,8 @@ export const configurations: ConfigurationType = {
     updateOptions: (value: unknown, options: EChartsOption) => {
       return options;
     },
-    transform: (options: EChartsOption) => {
-      return {};
-    },
+    // transform: (options: EChartsOption) => {
+    //   return {};
+    // },
   },
 };

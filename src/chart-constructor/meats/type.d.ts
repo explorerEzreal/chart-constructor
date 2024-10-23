@@ -42,13 +42,15 @@ export type ValueType = {
   toolTip: DefaultType;
 };
 
+export type Value<K extends ConfigurationKeys> = ValueType[K];
+
 export type Config<K extends ConfigurationKeys> = {
   title: string; // 标题，标识是什么配置
-  setttings?: SettingsType[K]; // 图表配置的选项
+  settings?: SettingsType[K]; // 图表配置的选项
   uniqueConfig?: UniqueConfigType[K]; // 单独的配置,其他图表类型可能没有的配置项
   defaultValue?: DefaultType; // 默认值
   updateOptions: (value: DefaultType, options: EChartsOption) => EChartsOption; // 更新options的方法
-  transform: (options: EChartsOption) => ValueType[K];
+  // transform: (options: EChartsOption) => ValueType[K];
 };
 
 export type ConfigurationType = {

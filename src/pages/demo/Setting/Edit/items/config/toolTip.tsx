@@ -1,4 +1,5 @@
 import { ItemProps } from '@pages/demo/Hooks/useInit';
+import { EChartsOption } from 'echarts';
 import React from 'react';
 
 export type State = {
@@ -13,7 +14,9 @@ export type Event = {
   payload: ItemProps<'toolTip'>['value'];
 };
 
-
+export const transform = (options: EChartsOption) => {
+  return { ...options.tooltip };
+};
 
 export const component = (props) => {
   return <div>toolTip</div>;

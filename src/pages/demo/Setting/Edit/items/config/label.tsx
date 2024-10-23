@@ -1,4 +1,5 @@
 import { ItemProps } from '@pages/demo/Hooks/useInit';
+import { EChartsOption } from 'echarts';
 import React from 'react';
 
 export type State = {
@@ -11,6 +12,10 @@ export type State = {
 export type Event = {
   field: 'label';
   payload: ItemProps<'label'>['value'];
+};
+
+export const transform = (options: EChartsOption) => {
+  return { ...options.series };
 };
 
 export const component = (props) => {
