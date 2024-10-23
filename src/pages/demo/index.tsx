@@ -8,8 +8,8 @@ import { useInit } from './Hooks/useInit';
 import { ChartType } from './type';
 
 const Index = () => {
-  const [leftWidth, setLeftWidth] = useState('calc(50% - 7.5px)');
-  const [rightWidth, setRightWidth] = useState('calc(50% - 7.5px)');
+  const [leftWidth, setLeftWidth] = useState('calc(75% - 7.5px)');
+  const [rightWidth, setRightWidth] = useState('calc(25% - 7.5px)');
   const [chartType, setChartType] = useState<ChartType>('pie');
 
   const { itemsList: items, options } = useInit(chartType);
