@@ -49,7 +49,7 @@ export type Config<K extends ConfigurationKeys> = {
   settings?: SettingsType[K]; // 图表配置的选项
   uniqueConfig?: UniqueConfigType[K]; // 单独的配置,其他图表类型可能没有的配置项
   defaultValue?: DefaultType; // 默认值
-  updateOptions: (value: DefaultType, options: EChartsOption) => EChartsOption; // 更新options的方法
+  updateOptions: (value: ValueType[K], options: EChartsOption) => EChartsOption; // 更新options的方法
   // transform: (options: EChartsOption) => ValueType[K];
 };
 

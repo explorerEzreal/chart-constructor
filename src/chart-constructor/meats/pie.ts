@@ -2,7 +2,7 @@ import { EChartsOption } from 'echarts';
 import { set } from 'lodash';
 import { TITLE_LEFT_OPTIONS, TITLE_FONT_WEIGHT } from '../settings/base';
 /** */
-import { ConfigurationType } from './type';
+import { ConfigurationType, ValueType } from './type';
 
 export const name = '饼图';
 export const type = 'pie';
@@ -65,35 +65,28 @@ export const configurations: ConfigurationType = {
     },
     uniqueConfig: {},
     defaultValue: {},
-    updateOptions: (value: unknown, options: EChartsOption) => {
+    updateOptions: (value: ValueType['title'], options: EChartsOption) => {
       const newOptions = { ...options };
       set(newOptions, 'title', value);
       return newOptions;
     },
-    // transform: (options: EChartsOption) => {
-    //   return { ...options.title };
-    // },
+   
   },
   label: {
     title: '数值标签',
     uniqueConfig: {},
     defaultValue: {},
-    updateOptions: (value: unknown, options: EChartsOption) => {
+    updateOptions: (value: ValueType['label'], options: EChartsOption) => {
       return options;
     },
-    // transform: (options: EChartsOption) => {
-    //   return {};
-    // },
   },
   toolTip: {
     title: '提示',
     uniqueConfig: {},
     defaultValue: {},
-    updateOptions: (value: unknown, options: EChartsOption) => {
+    updateOptions: (value: ValueType['toolTip'], options: EChartsOption) => {
       return options;
     },
-    // transform: (options: EChartsOption) => {
-    //   return {};
-    // },
+   
   },
 };
