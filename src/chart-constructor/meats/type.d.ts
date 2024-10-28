@@ -7,8 +7,11 @@ type Options = {
 
 type DefaultType = {};
 
-export type ConfigurationKeys = 'title' | 'label' | 'toolTip';
+export type ConfigurationKeys = 'title' | 'label' | 'toolTip' | 'pieSeries';
 
+/**
+ * @description 给图表配置表单使用的配置项，比如 图表标题的位置，字体粗细。。。
+ */
 export type SettingsType = {
   title: {
     leftOptions: Options;
@@ -16,14 +19,22 @@ export type SettingsType = {
   };
   label: DefaultType;
   toolTip: DefaultType;
+  pieSeries: DefaultType;
 };
 
+/**
+ * 每个图表可能有不同的配置
+ */
 export type UniqueConfigType = {
   title: DefaultType;
   label: DefaultType;
   toolTip: DefaultType;
+  pieSeries: DefaultType;
 };
 
+/**
+ * 配置项的value
+ */
 export type ValueType = {
   title: {
     show: boolean;
@@ -36,6 +47,18 @@ export type ValueType = {
       fontSize: number;
       textBorderColor: string;
       textBorderType: string;
+    };
+  };
+  pieSeries: {
+    /**
+     * @description 饼图的类型，是一般饼图还是环形图
+     */
+    type: 'common' | 'ring';
+    radius: number | number[];
+    itemStyle?: {
+      borderRadius: number;
+      borderColor: string;
+      borderWidth: number;
     };
   };
   label: DefaultType;

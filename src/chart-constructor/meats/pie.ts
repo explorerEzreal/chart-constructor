@@ -70,7 +70,30 @@ export const configurations: ConfigurationType = {
       set(newOptions, 'title', value);
       return newOptions;
     },
-   
+  },
+  pieSeries: {
+    title: '饼图配置',
+    settings: {
+      leftOptions: TITLE_LEFT_OPTIONS,
+      fontWeightOptions: TITLE_FONT_WEIGHT,
+    },
+    uniqueConfig: {},
+    defaultValue: {},
+    updateOptions: (value: ValueType['pieSeries'], options: EChartsOption) => {
+      const { radius, type, itemStyle } = value;
+      const newOptions = { ...options };
+      if (type === 'common') {
+        set(newOptions, 'series[0].radius', radius + '%');
+      } else {
+        const newR = (radius as number[]).map((i) => i + '%');
+        set(newOptions, 'series[0].radius', newR);
+      }
+      set(newOptions, 'series[0].itemStyle', itemStyle);
+
+      // debugger;
+
+      return newOptions;
+    },
   },
   label: {
     title: '数值标签',
@@ -87,6 +110,5 @@ export const configurations: ConfigurationType = {
     updateOptions: (value: ValueType['toolTip'], options: EChartsOption) => {
       return options;
     },
-   
   },
 };
