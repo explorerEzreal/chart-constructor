@@ -63,8 +63,9 @@ export const useInit = (type: ChartType) => {
         key,
         title: config.title,
         value: {
-          ...initValue,
+          // note: defaultValue在前 or initialValue在前
           ...(configurations[configKey]?.defaultValue || {}),
+          ...initValue,
         },
         uniqueConfig: configurations[configKey].uniqueConfig,
         settings: configurations[configKey].settings,
