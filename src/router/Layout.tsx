@@ -13,7 +13,7 @@ const items = layoutRoute.children.map((item) => ({
 const PageLayout = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const hanldeNav = ({ key }) => {
+  const handleNav = ({ key }) => {
     navigate(key);
   };
 
@@ -38,7 +38,7 @@ const PageLayout = () => {
         />
         <Menu
           defaultSelectedKeys={defSelectKeys}
-          onClick={hanldeNav}
+          onClick={handleNav}
           theme='light'
           mode='horizontal'
           items={items}
