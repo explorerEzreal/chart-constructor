@@ -1,6 +1,6 @@
 import { EChartsOption } from 'echarts';
 import { set } from 'lodash';
-import { TITLE_LEFT_OPTIONS, TITLE_FONT_WEIGHT } from '../settings/base';
+import { TITLE_LEFT_OPTIONS, TITLE_FONT_WEIGHT, TOOLTIP_TRIGGER_TYPE, TOOLTIP_TRIGGER_ON_TYPE } from '../settings/base';
 /** */
 import { ConfigurationType, ValueType } from './type';
 
@@ -22,7 +22,10 @@ export const option: EChartsOption = {
     },
   },
   tooltip: {
+    show: true,
     trigger: 'item',
+    triggerOn: 'mousemove|click',
+    backgroundColor: '#fff',
   },
   legend: {
     orient: 'vertical',
@@ -105,10 +108,16 @@ export const configurations: ConfigurationType = {
   },
   toolTip: {
     title: '提示',
+    settings: {
+      triggerTypeOptions: TOOLTIP_TRIGGER_TYPE,
+      triggerOnOptions: TOOLTIP_TRIGGER_ON_TYPE,
+    },
     uniqueConfig: {},
     defaultValue: {},
     updateOptions: (value: ValueType['toolTip'], options: EChartsOption) => {
-      return options;
+      const newOptions = { ...options };
+      set(newOptions, 'tooltip', value);
+      return newOptions;
     },
   },
 };

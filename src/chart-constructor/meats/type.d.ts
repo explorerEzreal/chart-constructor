@@ -18,7 +18,10 @@ export type SettingsType = {
     fontWeightOptions: Options;
   };
   label: DefaultType;
-  toolTip: DefaultType;
+  toolTip: {
+    triggerTypeOptions: Options;
+    triggerOnOptions: Options;
+  };
   pieSeries: DefaultType;
 };
 
@@ -62,7 +65,12 @@ export type ValueType = {
     };
   };
   label: DefaultType;
-  toolTip: DefaultType;
+  toolTip: {
+    show: boolean;
+    trigger: string;
+    triggerOn: string;
+    backgroundColor: string;
+  };
 };
 
 export type Value<K extends ConfigurationKeys> = ValueType[K];
