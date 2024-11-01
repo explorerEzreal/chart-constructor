@@ -2,23 +2,26 @@
 
 # Getting Started
 
-## 1. 相关文档 & 前置认识：
+## 1. 相关文档 & 前置认识
 
 ### 1.1 框架 & 依赖
-React18: https://react.dev/learn/scaling-up-with-reducer-and-context
-vite:https://cn.vite.dev/guide/
-Antd:https://ant.design/components/tooltip-cn#API
+
+React18: <https://react.dev/learn/scaling-up-with-reducer-and-context>
+vite:<https://cn.vite.dev/guide/>
+Antd:<https://ant.design/components/tooltip-cn#API>
 ...
 
-
 ### 1.2 运行
-> yarn 
+>
+> yarn
 > yarn dev
 
 ### 1.3 项目设计
+
 ...
 
 ## 2. 分支规范
+
 - master 为线上运行稳定分支，保持纯净，不允许提交，只能通过dev合并。
   - master分支有变更时，打上tag
 - 开发新版本时，新分支来源基于dev
@@ -36,5 +39,6 @@ Antd:https://ant.design/components/tooltip-cn#API
   - refactor 重构
 
 ## 2. 代码规范
-...
 
+- 函数参数
+...
