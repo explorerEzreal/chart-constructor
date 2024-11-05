@@ -56,8 +56,11 @@ export const useInit = (type: ChartType) => {
 
   useEffect(() => {
     const list = Object.entries(configurations).map(([key, config]) => {
-      const configKey = key as keyof ConfigurationType;
-      const initValue = configurations[configKey].transform(initOptions);
+      const configKey = key as ConfigurationKeys;
+      const initValue = configurations[configKey].transform(
+        initOptions[configKey] || {},
+        initOptions
+      );
 
       return {
         key,
