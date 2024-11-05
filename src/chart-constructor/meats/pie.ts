@@ -26,7 +26,7 @@ export const option: EChartsOption = {
       textBorderType: 'solid',
     },
   },
-  tooltip: {
+  toolTip: {
     show: true,
     trigger: 'item',
     triggerOn: 'mousemove|click',
@@ -140,7 +140,7 @@ export const configurations: ConfigurationType = {
     defaultValue: {},
     updateOptions: (value: ValueType['toolTip'], options: EChartsOption) => {
       const newOptions = { ...options };
-      set(newOptions, 'tooltip', value);
+      set(newOptions, 'toolTip', value);
       return newOptions;
     },
     transform: (itemOptions: EChartsOption['toolTip']) => {
