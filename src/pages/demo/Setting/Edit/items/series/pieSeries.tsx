@@ -34,26 +34,7 @@ export type Event = {
   payload: ItemProps<'pieSeries'>['value'];
 };
 
-/**
- *
- * @description 初始化的时候调用，将图表的options转换成表单的value
- * @param options 图表的配置
- * @returns 配置表单的value
- */
-export const transform = (options: EChartsOption) => {
-  let type = 'common';
-  const r = get(options, 'series[0].radius') as string | string[];
-  const itemStyle = get(options, 'series[0].itemStyle');
-  let radius;
-  if (isArray(r)) {
-    type = 'ring';
-    radius = r.map((i) => parseFloat(i.replace('%', '')));
-  } else {
-    radius = parseFloat(r.replace('%', ''));
-  }
 
-  return { itemStyle, type, radius };
-};
 
 type RadiusValue = Pick<Props['value'], 'type' | 'radius'>;
 

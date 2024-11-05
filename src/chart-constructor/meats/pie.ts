@@ -1,6 +1,11 @@
 import { EChartsOption } from 'echarts';
-import { set } from 'lodash';
-import { TITLE_LEFT_OPTIONS, TITLE_FONT_WEIGHT, TOOLTIP_TRIGGER_TYPE, TOOLTIP_TRIGGER_ON_TYPE } from '../settings/base';
+import { get, isArray, set } from 'lodash';
+import {
+  TITLE_LEFT_OPTIONS,
+  TITLE_FONT_WEIGHT,
+  TOOLTIP_TRIGGER_TYPE,
+  TOOLTIP_TRIGGER_ON_TYPE,
+} from '../settings/base';
 /** */
 import { ConfigurationType, ValueType } from './type';
 
@@ -73,6 +78,9 @@ export const configurations: ConfigurationType = {
       set(newOptions, 'title', value);
       return newOptions;
     },
+    transform: (itemOptions: EChartsOption['title']) => {
+      return itemOptions as ValueType['title'];
+    },
   },
   pieSeries: {
     title: '饼图配置',
@@ -93,9 +101,22 @@ export const configurations: ConfigurationType = {
       }
       set(newOptions, 'series[0].itemStyle', itemStyle);
 
-      // debugger;
-
       return newOptions;
+    },
+    // TODO: 待优化
+    transform: (itemOptions: EChartsOption['pieSeries'], options) => {
+      let type = 'common';
+      const r = get(options, 'series[0].radius') as string | string[];
+      const itemStyle = get(options, 'series[0].itemStyle');
+      let radius;
+      if (isArray(r)) {
+        type = 'ring';
+        radius = r.map((i) => parseFloat(i.replace('%', '')));
+      } else {
+        radius = parseFloat(r.replace('%', ''));
+      }
+
+      return { itemStyle, type, radius } as ValueType['pieSeries'];
     },
   },
   label: {
@@ -104,6 +125,9 @@ export const configurations: ConfigurationType = {
     defaultValue: {},
     updateOptions: (value: ValueType['label'], options: EChartsOption) => {
       return options;
+    },
+    transform: (itemOptions: EChartsOption['label']) => {
+      return itemOptions as ValueType['label'];
     },
   },
   toolTip: {
@@ -118,6 +142,9 @@ export const configurations: ConfigurationType = {
       const newOptions = { ...options };
       set(newOptions, 'tooltip', value);
       return newOptions;
+    },
+    transform: (itemOptions: EChartsOption['toolTip']) => {
+      return itemOptions as ValueType['toolTip'];
     },
   },
 };

@@ -14,9 +14,6 @@ export type Event = {
   payload: ItemProps<'label'>['value'];
 };
 
-export const transform = (options: EChartsOption) => {
-  return { ...options.series };
-};
 
 export const component = (props) => {
   return <div>label</div>;

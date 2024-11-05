@@ -11,15 +11,6 @@ export type Event = {
 };
 
 
-/**
- * 
- * @description 初始化的时候调用，将图表的options转换成表单的value
- * @param options 图表的配置
- * @returns 配置表单的value
- */
-export const transform = (options: EChartsOption) => {
-  return { ...options.title };
-};
 
 export const component: React.FC<ItemProps<FieldKey>> = (props) => {
   const { onChange, value, settings } = props;
