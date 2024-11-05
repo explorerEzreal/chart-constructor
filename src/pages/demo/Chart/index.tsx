@@ -12,8 +12,8 @@ type SettingProps = {
   options: EChartsOption;
 };
 export const ChartView: React.FC<SettingProps> = (props) => {
-
   const chartRef = React.useRef<HTMLDivElement>(null);
+  // TODO: 后续挪出去
   const handleScreenshot = async () => {
     if (chartRef.current) {
       try {
