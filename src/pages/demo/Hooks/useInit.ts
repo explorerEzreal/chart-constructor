@@ -58,7 +58,7 @@ export const useInit = (type: ChartType) => {
     const list = Object.entries(configurations).map(([key, config]) => {
       const configKey = key as ConfigurationKeys;
       const initValue = configurations[configKey].transform(
-        initOptions[configKey] || {},
+        initOptions[configKey] || {}, // TODO: 待调整
         initOptions
       );
 
