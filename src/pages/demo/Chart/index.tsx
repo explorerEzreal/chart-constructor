@@ -1,6 +1,6 @@
 import React from 'react';
 import { EChartsOption } from 'echarts';
-import { Chart } from '@/chart-constructor/view';
+import { Chart } from '@constructor/view';
 import { Button, Flex } from 'antd';
 import { VerticalAlignBottomOutlined } from '@ant-design/icons';
 import { Header } from '../components/Headerlayout';

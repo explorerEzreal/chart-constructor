@@ -1,4 +1,4 @@
-import * as meats from '@/chart-constructor/meats';
+import * as meats from '@constructor/meats';
 import items, { EventMap, ItemKey } from '../Setting/Edit/items';
 import React, { useEffect, useState } from 'react';
 import { useLatest } from 'ahooks';
@@ -12,7 +12,7 @@ import {
   SettingsType,
   ConfigurationKeys,
   ValueType,
-} from '@/chart-constructor/meats/type';
+} from '@constructor/meats/type';
 
 export type Item<K extends ConfigurationKeys = ConfigurationKeys> = {
   key: string;
