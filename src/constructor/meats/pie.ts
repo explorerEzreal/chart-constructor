@@ -1,5 +1,5 @@
 import { EChartsOption } from 'echarts';
-import { get, isArray, set } from 'lodash';
+import { set } from 'lodash';
 import {
   TITLE_LEFT_OPTIONS,
   TITLE_FONT_WEIGHT,
@@ -48,8 +48,7 @@ export const option: EChartsOption = {
         { value: 484, name: 'Union Ads' },
         { value: 300, name: 'Video Ads' },
       ],
-      itemStyle: {
-      },
+      itemStyle: {},
     },
   ],
 };
@@ -91,7 +90,6 @@ export const configurations: ConfigurationType = {
       const { radius, itemStyle } = value;
       const newOptions = { ...options };
       const newR = (radius as number[]).map((i) => i + '%');
-
       set(newOptions, 'series[0].radius', newR);
       set(newOptions, 'series[0].itemStyle', itemStyle);
 
@@ -112,8 +110,8 @@ export const configurations: ConfigurationType = {
     updateOptions: (value: ValueType['label'], options: EChartsOption) => {
       return options;
     },
-    transform: (itemOptions: EChartsOption['label']) => {
-      return itemOptions as ValueType['label'];
+    transform: (itemOptions) => {
+      return itemOptions.label as ValueType['label'];
     },
   },
   tooltip: {
