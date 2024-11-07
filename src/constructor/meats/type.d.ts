@@ -7,7 +7,7 @@ type Options = {
 
 type DefaultType = {};
 
-export type ConfigurationKeys = 'title' | 'label' | 'toolTip' | 'pieSeries';
+export type ConfigurationKeys = 'title' | 'label' | 'tooltip' | 'pieSeries';
 
 /**
  * @description 给图表配置表单使用的配置项，比如 图表标题的位置，字体粗细。。。
@@ -18,7 +18,7 @@ export type SettingsType = {
     fontWeightOptions: Options;
   };
   label: DefaultType;
-  toolTip: {
+  tooltip: {
     triggerTypeOptions: Options;
     triggerOnOptions: Options;
   };
@@ -31,7 +31,7 @@ export type SettingsType = {
 export type UniqueConfigType = {
   title: DefaultType;
   label: DefaultType;
-  toolTip: DefaultType;
+  tooltip: DefaultType;
   pieSeries: DefaultType;
 };
 
@@ -53,11 +53,7 @@ export type ValueType = {
     };
   };
   pieSeries: {
-    /**
-     * @description 饼图的类型，是一般饼图还是环形图
-     */
-    type: 'common' | 'ring';
-    radius: number | number[];
+    radius:  number[];
     itemStyle?: {
       borderRadius: number;
       borderColor: string;
@@ -65,7 +61,7 @@ export type ValueType = {
     };
   };
   label: DefaultType;
-  toolTip: {
+  tooltip: {
     show: boolean;
     trigger: string;
     triggerOn: string;
@@ -77,12 +73,13 @@ export type Value<K extends ConfigurationKeys> = ValueType[K];
 
 export type Config<K extends ConfigurationKeys> = {
   title: string; // 标题，标识是什么配置
+  fields?: Array<keyof EChartsOption>; // 这个配置在图表options中的位置，可选，没有的话用 K
   settings?: SettingsType[K]; // 图表配置的选项
   uniqueConfig?: UniqueConfigType[K]; // 单独的配置,其他图表类型可能没有的配置项
   defaultValue?: DefaultType; // 默认值
   updateOptions: (value: ValueType[K], options: EChartsOption) => EChartsOption; // 更新options的方法
   transform: (
-    itemOptions: EChartsOption[K],
+    itemsOptions: Partial<EChartsOption>,
     option?: EChartsOption
   ) => ValueType[K];
 };

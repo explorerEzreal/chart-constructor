@@ -1,9 +1,8 @@
 import { ItemProps } from '@pages/demo/Hooks/useInit';
 import { ColorPicker, Select, Switch } from 'antd';
-import { EChartsOption } from 'echarts';
 import React from 'react';
 
-export type FieldKey = 'toolTip';
+export type FieldKey = 'tooltip';
 
 export type State = {
   name: string;
@@ -13,8 +12,8 @@ export type State = {
 };
 
 export type Event = {
-  field: 'toolTip';
-  payload: ItemProps<'toolTip'>['value'];
+  field: 'tooltip';
+  payload: ItemProps<'tooltip'>['value'];
 };
 
 
@@ -25,7 +24,7 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
   const onItemChange = (payload: Event['payload']) => {
     onChange({
       payload,
-      field: 'toolTip',
+      field: 'tooltip',
     });
   };
 

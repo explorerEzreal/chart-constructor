@@ -1,7 +1,6 @@
 import React from 'react';
 import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 import { ItemProps } from '../../../../Hooks/useInit';
-import { EChartsOption } from 'echarts';
 
 export type FieldKey = 'title';
 

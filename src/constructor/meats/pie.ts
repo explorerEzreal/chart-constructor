@@ -26,7 +26,7 @@ export const option: EChartsOption = {
       textBorderType: 'solid',
     },
   },
-  toolTip: {
+  tooltip: {
     show: true,
     trigger: 'item',
     triggerOn: 'mousemove|click',
@@ -40,7 +40,7 @@ export const option: EChartsOption = {
     {
       name: 'Access From',
       type: 'pie',
-      radius: '50%',
+      radius: ['50%'],
       data: [
         { value: 1048, name: 'Search Engine' },
         { value: 735, name: 'Direct' },
@@ -48,12 +48,7 @@ export const option: EChartsOption = {
         { value: 484, name: 'Union Ads' },
         { value: 300, name: 'Video Ads' },
       ],
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)',
-        },
+      itemStyle: {
       },
     },
   ],
@@ -67,6 +62,7 @@ export const defaultSettings = {
 export const configurations: ConfigurationType = {
   title: {
     title: '图表标题',
+    // fields: ['title'],
     settings: {
       leftOptions: TITLE_LEFT_OPTIONS,
       fontWeightOptions: TITLE_FONT_WEIGHT,
@@ -78,12 +74,13 @@ export const configurations: ConfigurationType = {
       set(newOptions, 'title', value);
       return newOptions;
     },
-    transform: (itemOptions: EChartsOption['title']) => {
-      return itemOptions as ValueType['title'];
+    transform: (itemOptions) => {
+      return itemOptions.title as ValueType['title'];
     },
   },
   pieSeries: {
     title: '饼图配置',
+    fields: ['series'],
     settings: {
       leftOptions: TITLE_LEFT_OPTIONS,
       fontWeightOptions: TITLE_FONT_WEIGHT,
@@ -91,32 +88,21 @@ export const configurations: ConfigurationType = {
     uniqueConfig: {},
     defaultValue: {},
     updateOptions: (value: ValueType['pieSeries'], options: EChartsOption) => {
-      const { radius, type, itemStyle } = value;
+      const { radius, itemStyle } = value;
       const newOptions = { ...options };
-      if (type === 'common') {
-        set(newOptions, 'series[0].radius', radius + '%');
-      } else {
-        const newR = (radius as number[]).map((i) => i + '%');
-        set(newOptions, 'series[0].radius', newR);
-      }
+      const newR = (radius as number[]).map((i) => i + '%');
+
+      set(newOptions, 'series[0].radius', newR);
       set(newOptions, 'series[0].itemStyle', itemStyle);
 
       return newOptions;
     },
-    // TODO: 待优化
-    transform: (itemOptions: EChartsOption['pieSeries'], options) => {
-      let type = 'common';
-      const r = get(options, 'series[0].radius') as string | string[];
-      const itemStyle = get(options, 'series[0].itemStyle');
-      let radius;
-      if (isArray(r)) {
-        type = 'ring';
-        radius = r.map((i) => parseFloat(i.replace('%', '')));
-      } else {
-        radius = parseFloat(r.replace('%', ''));
-      }
+    transform: (itemOptions) => {
+      const { radius, itemStyle } = itemOptions.series[0];
+      const type = radius.length > 1 ? 'ring' : 'common';
+      const r = radius.map((i: string) => parseFloat(i.replace('%', '')));
 
-      return { itemStyle, type, radius } as ValueType['pieSeries'];
+      return { itemStyle, type, radius: r } as ValueType['pieSeries'];
     },
   },
   label: {
@@ -130,7 +116,7 @@ export const configurations: ConfigurationType = {
       return itemOptions as ValueType['label'];
     },
   },
-  toolTip: {
+  tooltip: {
     title: '提示',
     settings: {
       triggerTypeOptions: TOOLTIP_TRIGGER_TYPE,
@@ -138,13 +124,13 @@ export const configurations: ConfigurationType = {
     },
     uniqueConfig: {},
     defaultValue: {},
-    updateOptions: (value: ValueType['toolTip'], options: EChartsOption) => {
+    updateOptions: (value: ValueType['tooltip'], options: EChartsOption) => {
       const newOptions = { ...options };
-      set(newOptions, 'toolTip', value);
+      set(newOptions, 'tooltip', value);
       return newOptions;
     },
-    transform: (itemOptions: EChartsOption['toolTip']) => {
-      return itemOptions as ValueType['toolTip'];
+    transform: (itemOptions) => {
+      return itemOptions.tooltip as ValueType['tooltip'];
     },
   },
 };

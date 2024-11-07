@@ -2,7 +2,7 @@ import * as meats from '@/constructor/meats';
 import items, { EventMap, ItemKey } from '../Setting/Edit/items';
 import React, { useEffect, useState } from 'react';
 import { useLatest } from 'ahooks';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, union, uniq } from 'lodash';
 /** */
 import { EChartsOption } from 'echarts';
 import { ChartType } from '../type';
@@ -57,10 +57,13 @@ export const useInit = (type: ChartType) => {
   useEffect(() => {
     const list = Object.entries(configurations).map(([key, config]) => {
       const configKey = key as ConfigurationKeys;
-      const initValue = configurations[configKey].transform(
-        initOptions[configKey] || {}, // TODO: 待调整
-        initOptions
+      const { transform, fields = [configKey] } = config;
+      const itemsOptions = uniq(fields.filter((i) => !!i)).reduce(
+        (acc, item) => ({ ...acc, [item]: initOptions[item] }),
+        {}
       );
+      const initValue = transform(itemsOptions, initOptions);
+
 
       return {
         key,

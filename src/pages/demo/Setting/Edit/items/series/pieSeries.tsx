@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 // import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 import { ItemProps } from '../../../../Hooks/useInit';
-import { EChartsOption } from 'echarts';
 import {
   Col,
   ColorPicker,
@@ -11,7 +10,6 @@ import {
   Row,
   Space,
 } from 'antd';
-import { get, isArray } from 'lodash';
 import { useSetState } from 'ahooks';
 
 const radiusOptions = [
@@ -34,35 +32,33 @@ export type Event = {
   payload: ItemProps<'pieSeries'>['value'];
 };
 
-
-
-type RadiusValue = Pick<Props['value'], 'type' | 'radius'>;
+type RadiusValue = Pick<Props['value'], 'radius'>;
 
 interface RadiusProps extends RadiusValue {
   onChange: (value: RadiusValue) => void;
 }
 
 function Radius(props: RadiusProps) {
-  const { type, radius, onChange } = props;
+  const { radius, onChange } = props;
 
-  const [current, setCurrent] = useSetState<RadiusValue>({ type, radius });
+  const [current, setCurrent] = useSetState<RadiusValue>({ radius });
+
+  const type = radius.length === 1 ? 'common' : 'ring';
 
   const onTypeChange = (e: RadioChangeEvent) => {
     const v = e.target.value;
-
     if (v === 'ring') {
-      onChange({ type: v, radius: [50, 60] });
+      onChange({ radius: [50, 60] });
     } else {
-      onChange({ type: v, radius: 50 });
+      onChange({ radius: [50] });
     }
   };
 
   useEffect(() => {
     setCurrent({
-      type,
       radius,
     });
-  }, [type, radius]);
+  }, [radius]);
 
   return (
     <div>
@@ -71,14 +67,14 @@ function Radius(props: RadiusProps) {
         options={radiusOptions}
         onChange={onTypeChange}
       />
-      {type === 'common' ? (
+      {radius.length === 1 ? (
         <InputNumber
           max={100}
-          min={10}
-          onChange={(e) => onChange({ ...current, radius: e as number })}
+          min={0}
+          onChange={(e) => onChange({ ...current, radius: [e] as number[] })}
           formatter={(value) => `${value}%`}
           parser={(value) => value?.replace('%', '') as unknown as number}
-          value={current.radius as number}
+          value={current.radius[0] as number}
         />
       ) : (
         <Space>
@@ -112,7 +108,7 @@ function Radius(props: RadiusProps) {
 
 export const component: React.FC<Props> = (props) => {
   const { value, onChange } = props;
-  const { type, radius, itemStyle } = value;
+  const { radius, itemStyle } = value;
 
   const onFieldChange = (v: Partial<Props['value']>) => {
     onChange({
@@ -121,15 +117,11 @@ export const component: React.FC<Props> = (props) => {
     });
   };
 
-  // const onRadiusChanged = (e: RadiusValue) => {
-  //   onFieldChange(e);
-  // };
-
   return (
     <div>
       <Row>
         <p>饼图半径</p>
-        <Radius type={type} radius={radius} onChange={onFieldChange} />
+        <Radius radius={radius} onChange={onFieldChange} />
       </Row>
       <Row>
         <p>图形样式</p>
@@ -147,7 +139,7 @@ export const component: React.FC<Props> = (props) => {
         <Col>
           <label>描边线宽</label>
           <InputNumber
-            min={1}
+            min={0}
             onChange={(e) =>
               onFieldChange({
                 itemStyle: { ...(itemStyle || {}), borderWidth: e as number },
