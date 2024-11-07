@@ -1,10 +1,10 @@
 import React from 'react';
 import { EChartsOption } from 'echarts';
-import { Chart } from '@constructor/view';
+import { Chart } from '@/constructor/view';
 import { Button, Flex } from 'antd';
 import { VerticalAlignBottomOutlined } from '@ant-design/icons';
 import { Header } from '../components/Headerlayout';
-import { captureScreenshot, copyToClipboard } from '@shard/utils/index';
+import { captureScreenshot, copyToClipboard } from '@/shard/utils/index';
 
 import './index.less';
 
