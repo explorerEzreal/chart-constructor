@@ -59,11 +59,10 @@ export const useInit = (type: ChartType) => {
       const configKey = key as ConfigurationKeys;
       const { transform, fields = [configKey] } = config;
       const itemsOptions = uniq(fields.filter((i) => !!i)).reduce(
-        (acc, item) => ({ ...acc, [item]: initOptions[item] }),
+        (acc, item) => ({ ...acc, [item]: initOptions[item] || {} }),
         {}
       );
       const initValue = transform(itemsOptions, initOptions);
-
 
       return {
         key,
