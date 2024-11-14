@@ -12,7 +12,12 @@ const Index = () => {
   const [rightWidth, setRightWidth] = useState('calc(25% - 7.5px)');
   const [chartType, setChartType] = useState<ChartType>('pie');
 
-  const { itemsList: items, options } = useInit(chartType);
+  const {
+    itemsList: items,
+    options,
+    onBack,
+    backDisabled,
+  } = useInit(chartType);
 
   const leftRef = useRef(null);
   const size = useSize(leftRef);
@@ -67,7 +72,7 @@ const Index = () => {
         style={{ width: rightWidth }}
         className='container rignt_settingContainer'
       >
-        <Settings items={items} />
+        <Settings items={items} onBack={onBack} backDisabled={backDisabled} />
       </div>
     </div>
   );

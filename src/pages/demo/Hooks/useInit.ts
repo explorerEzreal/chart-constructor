@@ -1,10 +1,11 @@
 import * as meats from '@/constructor/meats';
-import items, { EventMap, ItemKey } from '../Setting/Edit/items';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLatest } from 'ahooks';
-import { cloneDeep, union, uniq } from 'lodash';
-/** */
+import { cloneDeep, uniq } from 'lodash';
 import { EChartsOption } from 'echarts';
+/** */
+import Stack from '@/shard/utils/stack';
+import items, { EventMap, ItemKey } from '../Setting/Edit/items';
 import { ChartType } from '../type';
 import {
   ConfigurationType,
@@ -31,6 +32,12 @@ export type ItemProps<K extends ConfigurationKeys = ConfigurationKeys> = {
   onChange: (e: EventMap[K]) => void;
 };
 
+type StackItem = {
+  options: EChartsOption;
+  value: ValueType[keyof ValueType];
+  field: ConfigurationKeys;
+};
+
 export const useInit = (type: ChartType) => {
   const configurations: ConfigurationType = meats[type].configurations;
   const initOptions: EChartsOption = meats[type].option;
@@ -39,6 +46,30 @@ export const useInit = (type: ChartType) => {
   const latestItemsListRef = useLatest(itemsList);
   const [options, setOptions] = useState<EChartsOption>(initOptions);
   const latestOptionsRef = useLatest(options);
+  const [backDisabled, setBackDisabled] = useState<boolean>(true);
+  const stackRef = useRef<Stack<StackItem>>(new Stack<StackItem>());
+
+  // const backDisabled = stackRef.current.isEmpty();
+
+  const onBack = () => {
+    const {
+      options: currentOptions,
+      value,
+      field,
+    } = stackRef.current.peek() as StackItem;
+    console.log('-----stackRef-----', stackRef.current);
+    const index = latestItemsListRef.current.findIndex(
+      (item) => item.key === field
+    );
+    const list = cloneDeep(latestItemsListRef.current);
+    list[index].value = value;
+    // debugger
+
+    stackRef.current.pop();
+    setItemsList(list);
+    setOptions(currentOptions);
+    setBackDisabled(stackRef.current.isEmpty());
+  };
 
   const onItemChange = (e: EventMap[ItemKey]) => {
     const { field, payload } = e;
@@ -49,9 +80,16 @@ export const useInit = (type: ChartType) => {
     list[index].value = payload;
     const updateFn = configurations[field].updateOptions;
     const newOptions = updateFn(payload, latestOptionsRef.current);
+    const preValue = {
+      options: latestOptionsRef.current,
+      value: latestItemsListRef.current[index].value,
+      field,
+    };
 
+    stackRef.current.push(preValue);
     setItemsList(list);
     setOptions(newOptions);
+    setBackDisabled(false)
   };
 
   useEffect(() => {
@@ -80,5 +118,5 @@ export const useInit = (type: ChartType) => {
     setItemsList(list);
   }, []);
 
-  return { itemsList, options };
+  return { itemsList, options, onBack, backDisabled };
 };
