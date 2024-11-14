@@ -49,21 +49,17 @@ export const useInit = (type: ChartType) => {
   const [backDisabled, setBackDisabled] = useState<boolean>(true);
   const stackRef = useRef<Stack<StackItem>>(new Stack<StackItem>());
 
-  // const backDisabled = stackRef.current.isEmpty();
-
   const onBack = () => {
     const {
       options: currentOptions,
       value,
       field,
     } = stackRef.current.peek() as StackItem;
-    console.log('-----stackRef-----', stackRef.current);
     const index = latestItemsListRef.current.findIndex(
       (item) => item.key === field
     );
     const list = cloneDeep(latestItemsListRef.current);
     list[index].value = value;
-    // debugger
 
     stackRef.current.pop();
     setItemsList(list);
