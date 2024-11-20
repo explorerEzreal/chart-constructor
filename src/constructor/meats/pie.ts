@@ -1,5 +1,5 @@
 import { EChartsOption } from 'echarts';
-import { set } from 'lodash';
+import { cloneDeep, set } from 'lodash';
 import {
   TITLE_LEFT_OPTIONS,
   TITLE_FONT_WEIGHT,
@@ -88,7 +88,7 @@ export const configurations: ConfigurationType = {
     defaultValue: {},
     updateOptions: (value: ValueType['pieSeries'], options: EChartsOption) => {
       const { radius, itemStyle } = value;
-      const newOptions = { ...options };
+      const newOptions = cloneDeep({ ...options });
       const newR = (radius as number[]).map((i) => i + '%');
       set(newOptions, 'series[0].radius', newR);
       set(newOptions, 'series[0].itemStyle', itemStyle);

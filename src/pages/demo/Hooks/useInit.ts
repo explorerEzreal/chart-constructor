@@ -88,31 +88,39 @@ export const useInit = (type: ChartType) => {
     setBackDisabled(false)
   };
 
-  useEffect(() => {
-    const list = Object.entries(configurations).map(([key, config]) => {
-      const configKey = key as ConfigurationKeys;
-      const { transform, fields = [configKey] } = config;
-      const itemsOptions = uniq(fields.filter((i) => !!i)).reduce(
-        (acc, item) => ({ ...acc, [item]: initOptions[item] || {} }),
-        {}
-      );
-      const initValue = transform(itemsOptions, initOptions);
+  const onReset = () => {
+    stackRef.current.clear();
+    setBackDisabled(true);
+    setOptions(initOptions);
+    setItemsList(initValue);
+  };
 
-      return {
-        key,
-        title: config.title,
-        value: {
-          ...initValue,
-          ...(configurations[configKey]?.defaultValue || {}),
-        },
-        uniqueConfig: configurations[configKey].uniqueConfig,
-        settings: configurations[configKey].settings,
-        component: items[configKey].component,
-        onChange: onItemChange,
-      };
-    });
-    setItemsList(list);
+  const initValue = Object.entries(configurations).map(([key, config]) => {
+    const configKey = key as ConfigurationKeys;
+    const { transform, fields = [configKey] } = config;
+    const itemsOptions = uniq(fields.filter((i) => !!i)).reduce(
+      (acc, item) => ({ ...acc, [item]: initOptions[item] || {} }),
+      {}
+    );
+    const initValue = transform(itemsOptions, initOptions);
+
+    return {
+      key,
+      title: config.title,
+      value: {
+        ...initValue,
+        ...(configurations[configKey]?.defaultValue || {}),
+      },
+      uniqueConfig: configurations[configKey].uniqueConfig,
+      settings: configurations[configKey].settings,
+      component: items[configKey].component,
+      onChange: onItemChange,
+    };
+  });
+
+  useEffect(() => {
+    setItemsList(initValue);
   }, []);
 
-  return { itemsList, options, onBack, backDisabled };
+  return { itemsList, options, onBack, backDisabled, onReset };
 };
