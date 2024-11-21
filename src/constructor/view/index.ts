@@ -1,15 +1,18 @@
 import * as echarts from 'echarts';
 import React, { useRef, createElement, useEffect, RefObject } from 'react';
+import { ChartType } from '@/constructor/meats';
+
 import { EChartsOption, ECharts } from 'echarts';
 import { useSize } from 'ahooks';
 
 type Props = {
   options: EChartsOption;
+  chartType: ChartType;
 };
 
 const Index: React.FC<Props> = (Props) => {
   const entityClassname = 'chartview-wrapper';
-  const { options } = Props;
+  const { options, chartType } = Props;
   const ref: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
   const chartRef: RefObject<ECharts | null> = useRef<ECharts | null>(null);
   const chart: ECharts | null = chartRef.current;
@@ -17,14 +20,14 @@ const Index: React.FC<Props> = (Props) => {
   const size = useSize(ref);
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && chartType) {
       chartRef.current = echarts.init(ref.current);
     }
 
     return () => {
       chartRef.current?.dispose();
     };
-  }, [ref]);
+  }, [ref, chartType]);
 
   useEffect(() => {
     if (options && chartRef.current) {

@@ -4,7 +4,6 @@ import { routes } from './route';
 import PageLayout from './Layout';
 import { Spin } from 'antd';
 
-
 // TODO: CH 抽离样式
 function PageLoading() {
   return (
@@ -20,7 +19,7 @@ function PageLoading() {
         alignItems: 'center',
       }}
     >
-      <Spin tip='Loading' size='large'></Spin>
+      <Spin size='large'></Spin>
       <span style={{ padding: '0 20px' }}>加载中...</span>
     </div>
   );
