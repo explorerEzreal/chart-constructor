@@ -2,14 +2,15 @@ import React, { useState, useRef } from 'react';
 import { useSize } from 'ahooks';
 import { ChartView } from './Chart';
 import { Settings } from './Setting';
+import ViewSetting from './ViewSetting';
 
 import './index.less';
 import { useInit } from './Hooks/useInit';
 import { ChartType } from '@/constructor/meats';
 
 const Index = () => {
-  const [leftWidth, setLeftWidth] = useState('calc(75% - 7.5px)');
-  const [rightWidth, setRightWidth] = useState('calc(25% - 7.5px)');
+  const [contentWidth, setcontentWidth] = useState('calc(75% - 7.5px)');
+  const [sideWidth, setsideWidth] = useState('calc(25% - 7.5px)');
   const [chartType, setChartType] = useState<ChartType>('pie');
 
   const {
@@ -34,11 +35,11 @@ const Index = () => {
 
     const doResize = (event: { clientX: number }) => {
       if (startX && startWidth) {
-        const leftWidth = startWidth + event.clientX - startX;
-        const rightWidth = window.innerWidth - leftWidth - 15;
+        const contentWidth = startWidth + event.clientX - startX;
+        const sideWidth = window.innerWidth - contentWidth - contentWidth - 15;
 
-        setLeftWidth(`${leftWidth}px`);
-        setRightWidth(`${rightWidth}px`);
+        setcontentWidth(`${contentWidth}px`);
+        setsideWidth(`${sideWidth}px`);
       }
     };
 
@@ -62,8 +63,15 @@ const Index = () => {
   return (
     <div className='page_demo'>
       <div
+        style={{ width: sideWidth }}
+        className='container'
+      >
+          <ViewSetting></ViewSetting>
+      </div>
+
+      <div
         ref={leftRef}
-        style={{ width: leftWidth }}
+        style={{ width: contentWidth }}
         className='container left_chartContainer'
       >
         <ChartView
@@ -74,7 +82,7 @@ const Index = () => {
       </div>
       <div className='handler' onMouseDown={handleMouseDown} />
       <div
-        style={{ width: rightWidth }}
+        style={{ width: sideWidth }}
         className='container rignt_settingContainer'
       >
         <Settings
