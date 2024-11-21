@@ -1,5 +1,4 @@
 import { Modal } from 'antd';
-import { useCallback } from 'react';
 
 const { confirm } = Modal;
 
@@ -11,13 +10,14 @@ type ConfirmOptions = {
 };
 
 const useConfirm = (fun: (e?: any) => void, options: ConfirmOptions) => {
-  const { title, okText, cancelText } = options;
+  const { title, okText, cancelText, content } = options;
 
   const handleConfirm = (params?: any) => {
     confirm({
       title,
       okText,
       cancelText,
+      content,
       onOk: () => {
         fun(params);
       },
