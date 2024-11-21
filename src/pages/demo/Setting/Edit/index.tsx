@@ -26,7 +26,8 @@ const Edit: React.FC<EditProps> = (props) => {
   const itemList = items.map((item) => {
     return {
       key: item.key,
-      label: item.title,
+      // label: item.title,
+      label: <span style={{ fontWeight: 600, fontSize: 16 }}>{item.title}</span>,
       children: <ChartSettingItem key={item.key} item={item} />,
       style: panelStyle,
     };
