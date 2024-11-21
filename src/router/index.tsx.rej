@@ -1,0 +1,9 @@
+diff a/src/router/index.tsx b/src/router/index.tsx	(rejected hunks)
+@@ -6,6 +6,7 @@
+   return (
+     <div
+       style={{
++        width: '100vw',
+         height: '100vh',
+         backgroundColor: '#fff',
+         fontSize: 30,
