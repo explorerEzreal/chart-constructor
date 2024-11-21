@@ -43,7 +43,7 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
   return (
     <div>
       <div className="item">
-        <label className="item_label">是否显示标题</label>
+        <label className="item_label">标题显示</label>
         <Switch value={value.show} onChange={(e) => onConfigItemChange(e, 'show')} />
       </div>
       <div className="item">
