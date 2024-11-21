@@ -1,12 +1,11 @@
-import * as meats from '@/constructor/meats';
-import React, { useEffect, useRef, useState } from 'react';
+import meats, { ChartType } from '@/constructor/meats';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLatest } from 'ahooks';
 import { cloneDeep, uniq } from 'lodash';
 import { EChartsOption } from 'echarts';
 /** */
 import Stack from '@/shard/utils/stack';
 import items, { EventMap, ItemKey } from '../Setting/Edit/items';
-import { ChartType } from '../type';
 import {
   ConfigurationType,
   UniqueConfigType,
@@ -39,8 +38,11 @@ type StackItem = {
 };
 
 export const useInit = (type: ChartType) => {
-  const configurations: ConfigurationType = meats[type].configurations;
-  const initOptions: EChartsOption = meats[type].option;
+  const [configurations, initOptions] = useMemo<
+    [ConfigurationType, EChartsOption]
+  >(() => {
+    return [meats[type].configurations, meats[type].option];
+  }, [type]);
 
   const [itemsList, setItemsList] = useState<Item<ConfigurationKeys>[]>([]);
   const latestItemsListRef = useLatest(itemsList);
@@ -85,7 +87,7 @@ export const useInit = (type: ChartType) => {
     stackRef.current.push(preValue);
     setItemsList(list);
     setOptions(newOptions);
-    setBackDisabled(false)
+    setBackDisabled(false);
   };
 
   const onReset = () => {
@@ -98,7 +100,7 @@ export const useInit = (type: ChartType) => {
   };
 
   const initValue = () => {
-    return Object.entries(configurations).map(([key, config]) => {
+    const list = Object.entries(configurations).map(([key, config]) => {
       const configKey = key as ConfigurationKeys;
       const { transform, fields = [configKey] } = config;
       const itemsOptions = uniq(fields.filter((i) => !!i)).reduce(
@@ -120,12 +122,15 @@ export const useInit = (type: ChartType) => {
         onChange: onItemChange,
       };
     });
-  }
+    setItemsList(list);
+    setOptions(initOptions);
+  };
 
   useEffect(() => {
-    const list = initValue();
-    setItemsList(list);
-  }, []);
+    if (type) {
+      initValue();
+    }
+  }, [type]);
 
   return { itemsList, options, onBack, backDisabled, onReset };
 };

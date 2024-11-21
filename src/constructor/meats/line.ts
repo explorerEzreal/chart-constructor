@@ -1,5 +1,5 @@
 import { EChartsOption } from 'echarts';
-import { cloneDeep, set } from 'lodash';
+import { set } from 'lodash';
 import {
   TITLE_LEFT_OPTIONS,
   TITLE_FONT_WEIGHT,
@@ -9,15 +9,15 @@ import {
 /** */
 import { ConfigurationType, ValueType } from './type';
 
-export const name = '饼图';
-export const type = 'pie';
+export const name = '折线图';
+export const type = 'line';
 
 export const option: EChartsOption = {
   title: {
-    show: true,
-    text: 'Referer of a Website',
+    text: 'Stacked Area Chart',
+    show: false,
     subtext: 'Fake Data',
-    left: 'center',
+    left: 'left',
     textStyle: {
       color: '#c91818',
       fontWeight: 'bolder',
@@ -27,32 +27,97 @@ export const option: EChartsOption = {
     },
   },
   tooltip: {
-    show: true,
-    trigger: 'item',
-    triggerOn: 'mousemove|click',
-    backgroundColor: '#fff',
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross',
+      label: {
+        backgroundColor: '#6a7985',
+      },
+    },
   },
   legend: {
-    orient: 'vertical',
-    left: 'left',
+    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
   },
+  toolbox: {
+    feature: {
+      saveAsImage: {},
+    },
+  },
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true,
+  },
+  xAxis: [
+    {
+      type: 'category',
+      boundaryGap: false,
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+  ],
+  yAxis: [
+    {
+      type: 'value',
+    },
+  ],
   series: [
     {
-      name: 'Access From',
-      type: 'pie',
-      radius: ['50%'],
-      data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' },
-      ],
-      itemStyle: {},
+      name: 'Email',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [120, 132, 101, 134, 90, 230, 210],
+    },
+    {
+      name: 'Union Ads',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [220, 182, 191, 234, 290, 330, 310],
+    },
+    {
+      name: 'Video Ads',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [150, 232, 201, 154, 190, 330, 410],
+    },
+    {
+      name: 'Direct',
+      type: 'line',
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [320, 332, 301, 334, 390, 330, 320],
+    },
+    {
+      name: 'Search Engine',
+      type: 'line',
+      stack: 'Total',
+      label: {
+        show: true,
+        position: 'top',
+      },
+      areaStyle: {},
+      emphasis: {
+        focus: 'series',
+      },
+      data: [820, 932, 901, 934, 1290, 1330, 1320],
     },
   ],
 };
-
 export const defaultSettings = {
   title: {},
   label: {},
@@ -61,7 +126,6 @@ export const defaultSettings = {
 export const configurations: ConfigurationType = {
   title: {
     title: '图表标题',
-    // fields: ['title'],
     settings: {
       leftOptions: TITLE_LEFT_OPTIONS,
       fontWeightOptions: TITLE_FONT_WEIGHT,
@@ -75,32 +139,6 @@ export const configurations: ConfigurationType = {
     },
     transform: (itemOptions) => {
       return itemOptions.title as ValueType['title'];
-    },
-  },
-  pieSeries: {
-    title: '饼图配置',
-    fields: ['series'],
-    settings: {
-      leftOptions: TITLE_LEFT_OPTIONS,
-      fontWeightOptions: TITLE_FONT_WEIGHT,
-    },
-    uniqueConfig: {},
-    defaultValue: {},
-    updateOptions: (value: ValueType['pieSeries'], options: EChartsOption) => {
-      const { radius, itemStyle } = value;
-      const newOptions = cloneDeep({ ...options });
-      const newR = (radius as number[]).map((i) => i + '%');
-      set(newOptions, 'series[0].radius', newR);
-      set(newOptions, 'series[0].itemStyle', itemStyle);
-
-      return newOptions;
-    },
-    transform: (itemOptions) => {
-      const { radius, itemStyle } = itemOptions.series[0];
-      const type = radius.length > 1 ? 'ring' : 'common';
-      const r = radius.map((i: string) => parseFloat(i.replace('%', '')));
-
-      return { itemStyle, type, radius: r } as ValueType['pieSeries'];
     },
   },
   label: {

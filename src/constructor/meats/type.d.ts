@@ -52,7 +52,7 @@ export type ValueType = {
       textBorderType: string;
     };
   };
-  pieSeries: {
+  pieSeries?: {
     radius:  number[];
     itemStyle?: {
       borderRadius: number;
