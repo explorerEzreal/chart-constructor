@@ -20,7 +20,7 @@ const PageLayout = () => {
   const [defSelectKeys] = useState([pathname]);
 
   return (
-    <Layout className='app_layout'>
+    <Layout className="app_layout">
       <Header
         style={{
           position: 'sticky',
@@ -33,14 +33,14 @@ const PageLayout = () => {
         }}
       >
         <img
-          className='app_logo'
-          src='https://echarts.apache.org/zh/images/logo.png?_v_=20240226'
+          className="app_logo"
+          src="https://echarts.apache.org/zh/images/logo.png?_v_=20240226"
         />
         <Menu
           defaultSelectedKeys={defSelectKeys}
           onClick={hanldeNav}
-          theme='light'
-          mode='horizontal'
+          theme="light"
+          mode="horizontal"
           items={items}
           style={{
             flex: 1,

@@ -7,5 +7,4 @@ const meats = {
 };
 
 export type ChartType = keyof typeof meats;
-export default meats
-
+export default meats;

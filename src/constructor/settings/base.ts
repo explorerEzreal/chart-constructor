@@ -16,7 +16,6 @@ export const TITLE_LEFT_OPTIONS = [
   },
 ];
 
-
 /**
  * @description 图表主标题文字字体
  */
@@ -39,7 +38,6 @@ export const TITLE_FONT_WEIGHT = [
   },
 ];
 
-
 /**
  * @description 图表提示触发类型
  */
@@ -57,7 +55,6 @@ export const TOOLTIP_TRIGGER_TYPE = [
     value: 'none',
   },
 ];
-
 
 /**
  * @description 图表提示触发类型

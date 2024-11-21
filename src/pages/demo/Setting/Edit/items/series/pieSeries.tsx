@@ -1,15 +1,7 @@
 import React, { useEffect } from 'react';
 // import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 import { ItemProps } from '../../../../Hooks/useInit';
-import {
-  Col,
-  ColorPicker,
-  InputNumber,
-  Radio,
-  RadioChangeEvent,
-  Row,
-  Space,
-} from 'antd';
+import { Col, ColorPicker, InputNumber, Radio, RadioChangeEvent, Row, Space } from 'antd';
 import { useSetState } from 'ahooks';
 
 const radiusOptions = [
@@ -62,11 +54,7 @@ function Radius(props: RadiusProps) {
 
   return (
     <div>
-      <Radio.Group
-        value={type}
-        options={radiusOptions}
-        onChange={onTypeChange}
-      />
+      <Radio.Group value={type} options={radiusOptions} onChange={onTypeChange} />
       {radius.length === 1 ? (
         <InputNumber
           max={100}
@@ -157,7 +145,7 @@ export const component: React.FC<Props> = (props) => {
                 colors: ['#fff'],
               },
             ]}
-            format='hex'
+            format="hex"
             value={itemStyle?.borderColor}
             onChange={(e) =>
               onFieldChange({

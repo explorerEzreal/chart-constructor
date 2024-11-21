@@ -19,7 +19,7 @@ function PageLoading() {
         alignItems: 'center',
       }}
     >
-      <Spin size='large'></Spin>
+      <Spin size="large"></Spin>
       <span style={{ padding: '0 20px' }}>加载中...</span>
     </div>
   );
@@ -31,8 +31,7 @@ export function Routers() {
   const RenderRoutes = (item) => {
     const path = `/src/pages${item.path}/index.tsx`;
 
-    const Element =
-      item.element === 'Layout' ? PageLayout : lazy(modules[path]);
+    const Element = item.element === 'Layout' ? PageLayout : lazy(modules[path]);
 
     return (
       <Route key={item.path} path={item.path || ''} element={<Element />}>
@@ -47,7 +46,7 @@ export function Routers() {
   return (
     <Suspense fallback={<PageLoading />}>
       <Routes>
-        <Route key='redirect' path='/' element={<Navigate to='/home' />} />
+        <Route key="redirect" path="/" element={<Navigate to="/home" />} />
         {routes.map((item) => {
           return RenderRoutes(item);
         })}

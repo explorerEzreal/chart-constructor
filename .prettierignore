@@ -1,0 +1,11 @@
+# Ignore all JavaScript files in the /dist folder
+dist/**/*.js
+
+# Ignore all files in the /build folder
+build/
+
+# Ignore JSON files
+*.json
+
+# Ignore node_modules (though it’s ignored by default)
+node_modules/

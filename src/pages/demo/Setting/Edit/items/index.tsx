@@ -17,7 +17,6 @@ export type EventMap = {
   pieSeries: pieSeries.Event;
 };
 
-
 export type ItemKey = keyof EventMap;
 export type ItemMap = typeof items;
 export default items;

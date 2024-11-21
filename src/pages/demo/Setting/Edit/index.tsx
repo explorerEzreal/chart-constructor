@@ -33,12 +33,10 @@ const Edit: React.FC<EditProps> = (props) => {
   });
 
   return (
-    <div className='edit_wrapper'>
+    <div className="edit_wrapper">
       <Collapse
         bordered={false}
-        expandIcon={({ isActive }) => (
-          <CaretRightOutlined rotate={isActive ? 90 : 0} />
-        )}
+        expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
         style={{
           background: token.colorBgContainer,
         }}

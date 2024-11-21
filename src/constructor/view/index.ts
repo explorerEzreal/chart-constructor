@@ -36,6 +36,7 @@ const Index: React.FC<Props> = (Props) => {
   }, [options]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     chart && chart.resize(size);
   }, [size]);
 

@@ -16,8 +16,6 @@ export type Event = {
   payload: ItemProps<'tooltip'>['value'];
 };
 
-
-
 export const component: React.FC<ItemProps<FieldKey>> = (props) => {
   const { onChange, value, settings } = props;
 
@@ -40,9 +38,9 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
   return (
     <div>
       <div>
-        <label htmlFor='show'>显示/隐藏</label>
+        <label htmlFor="show">显示/隐藏</label>
         <Switch
-          id='show'
+          id="show"
           value={value.show}
           onChange={(e) => onConfigItemChange(e, 'show')}
         ></Switch>
@@ -51,9 +49,9 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
       {value.show && (
         <>
           <div>
-            <label htmlFor='triggerType'>触发类型</label>
+            <label htmlFor="triggerType">触发类型</label>
             <Select
-              id='triggerType'
+              id="triggerType"
               options={settings?.triggerTypeOptions}
               value={value.trigger}
               onChange={(e) => onConfigItemChange(e, 'trigger')}
@@ -61,9 +59,9 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
           </div>
 
           <div>
-            <label htmlFor='triggerOn'>触发条件</label>
+            <label htmlFor="triggerOn">触发条件</label>
             <Select
-              id='triggerOn'
+              id="triggerOn"
               options={settings?.triggerOnOptions}
               value={value.triggerOn}
               onChange={(e) => onConfigItemChange(e, 'triggerOn')}
@@ -71,13 +69,11 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
           </div>
 
           <div>
-            <label htmlFor='backgroundColor'>背景颜色</label>
+            <label htmlFor="backgroundColor">背景颜色</label>
             <ColorPicker
-              format='hex'
+              format="hex"
               value={value.backgroundColor}
-              onChangeComplete={(e) =>
-                onConfigItemChange(e.toHexString(), 'backgroundColor')
-              }
+              onChangeComplete={(e) => onConfigItemChange(e.toHexString(), 'backgroundColor')}
             />
           </div>
         </>

@@ -5,6 +5,7 @@ type Options = {
   value: string;
 }[];
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type DefaultType = {};
 
 export type ConfigurationKeys = 'title' | 'label' | 'tooltip' | 'pieSeries';
@@ -53,7 +54,7 @@ export type ValueType = {
     };
   };
   pieSeries?: {
-    radius:  number[];
+    radius: number[];
     itemStyle?: {
       borderRadius: number;
       borderColor: string;
@@ -78,10 +79,7 @@ export type Config<K extends ConfigurationKeys> = {
   uniqueConfig?: UniqueConfigType[K]; // 单独的配置,其他图表类型可能没有的配置项
   defaultValue?: DefaultType; // 默认值
   updateOptions: (value: ValueType[K], options: EChartsOption) => EChartsOption; // 更新options的方法
-  transform: (
-    itemsOptions: Partial<EChartsOption>,
-    option?: EChartsOption
-  ) => ValueType[K];
+  transform: (itemsOptions: Partial<EChartsOption>, option?: EChartsOption) => ValueType[K];
 };
 
 export type ConfigurationType = {

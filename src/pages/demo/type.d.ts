@@ -1,3 +1,1 @@
 export type ChartType = 'pie';
-
-

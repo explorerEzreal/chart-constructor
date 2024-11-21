@@ -2,12 +2,15 @@ import html2canvas from 'html2canvas';
 
 /**
  * 捕获给定 HTML 元素的截图并触发图像下载。
- * 
+ *
  * @param {HTMLElement} element - 要捕获的 HTML 元素。
  * @param {string} fileName - 下载的文件名。
  * @returns {Promise<void>} - 当截图成功拍摄并下载时，返回一个 Promise。
  */
-export const captureScreenshot = async (element: HTMLElement, fileName: string = 'screenshot.png'): Promise<void> => {
+export const captureScreenshot = async (
+  element: HTMLElement,
+  fileName: string = 'screenshot.png'
+): Promise<void> => {
   if (!(element instanceof HTMLElement)) {
     console.error('提供的元素无效，无法进行截图。');
     return;
@@ -30,7 +33,7 @@ export const captureScreenshot = async (element: HTMLElement, fileName: string =
  *  @param string text - 要捕获的 HTML 元素。
  */
 
-export const copyToClipboard = (text:string) => {
+export const copyToClipboard = (text: string) => {
   return navigator.clipboard
     .writeText(text)
     .then(() => {
@@ -40,4 +43,3 @@ export const copyToClipboard = (text:string) => {
       console.error('复制到剪贴板时出错', err);
     });
 };
-

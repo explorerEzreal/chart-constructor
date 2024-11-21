@@ -2,7 +2,7 @@ import { EChartsOption } from 'echarts';
 import { useEffect, useState } from 'react';
 
 export type ChartValue = {
-    options: EChartsOption
+  options: EChartsOption;
 };
 
 export type useChartsValue = {

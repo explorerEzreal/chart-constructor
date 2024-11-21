@@ -38,9 +38,7 @@ type StackItem = {
 };
 
 export const useInit = (type: ChartType) => {
-  const [configurations, initOptions] = useMemo<
-    [ConfigurationType, EChartsOption]
-  >(() => {
+  const [configurations, initOptions] = useMemo<[ConfigurationType, EChartsOption]>(() => {
     return [meats[type].configurations, meats[type].option];
   }, [type]);
 
@@ -52,14 +50,8 @@ export const useInit = (type: ChartType) => {
   const stackRef = useRef<Stack<StackItem>>(new Stack<StackItem>());
 
   const onBack = () => {
-    const {
-      options: currentOptions,
-      value,
-      field,
-    } = stackRef.current.peek() as StackItem;
-    const index = latestItemsListRef.current.findIndex(
-      (item) => item.key === field
-    );
+    const { options: currentOptions, value, field } = stackRef.current.peek() as StackItem;
+    const index = latestItemsListRef.current.findIndex((item) => item.key === field);
     const list = cloneDeep(latestItemsListRef.current);
     list[index].value = value;
 
@@ -71,9 +63,7 @@ export const useInit = (type: ChartType) => {
 
   const onItemChange = (e: EventMap[ItemKey]) => {
     const { field, payload } = e;
-    const index = latestItemsListRef.current.findIndex(
-      (item) => item.key === field
-    );
+    const index = latestItemsListRef.current.findIndex((item) => item.key === field);
     const list = cloneDeep(latestItemsListRef.current);
     list[index].value = payload;
     const updateFn = configurations[field].updateOptions;
