@@ -11,6 +11,7 @@ import {
   Space,
 } from 'antd';
 import { useSetState } from 'ahooks';
+import '../item.less'
 
 const radiusOptions = [
   {
@@ -119,15 +120,14 @@ export const component: React.FC<Props> = (props) => {
 
   return (
     <div>
-      <Row>
-        <p>饼图半径</p>
-        <Radius radius={radius} onChange={onFieldChange} />
-      </Row>
-      <Row>
-        <p>图形样式</p>
-        <Col>
-          <label>圆角大小</label>
+        <div className='item'>
+          <p  className='item_label'>饼图类型</p>
+          <Radius  className='item_view'   radius={radius} onChange={onFieldChange} />
+        </div>
+        <div className='item'>
+          <label  className='item_label'>圆角大小</label>
           <InputNumber
+          className='item_view' 
             onChange={(e) =>
               onFieldChange({
                 itemStyle: { ...(itemStyle || {}), borderRadius: e as number },
@@ -135,10 +135,11 @@ export const component: React.FC<Props> = (props) => {
             }
             value={itemStyle?.borderRadius}
           />
-        </Col>
-        <Col>
-          <label>描边线宽</label>
+        </div>
+        <div className='item'>
+          <label className='item_label'>描边线宽</label>
           <InputNumber
+            className='item_view'
             min={0}
             onChange={(e) =>
               onFieldChange({
@@ -147,10 +148,11 @@ export const component: React.FC<Props> = (props) => {
             }
             value={itemStyle?.borderWidth}
           />
-        </Col>
-        <Col>
-          <label>描边颜色</label>
+        </div>
+        <div className='item'>
+          <label className='item_label'>描边颜色</label>
           <ColorPicker
+            className='item_view'
             presets={[
               {
                 label: '纯白',
@@ -168,8 +170,7 @@ export const component: React.FC<Props> = (props) => {
               })
             }
           />
-        </Col>
-      </Row>
+        </div>
     </div>
   );
 };
