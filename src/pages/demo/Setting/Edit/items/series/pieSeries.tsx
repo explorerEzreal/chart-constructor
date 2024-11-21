@@ -1,17 +1,9 @@
 import React, { useEffect } from 'react';
 // import { Input, Select, ColorPicker, InputNumber, Switch } from 'antd';
 import { ItemProps } from '../../../../Hooks/useInit';
-import {
-  Col,
-  ColorPicker,
-  InputNumber,
-  Radio,
-  RadioChangeEvent,
-  Row,
-  Space,
-} from 'antd';
+import { ColorPicker, InputNumber, Radio, RadioChangeEvent, Space } from 'antd';
 import { useSetState } from 'ahooks';
-import '../item.less'
+import '../item.less';
 
 const radiusOptions = [
   {
@@ -63,11 +55,7 @@ function Radius(props: RadiusProps) {
 
   return (
     <div>
-      <Radio.Group
-        value={type}
-        options={radiusOptions}
-        onChange={onTypeChange}
-      />
+      <Radio.Group value={type} options={radiusOptions} onChange={onTypeChange} />
       {radius.length === 1 ? (
         <InputNumber
           max={100}
@@ -120,57 +108,57 @@ export const component: React.FC<Props> = (props) => {
 
   return (
     <div>
-        <div className='item'>
-          <p  className='item_label'>饼图类型</p>
-          <Radius  className='item_view'   radius={radius} onChange={onFieldChange} />
-        </div>
-        <div className='item'>
-          <label  className='item_label'>圆角大小</label>
-          <InputNumber
-          className='item_view' 
-            onChange={(e) =>
-              onFieldChange({
-                itemStyle: { ...(itemStyle || {}), borderRadius: e as number },
-              })
-            }
-            value={itemStyle?.borderRadius}
-          />
-        </div>
-        <div className='item'>
-          <label className='item_label'>描边线宽</label>
-          <InputNumber
-            className='item_view'
-            min={0}
-            onChange={(e) =>
-              onFieldChange({
-                itemStyle: { ...(itemStyle || {}), borderWidth: e as number },
-              })
-            }
-            value={itemStyle?.borderWidth}
-          />
-        </div>
-        <div className='item'>
-          <label className='item_label'>描边颜色</label>
-          <ColorPicker
-            className='item_view'
-            presets={[
-              {
-                label: '纯白',
-                colors: ['#fff'],
+      <div className="item">
+        <p className="item_label">饼图类型</p>
+        <Radius className="item_view" radius={radius} onChange={onFieldChange} />
+      </div>
+      <div className="item">
+        <label className="item_label">圆角大小</label>
+        <InputNumber
+          className="item_view"
+          onChange={(e) =>
+            onFieldChange({
+              itemStyle: { ...(itemStyle || {}), borderRadius: e as number },
+            })
+          }
+          value={itemStyle?.borderRadius}
+        />
+      </div>
+      <div className="item">
+        <label className="item_label">描边线宽</label>
+        <InputNumber
+          className="item_view"
+          min={0}
+          onChange={(e) =>
+            onFieldChange({
+              itemStyle: { ...(itemStyle || {}), borderWidth: e as number },
+            })
+          }
+          value={itemStyle?.borderWidth}
+        />
+      </div>
+      <div className="item">
+        <label className="item_label">描边颜色</label>
+        <ColorPicker
+          className="item_view"
+          presets={[
+            {
+              label: '纯白',
+              colors: ['#fff'],
+            },
+          ]}
+          format="hex"
+          value={itemStyle?.borderColor}
+          onChange={(e) =>
+            onFieldChange({
+              itemStyle: {
+                ...(itemStyle || {}),
+                borderColor: e.toHexString(),
               },
-            ]}
-            format='hex'
-            value={itemStyle?.borderColor}
-            onChange={(e) =>
-              onFieldChange({
-                itemStyle: {
-                  ...(itemStyle || {}),
-                  borderColor: e.toHexString(),
-                },
-              })
-            }
-          />
-        </div>
+            })
+          }
+        />
+      </div>
     </div>
   );
 };

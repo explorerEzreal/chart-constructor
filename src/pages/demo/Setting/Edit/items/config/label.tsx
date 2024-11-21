@@ -1,6 +1,4 @@
 import { ItemProps } from '@pages/demo/Hooks/useInit';
-import { EChartsOption } from 'echarts';
-import React from 'react';
 
 export type State = {
   name: string;
@@ -14,7 +12,7 @@ export type Event = {
   payload: ItemProps<'label'>['value'];
 };
 
-
-export const component = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+export const component = (props: any) => {
   return <div>label</div>;
 };

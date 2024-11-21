@@ -35,4 +35,4 @@ class Stack<T> {
   }
 }
 
-export default Stack
+export default Stack;

@@ -5,5 +5,5 @@ type SettingProps = {
   children: React.ReactNode;
 };
 export const Header: React.FC<SettingProps> = ({ children }) => {
-  return <div className='hearder_layout'>{children}</div>;
+  return <div className="hearder_layout">{children}</div>;
 };

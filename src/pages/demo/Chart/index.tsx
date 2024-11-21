@@ -46,11 +46,7 @@ export const ChartView: React.FC<SettingProps> = (props) => {
   const HeaderBtns = () => {
     return (
       <Flex gap={8} style={{ paddingLeft: 24 }}>
-        <Button
-          type='primary'
-          onClick={handle}
-          icon={<VerticalAlignBottomOutlined />}
-        >
+        <Button type="primary" onClick={handle} icon={<VerticalAlignBottomOutlined />}>
           下载示列
         </Button>
         <Button onClick={handleScreenshot}>截图分享</Button>
@@ -60,11 +56,11 @@ export const ChartView: React.FC<SettingProps> = (props) => {
   };
 
   return (
-    <div className='chart_view'>
+    <div className="chart_view">
       <Header>
         <HeaderBtns />
       </Header>
-      <div className='chart_wrapper' ref={chartRef}>
+      <div className="chart_wrapper" ref={chartRef}>
         <Chart chartType={chartType} options={options} />
       </div>
     </div>

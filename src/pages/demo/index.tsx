@@ -13,21 +13,12 @@ const Index = () => {
   const [sideWidth, setsideWidth] = useState('calc(25% - 7.5px)');
   const [chartType, setChartType] = useState<ChartType>('pie');
 
-  const {
-    itemsList: items,
-    options,
-    onBack,
-    backDisabled,
-    onReset,
-  } = useInit(chartType);
+  const { itemsList: items, options, onBack, backDisabled, onReset } = useInit(chartType);
 
   const leftRef = useRef(null);
   const size = useSize(leftRef);
 
-  const handleMouseDown = (e: {
-    preventDefault: () => void;
-    clientX: number;
-  }) => {
+  const handleMouseDown = (e: { preventDefault: () => void; clientX: number }) => {
     e.preventDefault();
 
     const startX = e.clientX;
@@ -44,16 +35,8 @@ const Index = () => {
     };
 
     const stopResize = () => {
-      document.documentElement.removeEventListener(
-        'mousemove',
-        doResize,
-        false
-      );
-      document.documentElement.removeEventListener(
-        'mouseup',
-        stopResize,
-        false
-      );
+      document.documentElement.removeEventListener('mousemove', doResize, false);
+      document.documentElement.removeEventListener('mouseup', stopResize, false);
     };
 
     document.documentElement.addEventListener('mousemove', doResize, false);

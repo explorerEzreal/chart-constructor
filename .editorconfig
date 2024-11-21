@@ -1,0 +1,12 @@
+; 表示此配置文件是顶级的，没有父配置文件（覆盖默认继承行为）
+root = true 
+
+[*]
+; 设置文件编码为 utf - 8
+charset = utf - 8 
+; 缩进风格为空格（而不是制表符）
+indent_style = space 
+; 缩进大小为 2 个空格
+indent_size = 2 
+; 文件的换行符格式为 LF（Line Feed，\n），常用于 Unix/Linux 系统和现代开发环境，保证跨平台一致性
+end_of_line = lf 
