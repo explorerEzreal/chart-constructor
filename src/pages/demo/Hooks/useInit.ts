@@ -91,12 +91,9 @@ export const useInit = (type: ChartType) => {
   };
 
   const onReset = () => {
-    const list = initValue();
-
+    initValue();
     stackRef.current.clear();
     setBackDisabled(true);
-    setOptions(initOptions);
-    setItemsList(list);
   };
 
   const initValue = () => {
