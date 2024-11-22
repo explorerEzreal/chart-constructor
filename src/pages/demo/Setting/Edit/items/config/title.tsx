@@ -48,11 +48,7 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
       </div>
       <div className="item">
         <label className="item_label">标题名称</label>
-        <Input
-          className="item_view"
-          onChange={(e) => onConfigItemChange(e.target.value, 'text')}
-          value={value.text}
-        />
+        <Input className="item_view" onChange={(e) => onConfigItemChange(e.target.value, 'text')} value={value.text} />
       </div>
       <div>
         {/* <label>标题样式</label> */}

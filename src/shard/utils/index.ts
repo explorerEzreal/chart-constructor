@@ -7,10 +7,7 @@ import html2canvas from 'html2canvas';
  * @param {string} fileName - 下载的文件名。
  * @returns {Promise<void>} - 当截图成功拍摄并下载时，返回一个 Promise。
  */
-export const captureScreenshot = async (
-  element: HTMLElement,
-  fileName: string = 'screenshot.png'
-): Promise<void> => {
+export const captureScreenshot = async (element: HTMLElement, fileName: string = 'screenshot.png'): Promise<void> => {
   if (!(element instanceof HTMLElement)) {
     console.error('提供的元素无效，无法进行截图。');
     return;

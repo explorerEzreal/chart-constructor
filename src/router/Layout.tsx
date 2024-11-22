@@ -32,10 +32,7 @@ const PageLayout = () => {
           background: '#fff',
         }}
       >
-        <img
-          className="app_logo"
-          src="https://echarts.apache.org/zh/images/logo.png?_v_=20240226"
-        />
+        <img className="app_logo" src="https://echarts.apache.org/zh/images/logo.png?_v_=20240226" />
         <Menu
           defaultSelectedKeys={defSelectKeys}
           onClick={hanldeNav}

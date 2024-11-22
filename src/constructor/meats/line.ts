@@ -1,11 +1,6 @@
 import { EChartsOption } from 'echarts';
 import { set } from 'lodash';
-import {
-  TITLE_LEFT_OPTIONS,
-  TITLE_FONT_WEIGHT,
-  TOOLTIP_TRIGGER_TYPE,
-  TOOLTIP_TRIGGER_ON_TYPE,
-} from '../settings/base';
+import { TITLE_LEFT_OPTIONS, TITLE_FONT_WEIGHT, TOOLTIP_TRIGGER_TYPE, TOOLTIP_TRIGGER_ON_TYPE } from '../settings/base';
 /** */
 import { ConfigurationType, ValueType } from './type';
 

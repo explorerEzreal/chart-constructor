@@ -44,36 +44,17 @@ const Index = () => {
   };
 
   return (
-    <div className='page_demo'>
-      <div
-        style={{ width: sideWidth }}
-        className='container'
-      >
-          <ViewSetting></ViewSetting>
+    <div className="page_demo">
+      <div style={{ width: sideWidth }} className="container">
+        <ViewSetting />
       </div>
 
-      <div
-        ref={leftRef}
-        style={{ width: contentWidth }}
-        className='container left_chartContainer'
-      >
-        <ChartView
-          chartType={chartType}
-          options={options}
-          onChartTypeChange={setChartType}
-        />
+      <div ref={leftRef} style={{ width: contentWidth }} className="container left_chartContainer">
+        <ChartView chartType={chartType} options={options} onChartTypeChange={setChartType} />
       </div>
-      <div className='handler' onMouseDown={handleMouseDown} />
-      <div
-        style={{ width: sideWidth }}
-        className='container rignt_settingContainer'
-      >
-        <Settings
-          items={items}
-          onBack={onBack}
-          backDisabled={backDisabled}
-          onReset={onReset}
-        />
+      <div className="handler" onMouseDown={handleMouseDown} />
+      <div style={{ width: sideWidth }} className="container rignt_settingContainer">
+        <Settings items={items} onBack={onBack} backDisabled={backDisabled} onReset={onReset} />
       </div>
     </div>
   );

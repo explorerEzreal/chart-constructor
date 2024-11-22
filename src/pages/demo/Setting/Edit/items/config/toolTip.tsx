@@ -39,11 +39,7 @@ export const component: React.FC<ItemProps<FieldKey>> = (props) => {
     <div>
       <div>
         <label htmlFor="show">显示/隐藏</label>
-        <Switch
-          id="show"
-          value={value.show}
-          onChange={(e) => onConfigItemChange(e, 'show')}
-        ></Switch>
+        <Switch id="show" value={value.show} onChange={(e) => onConfigItemChange(e, 'show')}></Switch>
       </div>
 
       {value.show && (
