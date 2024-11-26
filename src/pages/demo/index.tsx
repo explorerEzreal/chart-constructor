@@ -9,8 +9,8 @@ import { useInit } from './Hooks/useInit';
 import { ChartType } from '@/constructor/meats';
 
 const Index = () => {
-  const [contentWidth, setcontentWidth] = useState('calc(75% - 7.5px)');
-  const [sideWidth, setsideWidth] = useState('calc(25% - 7.5px)');
+  const [contentWidth, setContentWidth] = useState('calc(75% - 7.5px)');
+  const [sideWidth, setSideWidth] = useState('calc(25% - 7.5px)');
   const [chartType, setChartType] = useState<ChartType>('pie');
 
   const { itemsList: items, options, onBack, backDisabled, onReset } = useInit(chartType);
@@ -29,8 +29,8 @@ const Index = () => {
         const contentWidth = startWidth + event.clientX - startX;
         const sideWidth = window.innerWidth - contentWidth - contentWidth - 15;
 
-        setcontentWidth(`${contentWidth}px`);
-        setsideWidth(`${sideWidth}px`);
+        setContentWidth(`${contentWidth}px`);
+        setSideWidth(`${sideWidth}px`);
       }
     };
 
