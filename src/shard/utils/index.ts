@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import html2canvas from 'html2canvas';
 
 /**
@@ -31,12 +32,17 @@ export const captureScreenshot = async (element: HTMLElement, fileName: string =
  */
 
 export const copyToClipboard = (text: string) => {
+  if (!text || typeof text !== 'string') {
+    return null;
+  }
+
   return navigator.clipboard
     .writeText(text)
     .then(() => {
-      alert('已复制到剪贴板');
+      message.success('已复制到剪贴板');
     })
     .catch((err) => {
-      console.error('复制到剪贴板时出错', err);
+      console.error(err);
+      message.error('操作失败');
     });
 };
