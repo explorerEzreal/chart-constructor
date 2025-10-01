@@ -1,0 +1,67 @@
+# chart-constructor
+
+基于 React 与 ECharts 的图表构造器组件。传入配置项 JSON 即可渲染图表，组件自带操作栏与右侧配置抽屉，编辑过程实时预览，保存时通过回调输出最新配置项，可直接写入数据库。
+
+## 安装
+
+```bash
+pnpm add chart-constructor echarts antd react react-dom
+```
+
+`react`、`react-dom`、`echarts`、`antd` 为 peerDependencies，由使用方提供。
+
+## 使用
+
+```tsx
+import { CEchart } from 'chart-constructor';
+import type { ChartConfig } from 'chart-constructor';
+import 'chart-constructor/style.css';
+
+const config: ChartConfig = {
+  version: 1,
+  type: 'pie',
+  data: {
+    seriesName: '访问来源',
+    list: [
+      { name: '搜索引擎', value: 1048 },
+      { name: '直接访问', value: 735 },
+    ],
+  },
+  settings: {
+    title: {
+      show: true,
+      text: '网站访问来源',
+      subtext: '示例数据',
+      left: 'center',
+      textStyle: { color: '#333333', fontSize: 18, fontWeight: 'bolder' },
+    },
+    legend: { show: true, orient: 'vertical', left: 'left' },
+    label: { show: true, position: 'outside', formatter: '{b}: {d}%' },
+    tooltip: { show: true, formatter: '{b}: {c} ({d}%)' },
+  },
+};
+
+export const Demo = () => (
+  <div style={{ height: 420 }}>
+    <CEchart
+      value={config}
+      height="100%"
+      onChange={(next) => console.log('实时配置', next)}
+      onSave={(next) => saveToDatabase(next)}
+    />
+  </div>
+);
+```
+
+## 导出内容
+
+- 组件：`CEchart`（同时作为默认导出）
+- 工具函数：`buildOption`、`createDefaultConfig`、`normalizeConfig`、`CONFIG_VERSION`
+- 类型：`CEchartProps`、`ChartConfig`、`ChartData`、`ChartDataItem`、`ChartType`、`ToolItem`、`ToolContext`、`SettingChangeEvent`
+
+## 发布前检查
+
+1. `pnpm build` 产出 `dist/index.js`、`dist/index.cjs`、`dist/index.d.ts`、`dist/style.css`
+2. `pnpm typecheck` 与 `pnpm lint` 全量通过
+3. 在 `apps/playground` 使用构建产物验证渲染、编辑、复制与导出
+4. 执行 `pnpm changeset` 记录变更，再执行 `pnpm version-packages`

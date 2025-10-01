@@ -1,0 +1,36 @@
+.page_home {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+
+  .home_content {
+    position: relative;
+    margin: 16vh auto 0;
+
+    h1 {
+      margin: 0;
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    p {
+      margin-top: 12px;
+      font-size: 20px;
+      color: #1d2b5a;
+    }
+
+    .home_logo {
+      position: absolute;
+      top: 0;
+      right: 120px;
+      width: 240px;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .page_home .home_content {
+    width: 1170px;
+  }
+}

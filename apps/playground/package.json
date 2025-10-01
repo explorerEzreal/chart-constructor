@@ -1,0 +1,35 @@
+{
+  "name": "@chart-constructor/playground",
+  "private": true,
+  "version": "0.0.0",
+  "description": "chart-constructor 本地调试站",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "antd": "^5.19.1",
+    "chart-constructor": "workspace:*",
+    "echarts": "^5.5.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.24.1"
+  },
+  "devDependencies": {
+    "@chart-constructor/eslint-config": "workspace:*",
+    "@chart-constructor/tsconfig": "workspace:*",
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.0",
+    "less": "^4.2.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1"
+  }
+}

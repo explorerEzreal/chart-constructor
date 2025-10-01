@@ -1,0 +1,12 @@
+{
+  "extends": "@chart-constructor/tsconfig/react-app.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "chart-constructor": ["../../packages/chart-constructor/src/index.ts"]
+    },
+    "types": ["node", "vite/client"]
+  },
+  "include": ["src", "vite.config.ts"]
+}
