@@ -1,22 +1,37 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { ECharts, EChartsOption } from 'echarts';
 
-/** 图表类型，v1 仅内置饼图 */
-export type ChartType = 'pie';
+/** 图表类型 */
+export type ChartType = 'pie' | 'bar';
 
-/** 数据项 */
+/** 饼图数据项 */
 export type ChartDataItem = {
   name: string;
   value: number;
 };
 
-/** 数据块 */
-export type ChartData = {
+/** 饼图数据块 */
+export type PieChartData = {
   seriesName: string;
   list: ChartDataItem[];
 };
 
-/** 标题配置 */
+/** 柱状图系列数据 */
+export type BarChartSeries = {
+  name: string;
+  data: number[];
+};
+
+/** 柱状图数据块 */
+export type BarChartData = {
+  categories: string[];
+  series: BarChartSeries[];
+};
+
+/** 数据块，按图表类型区分结构 */
+export type ChartData = PieChartData | BarChartData;
+
+/** 标题配置，各图表类型共用 */
 export type TitleSetting = {
   show: boolean;
   text: string;
@@ -29,44 +44,116 @@ export type TitleSetting = {
   };
 };
 
-/** 图例配置 */
+/** 图例配置，各图表类型共用 */
 export type LegendSetting = {
   show: boolean;
   orient: 'horizontal' | 'vertical';
   left: 'left' | 'center' | 'right';
 };
 
-/** 数值标签配置 */
-export type LabelSetting = {
+/** 饼图数值标签配置 */
+export type PieLabelSetting = {
   show: boolean;
   position: 'outside' | 'inside';
   formatter: string;
 };
 
-/** 提示框配置 */
-export type TooltipSetting = {
+/** 柱状图数值标签配置 */
+export type BarLabelSetting = {
+  show: boolean;
+  position: 'top' | 'inside' | 'insideTop';
+  formatter: string;
+};
+
+/** 数值标签配置 */
+export type LabelSetting = PieLabelSetting | BarLabelSetting;
+
+/** 饼图提示框配置 */
+export type PieTooltipSetting = {
   show: boolean;
   formatter: string;
 };
 
-/** 图表配置项集合 */
-export type ChartSettings = {
+/** 柱状图提示框配置 */
+export type BarTooltipSetting = {
+  show: boolean;
+  trigger: 'item' | 'axis';
+  formatter: string;
+};
+
+/** 提示框配置 */
+export type TooltipSetting = PieTooltipSetting | BarTooltipSetting;
+
+/** X 轴配置 */
+export type XAxisSetting = {
+  show: boolean;
+  name: string;
+  labelRotate: number;
+};
+
+/** Y 轴配置 */
+export type YAxisSetting = {
+  show: boolean;
+  name: string;
+  showSplitLine: boolean;
+};
+
+/** 柱状图系列样式配置 */
+export type SeriesSetting = {
+  barWidth: number;
+  borderRadius: number;
+  stack: boolean;
+};
+
+/** 饼图配置项集合 */
+export type PieChartSettings = {
   title: TitleSetting;
   legend: LegendSetting;
-  label: LabelSetting;
-  tooltip: TooltipSetting;
+  label: PieLabelSetting;
+  tooltip: PieTooltipSetting;
+};
+
+/** 柱状图配置项集合 */
+export type BarChartSettings = {
+  title: TitleSetting;
+  legend: LegendSetting;
+  label: BarLabelSetting;
+  tooltip: BarTooltipSetting;
+  xAxis: XAxisSetting;
+  yAxis: YAxisSetting;
+  series: SeriesSetting;
+};
+
+/** 图表配置项集合，按图表类型区分 */
+export type ChartSettings = PieChartSettings | BarChartSettings;
+
+/** 饼图配置项 */
+export type PieChartConfig = {
+  version: 1;
+  type: 'pie';
+  data: PieChartData;
+  settings: PieChartSettings;
+};
+
+/** 柱状图配置项 */
+export type BarChartConfig = {
+  version: 1;
+  type: 'bar';
+  data: BarChartData;
+  settings: BarChartSettings;
 };
 
 /** 图表配置项，可直接序列化后存入数据库 */
-export type ChartConfig = {
-  version: 1;
-  type: ChartType;
-  data: ChartData;
-  settings: ChartSettings;
+export type ChartConfig = PieChartConfig | BarChartConfig;
+
+/** 图表类型与配置项的映射，供元数据与默认配置做类型关联 */
+export type ChartConfigMap = {
+  pie: PieChartConfig;
+  bar: BarChartConfig;
 };
 
 /** 表单可编辑的配置块 */
-export type SettingFieldKey = keyof ChartSettings;
+export type SettingFieldKey = keyof PieChartSettings | keyof BarChartSettings;
 
 /** 抽屉中可编辑的表单块：配置块 + 数据块 */
 export type SettingItemKey = SettingFieldKey | 'data';
@@ -84,6 +171,8 @@ export type SettingChangeEvent = SettingFieldEvent & {
 
 /** 表单项组件统一 props */
 export type SettingItemProps = {
+  /** 当前图表类型，表单据此渲染类型差异字段 */
+  chartType: ChartType;
   value: any;
   onChange: (event: SettingFieldEvent) => void;
 };

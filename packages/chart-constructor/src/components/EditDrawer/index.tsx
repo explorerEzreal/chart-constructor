@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { Button, Collapse, Drawer, Space } from 'antd';
 import { settingItems } from '../../settings/items';
+import { getSettingValue } from '../../utils/config';
 import type { ChartConfig, SettingChangeEvent, SettingItemKey } from '../../types';
 
 export type EditDrawerProps = {
@@ -26,13 +27,16 @@ export const EditDrawer: FC<EditDrawerProps> = ({
   const items = settingKeys.map((key) => {
     const settingItem = settingItems[key];
     const SettingComponent = settingItem.component;
-    const value = key === 'data' ? config.data : config.settings[key];
 
     return {
       key,
       label: settingItem.title,
       children: (
-        <SettingComponent value={value} onChange={(event) => onChange({ field: key, ...event })} />
+        <SettingComponent
+          chartType={config.type}
+          value={getSettingValue(config, key)}
+          onChange={(event) => onChange({ field: key, ...event })}
+        />
       ),
     };
   });
@@ -42,7 +46,7 @@ export const EditDrawer: FC<EditDrawerProps> = ({
       open={open}
       title="编辑图表配置"
       placement="right"
-      width={420}
+      width={480}
       onClose={onCancel}
       footer={
         <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>

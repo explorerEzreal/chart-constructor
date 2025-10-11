@@ -1,7 +1,9 @@
 import type { FC } from 'react';
+import { XAxisSettingItem, YAxisSettingItem } from './axis';
 import DataSettingItem from './data';
 import LabelSettingItem from './label';
 import LegendSettingItem from './legend';
+import SeriesSettingItem from './series';
 import TitleSettingItem from './title';
 import TooltipSettingItem from './tooltip';
 import type { SettingItemKey, SettingItemProps } from '../../types';
@@ -19,4 +21,7 @@ export const settingItems: Record<SettingItemKey, SettingItemDefinition> = {
   legend: { title: '图例', component: LegendSettingItem },
   label: { title: '数值标签', component: LabelSettingItem },
   tooltip: { title: '提示框', component: TooltipSettingItem },
+  xAxis: { title: 'X 轴', component: XAxisSettingItem },
+  yAxis: { title: 'Y 轴', component: YAxisSettingItem },
+  series: { title: '柱状样式', component: SeriesSettingItem },
 };

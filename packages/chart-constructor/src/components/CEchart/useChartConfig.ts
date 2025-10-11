@@ -23,14 +23,15 @@ export const useChartConfig = ({ value, defaultValue, onChange }: UseChartConfig
   const configRef = useLatest(config);
   const onChangeRef = useLatest(onChange);
 
-  // 更新配置并输出变更
+  // 更新配置并输出变更；同步刷新引用，保证同一事件内连续变更依次叠加
   const commit = useCallback(
     (next: ChartConfig) => {
+      configRef.current = next;
       setConfig(next);
       lastEmittedRef.current = serializeConfig(next);
       onChangeRef.current?.(next);
     },
-    [onChangeRef]
+    [configRef, onChangeRef]
   );
 
   // 表单项变更（抽屉内实时编辑）

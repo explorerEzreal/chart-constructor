@@ -61,8 +61,31 @@ export const Demo = () => (
 
 ### 配置项结构
 
+内置图表类型：`pie`（饼图）、`bar`（柱状图）。切换类型时用 `createDefaultConfig(type)` 生成对应默认配置。
+
 ```ts
-type ChartConfig = {
+type ChartConfig = PieChartConfig | BarChartConfig;
+
+/** 各图表类型共用的标题、图例配置 */
+type TitleSetting = {
+  show: boolean;
+  text: string;
+  subtext: string;
+  left: 'left' | 'center' | 'right';
+  textStyle: {
+    color: string;
+    fontSize: number;
+    fontWeight: 'normal' | 'bold' | 'bolder' | 'lighter';
+  };
+};
+type LegendSetting = {
+  show: boolean;
+  orient: 'horizontal' | 'vertical';
+  left: 'left' | 'center' | 'right';
+};
+
+/** 饼图 */
+type PieChartConfig = {
   version: 1;
   type: 'pie';
   data: {
@@ -70,20 +93,29 @@ type ChartConfig = {
     list: Array<{ name: string; value: number }>;
   };
   settings: {
-    title: {
-      show: boolean;
-      text: string;
-      subtext: string;
-      left: 'left' | 'center' | 'right';
-      textStyle: {
-        color: string;
-        fontSize: number;
-        fontWeight: 'normal' | 'bold' | 'bolder' | 'lighter';
-      };
-    };
-    legend: { show: boolean; orient: 'horizontal' | 'vertical'; left: 'left' | 'center' | 'right' };
+    title: TitleSetting;
+    legend: LegendSetting;
     label: { show: boolean; position: 'outside' | 'inside'; formatter: string };
     tooltip: { show: boolean; formatter: string };
+  };
+};
+
+/** 柱状图 */
+type BarChartConfig = {
+  version: 1;
+  type: 'bar';
+  data: {
+    categories: string[];
+    series: Array<{ name: string; data: number[] }>;
+  };
+  settings: {
+    title: TitleSetting;
+    legend: LegendSetting;
+    label: { show: boolean; position: 'top' | 'inside' | 'insideTop'; formatter: string };
+    tooltip: { show: boolean; trigger: 'item' | 'axis'; formatter: string };
+    xAxis: { show: boolean; name: string; labelRotate: number };
+    yAxis: { show: boolean; name: string; showSplitLine: boolean };
+    series: { barWidth: number; borderRadius: number; stack: boolean };
   };
 };
 ```
@@ -108,7 +140,7 @@ type ChartConfig = {
 
 ### 导出内容
 
-组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、以及 `CEchartProps`、`ChartConfig`、`ToolItem` 等类型。
+组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartType`、`ToolItem` 等类型。
 
 ## 依赖约定
 

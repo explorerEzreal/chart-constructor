@@ -3,14 +3,22 @@ import { Input, Select, Switch } from 'antd';
 import { Field } from '../components';
 import type { SettingItemProps } from '../../types';
 
-const POSITION_OPTIONS = [
+const PIE_POSITION_OPTIONS = [
   { label: '外部', value: 'outside' },
   { label: '内部', value: 'inside' },
 ];
 
-/** 数值标签配置表单 */
-const LabelSettingItem: FC<SettingItemProps> = ({ value, onChange }) => {
+const BAR_POSITION_OPTIONS = [
+  { label: '顶部', value: 'top' },
+  { label: '内部', value: 'inside' },
+  { label: '内部顶部', value: 'insideTop' },
+];
+
+/** 数值标签配置表单，标签位置按图表类型取不同候选项 */
+const LabelSettingItem: FC<SettingItemProps> = ({ chartType, value, onChange }) => {
   const update = (name: string, payload: unknown) => onChange({ name, payload });
+  const positionOptions = chartType === 'bar' ? BAR_POSITION_OPTIONS : PIE_POSITION_OPTIONS;
+  const formatterPlaceholder = chartType === 'bar' ? '{c}' : '{b}: {d}%';
 
   return (
     <>
@@ -20,7 +28,7 @@ const LabelSettingItem: FC<SettingItemProps> = ({ value, onChange }) => {
       <Field label="标签位置">
         <Select
           style={{ width: '100%' }}
-          options={POSITION_OPTIONS}
+          options={positionOptions}
           value={value.position}
           onChange={(position) => update('position', position)}
         />
@@ -28,7 +36,7 @@ const LabelSettingItem: FC<SettingItemProps> = ({ value, onChange }) => {
       <Field label="标签格式">
         <Input
           value={value.formatter}
-          placeholder="{b}: {d}%"
+          placeholder={formatterPlaceholder}
           onChange={(event) => update('formatter', event.target.value)}
         />
       </Field>

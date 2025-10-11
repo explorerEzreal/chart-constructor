@@ -1,5 +1,5 @@
 import { getChartMeta } from '../metas';
-import type { ChartConfig, ChartType, SettingChangeEvent } from '../types';
+import type { ChartConfig, ChartType, SettingChangeEvent, SettingItemKey } from '../types';
 import { deepClone, deepMerge, setByPath } from './object';
 
 /** 配置项版本号 */
@@ -17,12 +17,14 @@ export const normalizeConfig = (
   config?: Partial<ChartConfig> | null,
   type: ChartType = 'pie'
 ): ChartConfig => {
-  const targetType = (config?.type ?? type) as ChartType;
+  const targetType = config?.type ?? type;
   const merged = deepMerge(createDefaultConfig(targetType), deepClone(config ?? {}));
-  merged.version = CONFIG_VERSION;
-  merged.type = targetType;
-  return merged;
+  return Object.assign(merged, { version: CONFIG_VERSION, type: targetType });
 };
+
+/** 读取抽屉中某个表单块对应的配置值，屏蔽不同图表类型的结构差异 */
+export const getSettingValue = (config: ChartConfig, key: SettingItemKey): unknown =>
+  key === 'data' ? config.data : (config.settings as Record<string, unknown>)[key];
 
 /** 应用一次表单项变更，返回新的配置项 */
 export const applySettingChange = (

@@ -10,6 +10,8 @@ pnpm add chart-constructor echarts antd react react-dom
 
 `react`、`react-dom`、`echarts`、`antd` 为 peerDependencies，由使用方提供。
 
+内置图表类型：`pie`（饼图）、`bar`（柱状图），用 `createDefaultConfig(type)` 生成默认配置。
+
 ## 使用
 
 ```tsx
@@ -53,11 +55,28 @@ export const Demo = () => (
 );
 ```
 
+### 柱状图
+
+```tsx
+import { CEchart, createDefaultConfig } from 'chart-constructor';
+import 'chart-constructor/style.css';
+
+const config = createDefaultConfig('bar');
+
+export const Demo = () => (
+  <div style={{ height: 420 }}>
+    <CEchart value={config} height="100%" onSave={(next) => saveToDatabase(next)} />
+  </div>
+);
+```
+
+柱状图数据为 `{ categories, series: [{ name, data }] }`，配置项额外包含 `xAxis`、`yAxis`、`series` 三个表单块。
+
 ## 导出内容
 
 - 组件：`CEchart`（同时作为默认导出）
 - 工具函数：`buildOption`、`createDefaultConfig`、`normalizeConfig`、`CONFIG_VERSION`
-- 类型：`CEchartProps`、`ChartConfig`、`ChartData`、`ChartDataItem`、`ChartType`、`ToolItem`、`ToolContext`、`SettingChangeEvent`
+- 类型：`CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartData`、`PieChartData`、`BarChartData`、`ChartDataItem`、`BarChartSeries`、`ChartType`、`ToolItem`、`ToolContext`、`SettingChangeEvent`、`SettingItemKey`
 
 ## 发布前检查
 

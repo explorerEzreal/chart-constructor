@@ -4,6 +4,7 @@ export {
   applySettingChange,
   cloneConfig,
   createDefaultConfig,
+  getSettingValue,
   normalizeConfig,
   serializeConfig,
 } from './config';

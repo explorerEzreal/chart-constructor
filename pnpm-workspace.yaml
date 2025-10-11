@@ -3,7 +3,5 @@ packages:
   - 'apps/*'
 
 # 允许 esbuild 执行安装脚本（vite 依赖其平台二进制）
-onlyBuiltDependencies:
-  - esbuild
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true

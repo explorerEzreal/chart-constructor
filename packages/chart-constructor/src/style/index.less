@@ -51,5 +51,27 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 8px;
+
+    // 数值输入与删除按钮不参与压缩，避免被挤到不可读
+    .ant-input-number,
+    .ant-btn {
+      flex: 0 0 auto;
+    }
+  }
+}
+
+// 柱状图二维数据表，系列较多时横向滚动
+.cc-data-matrix {
+  overflow-x: auto;
+
+  .cc-data-list__row {
+    flex-wrap: nowrap;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .ant-input {
+    flex: 0 0 120px;
+    min-width: 120px;
   }
 }

@@ -1,16 +1,27 @@
-import { useCallback, useMemo, useState } from 'react';
-import { message, Typography } from 'antd';
+import { useCallback, useState } from 'react';
+import { message, Segmented, Typography } from 'antd';
 import { CEchart, createDefaultConfig } from 'chart-constructor';
-import type { ChartConfig } from 'chart-constructor';
+import type { ChartConfig, ChartType } from 'chart-constructor';
 import './index.less';
 
 const { Paragraph, Text } = Typography;
 
+const TYPE_OPTIONS = [
+  { label: '饼图', value: 'pie' },
+  { label: '柱状图', value: 'bar' },
+];
+
 /** 示例页：演示配置项回显、实时编辑与保存回调 */
 const Index = () => {
-  const initialConfig = useMemo(() => createDefaultConfig('pie'), []);
-  const [liveConfig, setLiveConfig] = useState<ChartConfig>(initialConfig);
+  const [chartType, setChartType] = useState<ChartType>('pie');
+  const [liveConfig, setLiveConfig] = useState<ChartConfig>(() => createDefaultConfig('pie'));
   const [savedAt, setSavedAt] = useState('');
+
+  // 切换图表类型时按目标类型重建默认配置
+  const handleTypeChange = useCallback((type: ChartType) => {
+    setChartType(type);
+    setLiveConfig(createDefaultConfig(type));
+  }, []);
 
   const handleChange = useCallback((config: ChartConfig) => {
     setLiveConfig(config);
@@ -26,13 +37,19 @@ const Index = () => {
     <div className="page_demo">
       <div className="demo_chart">
         <CEchart
-          value={initialConfig}
+          value={liveConfig}
           height="100%"
           onChange={handleChange}
           onSave={handleSave}
         />
       </div>
       <aside className="demo_panel">
+        <Segmented
+          block
+          value={chartType}
+          options={TYPE_OPTIONS}
+          onChange={(value) => handleTypeChange(value as ChartType)}
+        />
         <Paragraph className="demo_panel__tip">
           点击操作栏“编辑”打开配置抽屉，表单变更会实时渲染；点击“保存”后 `onSave` 输出可直接入库的配置项
           JSON。

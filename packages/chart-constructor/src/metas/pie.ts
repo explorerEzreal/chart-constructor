@@ -1,9 +1,9 @@
 import type { EChartsOption } from 'echarts';
-import type { ChartConfig } from '../types';
+import type { PieChartConfig } from '../types';
 import type { ChartMeta } from './type';
 
 /** 饼图默认配置项 */
-export const defaultConfig: ChartConfig = {
+export const defaultConfig: PieChartConfig = {
   version: 1,
   type: 'pie',
   data: {
@@ -46,7 +46,7 @@ export const defaultConfig: ChartConfig = {
 };
 
 /** 由配置项派生饼图 ECharts option */
-export const buildOption = (config: ChartConfig): EChartsOption => {
+export const buildOption = (config: PieChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip } = settings;
 
@@ -99,7 +99,7 @@ export const buildOption = (config: ChartConfig): EChartsOption => {
 };
 
 /** 饼图元数据 */
-export const pieMeta: ChartMeta = {
+export const pieMeta: ChartMeta<'pie'> = {
   type: 'pie',
   name: '饼图',
   defaultConfig,
