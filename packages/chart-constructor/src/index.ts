@@ -1,8 +1,10 @@
 import './style/index.less';
 
 export { CEchart } from './components';
+export { getChartMeta, listChartMetas } from './metas';
 export { buildOption } from './utils/buildOption';
 export { CONFIG_VERSION, createDefaultConfig, normalizeConfig } from './utils/config';
+export type { ChartMeta } from './metas';
 export type {
   BarChartConfig,
   BarChartData,

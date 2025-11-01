@@ -138,9 +138,11 @@ type BarChartConfig = {
 
 内置工具项：`edit`、`copyConfig`、`copyOption`、`downloadPng`、`screenshot`、`reset`。
 
+自定义工具项结构为 `{ key, label, icon?, tooltip?, onClick? }`：`label` 为按钮文字，`tooltip` 为可选的悬停提示，仅在显式传入时展示，适合把工具栏做成纯图标按钮的场景。
+
 ### 导出内容
 
-组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartType`、`ToolItem` 等类型。
+组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`，以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartType`、`ChartMeta`、`ToolItem` 等类型。
 
 ## 依赖约定
 

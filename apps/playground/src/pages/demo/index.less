@@ -1,44 +1,69 @@
+// 示例页：左侧图表类型列表，右侧所选类型的示例画廊
 .page_demo {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: 200px minmax(0, 1fr);
   gap: 16px;
   height: 100%;
+  min-height: 0;
 
-  .demo_chart,
-  .demo_panel {
+  .demo_side {
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 12px;
+    overflow: auto;
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
   }
 
-  .demo_chart {
+  .demo_main {
     min-width: 0;
-    padding: 12px;
+    min-height: 0;
+    overflow: auto;
   }
 
-  .demo_panel {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 0;
-    padding: 12px 16px;
+  // 宽屏一行四个，窄屏依次降级为三列、两列
+  .demo_grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    padding-bottom: 16px;
 
-    &__tip {
-      margin-bottom: 0;
-      font-size: 13px;
+    @media (max-width: 1400px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    &__json {
-      flex: 1;
-      min-height: 0;
-      margin: 0;
-      padding: 12px;
-      overflow: auto;
-      font-size: 12px;
-      line-height: 1.6;
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .demo_card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      border-color: #d6e4ff;
+      box-shadow: 0 4px 16px rgba(22, 119, 255, 0.12);
+    }
+
+    &__title {
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.75);
+      text-align: center;
       background: #fafafa;
-      border-radius: 6px;
+      border-top: 1px solid #f5f5f5;
     }
   }
 }

@@ -196,6 +196,8 @@ export type ToolItem = {
   key: string;
   label: string;
   icon?: ReactNode;
+  /** 悬停提示文案，仅在传入时展示；图标化工具栏用它补全工具名称 */
+  tooltip?: string;
   onClick?: (ctx: ToolContext) => void;
 };
 

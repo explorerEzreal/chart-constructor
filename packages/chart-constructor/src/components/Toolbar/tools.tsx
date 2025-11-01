@@ -73,6 +73,7 @@ export const resolveTools = (
   return [...merged, ...extraTools].map((item) => ({
     key: item.key,
     label: item.label,
+    tooltip: item.tooltip,
     icon: item.icon,
     onClick: item.onClick ? () => item.onClick?.(ctx) : undefined,
   }));

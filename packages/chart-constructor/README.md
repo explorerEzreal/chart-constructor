@@ -72,11 +72,34 @@ export const Demo = () => (
 
 柱状图数据为 `{ categories, series: [{ name, data }] }`，配置项额外包含 `xAxis`、`yAxis`、`series` 三个表单块。
 
+### 枚举图表类型
+
+```tsx
+import { listChartMetas } from 'chart-constructor';
+
+// 按内置注册顺序返回全部图表元数据，可直接渲染类型清单
+const metas = listChartMetas().map((meta) => ({ type: meta.type, name: meta.name }));
+```
+
+### 自定义工具项
+
+```tsx
+import { CEchart } from 'chart-constructor';
+import type { ToolItem } from 'chart-constructor';
+
+// 清空 label 让按钮只显示图标，再用 tooltip 补回工具名称
+const iconOnlyTools: ToolItem[] = [
+  { key: 'downloadPng', label: '', tooltip: '下载图片' },
+];
+```
+
+`ToolItem` 结构为 `{ key, label, icon?, tooltip?, onClick? }`，`tooltip` 为可选的悬停提示，仅在传入时展示。
+
 ## 导出内容
 
 - 组件：`CEchart`（同时作为默认导出）
-- 工具函数：`buildOption`、`createDefaultConfig`、`normalizeConfig`、`CONFIG_VERSION`
-- 类型：`CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartData`、`PieChartData`、`BarChartData`、`ChartDataItem`、`BarChartSeries`、`ChartType`、`ToolItem`、`ToolContext`、`SettingChangeEvent`、`SettingItemKey`
+- 工具函数：`buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`CONFIG_VERSION`
+- 类型：`CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartData`、`PieChartData`、`BarChartData`、`ChartDataItem`、`BarChartSeries`、`ChartType`、`ChartMeta`、`ToolItem`、`ToolContext`、`SettingChangeEvent`、`SettingItemKey`
 
 ## 发布前检查
 
