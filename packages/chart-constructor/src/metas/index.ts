@@ -12,15 +12,13 @@ export const chartMetas: {
   bar: barMeta,
 };
 
-/** 图表类型展示顺序，新增类型时需与注册表同步登记 */
-const chartMetaList = [pieMeta, barMeta] as const;
-
 /**
  * 按注册顺序返回全部图表元数据，供外部遍历渲染类型清单
+ * 字面量声明顺序即返回顺序，新增类型只需在注册表登记
  * ChartMeta<'pie'> 因 buildOption 参数逆变无法直接赋给默认泛型，此处统一断言
  */
 export const listChartMetas = (): ChartMeta[] =>
-  [...chartMetaList] as unknown as ChartMeta[];
+  Object.values(chartMetas) as unknown as ChartMeta[];
 
 /** 获取指定图表类型的元数据 */
 export const getChartMeta = <T extends ChartType>(type: T): ChartMeta<T> => {

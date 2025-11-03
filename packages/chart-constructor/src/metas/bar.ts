@@ -1,6 +1,14 @@
 import type { EChartsOption } from 'echarts';
 import type { BarChartConfig } from '../types';
 import type { ChartMeta } from './type';
+import {
+  buildLabelOption,
+  buildLegendOption,
+  buildTitleOption,
+  buildTooltipOption,
+  resolveLegendTop,
+} from './builders';
+import type { SettingBuildContext } from './builders';
 
 /** 柱状图默认配置项 */
 export const defaultConfig: BarChartConfig = {
@@ -58,42 +66,27 @@ export const defaultConfig: BarChartConfig = {
   },
 };
 
+/** 图例在标题下方时绘制区再下移，否则按标题是否展示取固定留白 */
+const resolveGridTop = (context: SettingBuildContext): number =>
+  context.settings.legend.show
+    ? resolveLegendTop(context) + 48
+    : context.settings.title.show
+      ? 64
+      : 24;
+
 /** 由配置项派生柱状图 ECharts option */
 export const buildOption = (config: BarChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip, xAxis, yAxis, series } = settings;
-  // 标题与图例自上而下排布，据此为绘制区预留顶部空间
-  const legendTop = title.show ? 56 : 12;
-  const gridTop = legend.show ? legendTop + 48 : title.show ? 64 : 24;
+  // 标题与图例自上而下排布，柱状图图例随标题下移
+  const context: SettingBuildContext = { type: 'bar', settings, legendBelowTitle: true };
 
   return {
-    title: title.show
-      ? {
-          text: title.text,
-          subtext: title.subtext,
-          left: title.left,
-          textStyle: {
-            color: title.textStyle.color,
-            fontSize: title.textStyle.fontSize,
-            fontWeight: title.textStyle.fontWeight,
-          },
-        }
-      : { show: false },
-    tooltip: tooltip.show
-      ? {
-          trigger: tooltip.trigger,
-          formatter: tooltip.formatter,
-        }
-      : { show: false },
-    legend: legend.show
-      ? {
-          orient: legend.orient,
-          left: legend.left,
-          top: legendTop,
-        }
-      : { show: false },
+    title: buildTitleOption(title),
+    tooltip: buildTooltipOption(tooltip),
+    legend: buildLegendOption(legend, context),
     grid: {
-      top: gridTop,
+      top: resolveGridTop(context),
       left: 48,
       right: 32,
       bottom: 32,
@@ -125,11 +118,7 @@ export const buildOption = (config: BarChartConfig): EChartsOption => {
       itemStyle: {
         borderRadius: series.borderRadius,
       },
-      label: {
-        show: label.show,
-        position: label.position,
-        formatter: label.formatter,
-      },
+      label: buildLabelOption(label),
     })),
   };
 };

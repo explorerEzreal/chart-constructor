@@ -1,6 +1,13 @@
 import type { EChartsOption } from 'echarts';
 import type { PieChartConfig } from '../types';
 import type { ChartMeta } from './type';
+import {
+  buildLabelOption,
+  buildLegendOption,
+  buildTitleOption,
+  buildTooltipOption,
+} from './builders';
+import type { SettingBuildContext } from './builders';
 
 /** 饼图默认配置项 */
 export const defaultConfig: PieChartConfig = {
@@ -49,43 +56,21 @@ export const defaultConfig: PieChartConfig = {
 export const buildOption = (config: PieChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip } = settings;
+  // 饼图图例贴顶排布，不参与标题占位计算
+  const context: SettingBuildContext = { type: 'pie', settings, legendBelowTitle: false };
 
   return {
-    title: title.show
-      ? {
-          text: title.text,
-          subtext: title.subtext,
-          left: title.left,
-          textStyle: {
-            color: title.textStyle.color,
-            fontSize: title.textStyle.fontSize,
-            fontWeight: title.textStyle.fontWeight,
-          },
-        }
-      : { show: false },
-    tooltip: tooltip.show
-      ? {
-          trigger: 'item',
-          formatter: tooltip.formatter,
-        }
-      : { show: false },
-    legend: legend.show
-      ? {
-          orient: legend.orient,
-          left: legend.left,
-        }
-      : { show: false },
+    title: buildTitleOption(title),
+    // 饼图无触发方式配置项，由提示框片段按配置结构回落为数据项触发
+    tooltip: buildTooltipOption(tooltip),
+    legend: buildLegendOption(legend, context),
     series: [
       {
         name: data.seriesName,
         type: 'pie',
         radius: '60%',
         data: data.list,
-        label: {
-          show: label.show,
-          position: label.position,
-          formatter: label.formatter,
-        },
+        label: buildLabelOption(label),
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
