@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
-import { message } from 'antd';
+import { Segmented, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
-import { listChartMetas } from 'chart-constructor';
+import { listChartMetas, setDefaultTheme } from 'chart-constructor';
 import type { ChartConfig, ChartType } from 'chart-constructor';
 import { ChartTypePicker } from '@/components';
 import ExampleCard from './ExampleCard';
@@ -12,6 +12,12 @@ import './index.less';
 const resolveChartType = (value: string | null, types: ChartType[]): ChartType =>
   types.includes(value as ChartType) ? (value as ChartType) : types[0];
 
+/** 主题切换项：默认与 ECharts 5 内置深色主题 */
+const THEME_OPTIONS = [
+  { label: '默认主题', value: 'default' },
+  { label: '深色主题', value: 'dark' },
+];
+
 /** 示例页：左侧图表类型列表，右侧所选类型的示例画廊，宽屏一行四个 */
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,6 +27,8 @@ const Index = () => {
   const examples = chartExamples[chartType];
   // 卡片配置按示例 id 常驻，切换类型后返回仍保留编辑结果
   const [configs, setConfigs] = useState<Record<string, ChartConfig>>(createExampleConfigMap);
+  // 全局默认主题：切换后所有未显式传 theme 的图表同步重建
+  const [theme, setTheme] = useState('default');
 
   const handleTypeChange = useCallback(
     (type: ChartType) => {
@@ -42,12 +50,22 @@ const Index = () => {
     setConfigs((prev) => ({ ...prev, [id]: getExampleInitialConfig(id) }));
   }, []);
 
+  const handleThemeChange = useCallback((value: string | number) => {
+    const next = String(value);
+    setTheme(next);
+    // 非深色时清除全局默认，回落为 ECharts 默认外观
+    setDefaultTheme(next === 'dark' ? 'dark' : undefined);
+  }, []);
+
   return (
     <div className="page_demo">
       <aside className="demo_side">
         <ChartTypePicker value={chartType} onChange={handleTypeChange} />
       </aside>
       <div className="demo_main">
+        <div className="demo_toolbar">
+          <Segmented options={THEME_OPTIONS} value={theme} onChange={handleThemeChange} />
+        </div>
         <div className="demo_grid">
           {examples.map((example) => (
             <ExampleCard

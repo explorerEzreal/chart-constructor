@@ -4,6 +4,9 @@ import type { ECharts, EChartsOption } from 'echarts';
 /** 图表类型 */
 export type ChartType = 'pie' | 'bar';
 
+/** 图表主题：ECharts 主题名称或主题对象 */
+export type ChartTheme = string | object;
+
 /** 饼图数据项 */
 export type ChartDataItem = {
   name: string;
@@ -224,8 +227,8 @@ export type CEchartProps = {
   editable?: boolean;
   width?: number | string;
   height?: number | string;
-  /** ECharts 主题名称或主题对象 */
-  theme?: string | object;
+  /** ECharts 主题名称或主题对象，未传入时使用全局默认主题 */
+  theme?: ChartTheme;
   className?: string;
   style?: CSSProperties;
   /** 图表实例就绪回调 */

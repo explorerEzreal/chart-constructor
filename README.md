@@ -142,7 +142,31 @@ type BarChartConfig = {
 
 ### 导出内容
 
-组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`，以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartType`、`ChartMeta`、`ToolItem` 等类型。
+组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`registerTheme`、`setDefaultTheme`、`getDefaultTheme`，以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartType`、`ChartTheme`、`ChartMeta`、`ToolItem` 等类型。
+
+## 主题
+
+主题复用 ECharts 原生机制，不进入 `ChartConfig`、不写入数据库。组件初始化时按 `theme` prop 优先、全局默认主题兜底的方式决定外观。
+
+```tsx
+import { CEchart, registerTheme, setDefaultTheme } from 'chart-constructor';
+
+// 1. 注册自定义主题：需在图表初始化前调用
+registerTheme('business', {
+  color: ['#1677ff', '#52c41a', '#faad14'],
+  backgroundColor: '#ffffff',
+});
+
+// 2. 全局默认主题：所有未显式传 theme 的图表自动套用
+setDefaultTheme('business');
+// 清除全局默认，回落为 ECharts 默认外观
+setDefaultTheme(undefined);
+
+// 3. 单图覆盖：传入 theme 的图表忽略全局默认
+<CEchart value={config} theme="dark" />;
+```
+
+ECharts 5 自带 `dark` 主题可直接使用。运行期调用 `setDefaultTheme` 会同步重建未显式传 `theme` 的图表实例，显式传入 `theme` 的图表不受影响。
 
 ## 依赖约定
 

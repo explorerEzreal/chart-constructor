@@ -1,14 +1,16 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, FC } from 'react';
 import * as echarts from 'echarts';
 import type { ECharts, EChartsOption } from 'echarts';
 import { useLatest, useSize } from 'ahooks';
+import { useDefaultTheme } from '../../utils/theme';
+import type { ChartTheme } from '../../types';
 
 export type ChartViewProps = {
   /** ECharts 配置 */
   option: EChartsOption;
-  /** 主题名称或主题对象 */
-  theme?: string | object;
+  /** 主题名称或主题对象，未传入时使用全局默认主题 */
+  theme?: ChartTheme;
   className?: string;
   style?: CSSProperties;
   /** 实例初始化与销毁回调，销毁时传入 null */
@@ -19,8 +21,13 @@ export type ChartViewProps = {
 export const ChartView: FC<ChartViewProps> = ({ option, theme, className, style, onReady }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ECharts | null>(null);
+  // 实例存入 state，主题切换重建实例后据此重跑 option 应用，避免新实例为空
+  const [chartInstance, setChartInstance] = useState<ECharts | null>(null);
   const size = useSize(containerRef);
   const onReadyRef = useLatest(onReady);
+  // 显式传入的 theme 优先，未传入时回落到全局默认主题
+  const globalTheme = useDefaultTheme();
+  const resolvedTheme = theme ?? globalTheme;
 
   // 初始化实例，卸载时销毁实例释放内存
   useEffect(() => {
@@ -30,21 +37,23 @@ export const ChartView: FC<ChartViewProps> = ({ option, theme, className, style,
     }
     // 通过 ref 读取最新回调，避免回调变化导致实例反复重建
     const notifyReady = (chart: ECharts | null) => onReadyRef.current?.(chart);
-    const instance = echarts.init(container, theme);
-    chartRef.current = instance;
-    notifyReady(instance);
+    const chart = echarts.init(container, resolvedTheme);
+    chartRef.current = chart;
+    setChartInstance(chart);
+    notifyReady(chart);
 
     return () => {
-      instance.dispose();
+      chart.dispose();
       chartRef.current = null;
+      setChartInstance(null);
       notifyReady(null);
     };
-  }, [theme, onReadyRef]);
+  }, [resolvedTheme, onReadyRef]);
 
-  // 配置变化时整体覆盖更新，避免残留旧配置
+  // 实例重建或配置变化时整体覆盖更新，避免残留旧配置
   useEffect(() => {
-    chartRef.current?.setOption(option, true);
-  }, [option]);
+    chartInstance?.setOption(option, true);
+  }, [chartInstance, option]);
 
   // 容器尺寸变化时自适应
   useEffect(() => {

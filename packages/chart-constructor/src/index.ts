@@ -4,6 +4,7 @@ export { CEchart } from './components';
 export { getChartMeta, listChartMetas } from './metas';
 export { buildOption } from './utils/buildOption';
 export { CONFIG_VERSION, createDefaultConfig, normalizeConfig } from './utils/config';
+export { getDefaultTheme, registerTheme, setDefaultTheme } from './utils/theme';
 export type { ChartMeta } from './metas';
 export type {
   BarChartConfig,
@@ -18,6 +19,7 @@ export type {
   ChartData,
   ChartDataItem,
   ChartSettings,
+  ChartTheme,
   ChartType,
   LabelSetting,
   LegendSetting,
