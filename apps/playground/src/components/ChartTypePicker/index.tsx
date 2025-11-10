@@ -1,6 +1,13 @@
 import type { FC, ReactNode } from 'react';
 import { useMemo } from 'react';
-import { AppstoreOutlined, BarChartOutlined, PieChartOutlined } from '@ant-design/icons';
+import {
+  AppstoreOutlined,
+  AreaChartOutlined,
+  BarChartOutlined,
+  DotChartOutlined,
+  LineChartOutlined,
+  PieChartOutlined,
+} from '@ant-design/icons';
 import { listChartMetas } from 'chart-constructor';
 import type { ChartType } from 'chart-constructor';
 import './index.less';
@@ -9,6 +16,9 @@ import './index.less';
 const TYPE_ICONS: Partial<Record<ChartType, ReactNode>> = {
   pie: <PieChartOutlined />,
   bar: <BarChartOutlined />,
+  line: <LineChartOutlined />,
+  scatter: <DotChartOutlined />,
+  combo: <AreaChartOutlined />,
 };
 
 export type ChartTypePickerProps = {

@@ -1,6 +1,6 @@
 # chart-constructor
 
-基于 React 与 ECharts 的图表构造器组件库。传入一段配置项 JSON 即可渲染图表，组件自带操作栏与右侧配置抽屉：编辑时实时预览，保存时通过回调输出最新配置项，可直接写入数据库。
+基于 React 与 ECharts 的图表构造器组件库。传入一段配置项 JSON 即可渲染图表，组件自带操作栏与右侧配置抽屉：抽屉顶部内嵌实时预览图，编辑只改草稿，点保存才提交并通过回调输出最新配置项，可直接写入数据库。
 
 ## 仓库结构
 
@@ -52,7 +52,7 @@ export const Demo = () => (
     <CEchart
       value={config}
       height="100%"
-      onChange={(next) => console.log('实时配置', next)}
+      onChange={(next) => console.log('保存后的配置', next)}
       onSave={(next) => saveToDatabase(next)}
     />
   </div>
@@ -61,10 +61,15 @@ export const Demo = () => (
 
 ### 配置项结构
 
-内置图表类型：`pie`（饼图）、`bar`（柱状图）。切换类型时用 `createDefaultConfig(type)` 生成对应默认配置。
+内置图表类型：`pie`（饼图）、`bar`（柱状图）、`line`（折线图）、`scatter`（散点图）、`combo`（折线柱状图）。切换类型时用 `createDefaultConfig(type)` 生成对应默认配置。
 
 ```ts
-type ChartConfig = PieChartConfig | BarChartConfig;
+type ChartConfig =
+  | PieChartConfig
+  | BarChartConfig
+  | LineChartConfig
+  | ScatterChartConfig
+  | ComboChartConfig;
 
 /** 各图表类型共用的标题、图例配置 */
 type TitleSetting = {
@@ -113,9 +118,98 @@ type BarChartConfig = {
     legend: LegendSetting;
     label: { show: boolean; position: 'top' | 'inside' | 'insideTop'; formatter: string };
     tooltip: { show: boolean; trigger: 'item' | 'axis'; formatter: string };
-    xAxis: { show: boolean; name: string; labelRotate: number };
+    xAxis: {
+      show: boolean;
+      name: string;
+      nameLocation: 'start' | 'middle' | 'end';
+      labelRotate: number;
+    };
     yAxis: { show: boolean; name: string; showSplitLine: boolean };
     series: { barWidth: number; borderRadius: number; stack: boolean };
+  };
+};
+
+/** 折线图 */
+type LineChartConfig = {
+  version: 1;
+  type: 'line';
+  data: {
+    categories: string[];
+    series: Array<{ name: string; data: number[] }>;
+  };
+  settings: {
+    title: TitleSetting;
+    legend: LegendSetting;
+    label: { show: boolean; position: 'top' | 'bottom' | 'inside'; formatter: string };
+    tooltip: { show: boolean; trigger: 'item' | 'axis'; formatter: string };
+    xAxis: {
+      show: boolean;
+      name: string;
+      nameLocation: 'start' | 'middle' | 'end';
+      labelRotate: number;
+    };
+    yAxis: { show: boolean; name: string; showSplitLine: boolean };
+    series: {
+      lineWidth: number;
+      smooth: boolean;
+      area: boolean;
+      showSymbol: boolean;
+      symbolSize: number;
+    };
+  };
+};
+
+/** 散点图：数值 x/y 坐标，X 轴为数值轴 */
+type ScatterChartConfig = {
+  version: 1;
+  type: 'scatter';
+  data: {
+    series: Array<{ name: string; data: Array<[number, number]> }>;
+  };
+  settings: {
+    title: TitleSetting;
+    legend: LegendSetting;
+    label: { show: boolean; position: 'top' | 'bottom' | 'inside'; formatter: string };
+    tooltip: { show: boolean; trigger: 'item' | 'axis'; formatter: string };
+    xAxis: {
+      show: boolean;
+      name: string;
+      nameLocation: 'start' | 'middle' | 'end';
+      labelRotate: number;
+    };
+    yAxis: { show: boolean; name: string; showSplitLine: boolean };
+    series: { symbolSize: number; symbol: 'circle' | 'rect' | 'triangle' | 'diamond' };
+  };
+};
+
+/** 折线柱状图：每个系列标注柱状/折线，共用单 Y 轴 */
+type ComboChartConfig = {
+  version: 1;
+  type: 'combo';
+  data: {
+    categories: string[];
+    series: Array<{ name: string; type: 'bar' | 'line'; data: number[] }>;
+  };
+  settings: {
+    title: TitleSetting;
+    legend: LegendSetting;
+    label: { show: boolean; position: 'top' | 'bottom' | 'inside'; formatter: string };
+    tooltip: { show: boolean; trigger: 'item' | 'axis'; formatter: string };
+    xAxis: {
+      show: boolean;
+      name: string;
+      nameLocation: 'start' | 'middle' | 'end';
+      labelRotate: number;
+    };
+    yAxis: { show: boolean; name: string; showSplitLine: boolean };
+    series: {
+      barWidth: number;
+      borderRadius: number;
+      lineWidth: number;
+      smooth: boolean;
+      area: boolean;
+      symbolSize: number;
+    };
   };
 };
 ```
@@ -126,8 +220,8 @@ type BarChartConfig = {
 | --- | --- | --- | --- |
 | `value` | `ChartConfig` | - | 初始配置项，未传入时使用内置饼图默认配置 |
 | `defaultValue` | `ChartConfig` | - | 初始配置项（`value` 的别名） |
-| `onChange` | `(config: ChartConfig) => void` | - | 编辑过程中实时输出的配置项 |
-| `onSave` | `(config: ChartConfig) => void` | - | 点击保存时输出的最新配置项 |
+| `onChange` | `(config: ChartConfig) => void` | - | 点击保存后输出的配置项，草稿与已提交值一致时不触发 |
+| `onSave` | `(config: ChartConfig) => void` | - | 点击保存时输出的最新配置项，始终触发 |
 | `showToolbar` | `boolean` | `true` | 是否展示操作栏 |
 | `tools` | `ToolItem[]` | - | 自定义工具项，同 key 覆盖内置项，新 key 追加 |
 | `editable` | `boolean` | `true` | 是否允许编辑 |
@@ -142,7 +236,7 @@ type BarChartConfig = {
 
 ### 导出内容
 
-组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`registerTheme`、`setDefaultTheme`、`getDefaultTheme`，以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`ChartType`、`ChartTheme`、`ChartMeta`、`ToolItem` 等类型。
+组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`registerTheme`、`setDefaultTheme`、`getDefaultTheme`，以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`LineChartConfig`、`ScatterChartConfig`、`ComboChartConfig`、`ChartType`、`ChartTheme`、`ChartMeta`、`ToolItem` 等类型。
 
 ## 主题
 

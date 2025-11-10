@@ -32,33 +32,39 @@ export const CEchart: FC<CEchartProps> = ({
   style,
   onReady,
 }) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [instance, setInstance] = useState<ECharts | null>(null);
-  const { config, changeSetting, reset, takeSnapshot, rollback } = useChartConfig({
-    value,
-    defaultValue,
-    onChange,
-  });
+  const {
+    committedConfig,
+    draftConfig,
+    editing,
+    beginEdit,
+    changeSetting,
+    commitEdit,
+    cancelEdit,
+    reset,
+  } = useChartConfig({ value, defaultValue, onChange });
 
-  const option = useMemo(() => buildOption(config), [config]);
-  const meta = getChartMeta(config.type);
+  // 主图取已提交配置，编辑期间不随草稿变化
+  const option = useMemo(() => buildOption(committedConfig), [committedConfig]);
+  // 抽屉预览取草稿，编辑时实时刷新
+  const draftOption = useMemo(() => buildOption(draftConfig), [draftConfig]);
+  const meta = getChartMeta(committedConfig.type);
 
-  // 保存：输出最新配置项
+  // 保存：提交草稿并输出最新配置项
   const handleSave = useCallback(() => {
-    setDrawerOpen(false);
-    onSave?.(config);
-  }, [config, onSave]);
+    const next = commitEdit();
+    onSave?.(next);
+  }, [commitEdit, onSave]);
 
-  // 打开抽屉前记录快照，取消时回滚
+  // 打开抽屉：以当前已提交配置取快照
   const handleOpenEdit = useCallback(() => {
-    takeSnapshot();
-    setDrawerOpen(true);
-  }, [takeSnapshot]);
+    beginEdit();
+  }, [beginEdit]);
 
+  // 取消编辑：丢弃草稿回到快照
   const handleCancel = useCallback(() => {
-    rollback();
-    setDrawerOpen(false);
-  }, [rollback]);
+    cancelEdit();
+  }, [cancelEdit]);
 
   const handleReady = useCallback(
     (chart: ECharts | null) => {
@@ -72,14 +78,14 @@ export const CEchart: FC<CEchartProps> = ({
 
   const toolContext: ToolContext = useMemo(
     () => ({
-      config,
+      config: committedConfig,
       option,
       instance,
       openEdit: handleOpenEdit,
       closeEdit: handleCancel,
       reset,
       copyConfig: () => {
-        void copyConfigToClipboard(config);
+        void copyConfigToClipboard(committedConfig);
       },
       copyOption: () => {
         void copyOptionToClipboard(option);
@@ -89,7 +95,7 @@ export const CEchart: FC<CEchartProps> = ({
         void shareChartScreenshot(instance);
       },
     }),
-    [config, option, instance, handleOpenEdit, handleCancel, reset]
+    [committedConfig, option, instance, handleOpenEdit, handleCancel, reset]
   );
 
   const toolbarItems = useMemo(() => {
@@ -110,8 +116,10 @@ export const CEchart: FC<CEchartProps> = ({
         <ChartView option={option} theme={theme} onReady={handleReady} />
       </div>
       <EditDrawer
-        open={drawerOpen}
-        config={config}
+        open={editing}
+        config={draftConfig}
+        option={draftOption}
+        theme={theme}
         settingKeys={meta.settingKeys}
         onChange={changeSetting}
         onSave={handleSave}

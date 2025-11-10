@@ -177,6 +177,156 @@ export const chartExamples: Record<ChartType, ChartExample[]> = {
       }),
     },
   ],
+  line: [
+    {
+      id: 'line-basic',
+      title: '基础折线图',
+      config: createExampleConfig('line', {}),
+    },
+    {
+      id: 'line-area',
+      title: '平滑面积折线',
+      config: createExampleConfig('line', {
+        data: {
+          categories: ['1月', '2月', '3月', '4月', '5月', '6月'],
+          series: [{ name: '活跃用户', data: [320, 432, 401, 534, 690, 830] }],
+        },
+        settings: {
+          title: { text: '活跃用户趋势', subtext: '平滑曲线 + 面积填充' },
+          legend: { show: false },
+          xAxis: { name: '月份' },
+          yAxis: { name: '人数' },
+          series: { lineWidth: 3, smooth: true, area: true, showSymbol: true, symbolSize: 8 },
+        },
+      }),
+    },
+    {
+      id: 'line-multi',
+      title: '多系列折线图',
+      config: createExampleConfig('line', {
+        data: {
+          categories: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+          series: [
+            { name: '访问量', data: [120, 200, 150, 80, 70, 110, 130] },
+            { name: '下单量', data: [60, 90, 80, 40, 50, 70, 90] },
+            { name: '退单量', data: [20, 30, 25, 15, 10, 18, 22] },
+          ],
+        },
+        settings: {
+          title: { text: '周访问与下单对比' },
+          xAxis: { name: '星期' },
+          yAxis: { name: '数量' },
+          series: { lineWidth: 2, smooth: false, area: false, showSymbol: true, symbolSize: 5 },
+        },
+      }),
+    },
+    {
+      id: 'line-minimal',
+      title: '隐藏图例与坐标轴名称',
+      config: createExampleConfig('line', {
+        settings: {
+          title: { show: false },
+          legend: { show: false },
+          label: { show: true, position: 'top', formatter: '{c}' },
+          xAxis: { name: '' },
+          yAxis: { name: '' },
+        },
+      }),
+    },
+  ],
+  scatter: [
+    {
+      id: 'scatter-basic',
+      title: '基础散点图',
+      config: createExampleConfig('scatter', {}),
+    },
+    {
+      id: 'scatter-size',
+      title: '大尺寸方形散点',
+      config: createExampleConfig('scatter', {
+        settings: {
+          title: { text: '变量分布（方形）' },
+          series: { symbolSize: 18, symbol: 'rect' },
+        },
+      }),
+    },
+    {
+      id: 'scatter-single',
+      title: '单系列散点 + 标签',
+      config: createExampleConfig('scatter', {
+        data: {
+          series: [
+            {
+              name: '测量值',
+              data: [
+                [1, 2.2],
+                [2, 3.1],
+                [3, 3.9],
+                [4, 5.2],
+                [5, 6.1],
+                [6, 7.4],
+                [7, 8.2],
+              ],
+            },
+          ],
+        },
+        settings: {
+          title: { text: '线性相关样本' },
+          legend: { show: false },
+          label: { show: true, position: 'top', formatter: '{c}' },
+          xAxis: { name: '自变量' },
+          yAxis: { name: '因变量' },
+          series: { symbolSize: 12, symbol: 'circle' },
+        },
+      }),
+    },
+  ],
+  combo: [
+    {
+      id: 'combo-basic',
+      title: '基础折线柱状图',
+      config: createExampleConfig('combo', {}),
+    },
+    {
+      id: 'combo-multi',
+      title: '多柱多折组合',
+      config: createExampleConfig('combo', {
+        data: {
+          categories: ['一季度', '二季度', '三季度', '四季度'],
+          series: [
+            { name: '线上销售额', type: 'bar', data: [320, 420, 380, 510] },
+            { name: '线下销售额', type: 'bar', data: [180, 210, 240, 260] },
+            { name: '增长率', type: 'line', data: [12, 25, 18, 32] },
+          ],
+        },
+        settings: {
+          title: { text: '季度销售与增长率' },
+          label: { show: true, position: 'top', formatter: '{c}' },
+          xAxis: { name: '季度' },
+          series: { barWidth: 24, borderRadius: 4, lineWidth: 2, smooth: true, area: false, symbolSize: 6 },
+        },
+      }),
+    },
+    {
+      id: 'combo-area',
+      title: '面积折线组合',
+      config: createExampleConfig('combo', {
+        data: {
+          categories: ['1月', '2月', '3月', '4月', '5月', '6月'],
+          series: [
+            { name: '订单量', type: 'bar', data: [820, 932, 901, 934, 1290, 1330] },
+            { name: '转化率', type: 'line', data: [2.1, 2.6, 2.4, 3.1, 3.6, 4.2] },
+          ],
+        },
+        settings: {
+          title: { text: '订单量与转化率' },
+          xAxis: { name: '月份' },
+          yAxis: { name: '数值' },
+          series: { barWidth: 18, borderRadius: 6, lineWidth: 3, smooth: true, area: true, symbolSize: 8 },
+        },
+      }),
+    },
+  ],
 };
 
 /** 示例 id 到示例的映射，供页面按 id 找回初始配置 */

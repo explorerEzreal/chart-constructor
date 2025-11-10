@@ -1,9 +1,16 @@
 import type { FC } from 'react';
-import { Input, InputNumber, Switch } from 'antd';
+import { Input, InputNumber, Select, Switch } from 'antd';
 import { Field } from '../components';
 import type { SettingItemProps } from '../../types';
 
 export type AxisVariant = 'x' | 'y';
+
+/** X 轴名称位置选项 */
+const NAME_LOCATION_OPTIONS = [
+  { label: '起点', value: 'start' },
+  { label: '居中', value: 'middle' },
+  { label: '末端', value: 'end' },
+];
 
 type AxisSettingProps = Pick<SettingItemProps, 'value' | 'onChange'> & {
   variant: AxisVariant;
@@ -22,15 +29,25 @@ const AxisSettingItem: FC<AxisSettingProps> = ({ variant, value, onChange }) => 
         <Input value={value.name} onChange={(event) => update('name', event.target.value)} />
       </Field>
       {variant === 'x' ? (
-        <Field label="标签旋转">
-          <InputNumber
-            min={0}
-            max={90}
-            addonAfter="°"
-            value={value.labelRotate}
-            onChange={(labelRotate) => update('labelRotate', labelRotate ?? 0)}
-          />
-        </Field>
+        <>
+          <Field label="轴名称位置">
+            <Select
+              style={{ width: '100%' }}
+              options={NAME_LOCATION_OPTIONS}
+              value={value.nameLocation}
+              onChange={(nameLocation) => update('nameLocation', nameLocation)}
+            />
+          </Field>
+          <Field label="标签旋转">
+            <InputNumber
+              min={0}
+              max={90}
+              addonAfter="°"
+              value={value.labelRotate}
+              onChange={(labelRotate) => update('labelRotate', labelRotate ?? 0)}
+            />
+          </Field>
+        </>
       ) : (
         <Field label="显示网格线">
           <Switch

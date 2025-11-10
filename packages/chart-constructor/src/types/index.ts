@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { ECharts, EChartsOption } from 'echarts';
 
 /** 图表类型 */
-export type ChartType = 'pie' | 'bar';
+export type ChartType = 'pie' | 'bar' | 'line' | 'scatter' | 'combo';
 
 /** 图表主题：ECharts 主题名称或主题对象 */
 export type ChartTheme = string | object;
@@ -19,10 +19,27 @@ export type PieChartData = {
   list: ChartDataItem[];
 };
 
-/** 柱状图系列数据 */
-export type BarChartSeries = {
+/** 直角坐标系系列数据：柱状图、折线图、折线柱状图共用分类序列结构 */
+export type CartesianChartSeries = {
   name: string;
   data: number[];
+};
+
+/** 柱状图系列数据 */
+export type BarChartSeries = CartesianChartSeries;
+
+/** 折线图系列数据 */
+export type LineChartSeries = CartesianChartSeries;
+
+/** 折线柱状图系列数据：在分类序列上标注该系列渲染为柱状还是折线 */
+export type ComboChartSeries = CartesianChartSeries & {
+  type: 'bar' | 'line';
+};
+
+/** 散点图系列数据：数值 x/y 坐标对 */
+export type ScatterChartSeries = {
+  name: string;
+  data: [number, number][];
 };
 
 /** 柱状图数据块 */
@@ -31,8 +48,30 @@ export type BarChartData = {
   series: BarChartSeries[];
 };
 
+/** 折线图数据块 */
+export type LineChartData = {
+  categories: string[];
+  series: LineChartSeries[];
+};
+
+/** 折线柱状图数据块 */
+export type ComboChartData = {
+  categories: string[];
+  series: ComboChartSeries[];
+};
+
+/** 散点图数据块 */
+export type ScatterChartData = {
+  series: ScatterChartSeries[];
+};
+
 /** 数据块，按图表类型区分结构 */
-export type ChartData = PieChartData | BarChartData;
+export type ChartData =
+  | PieChartData
+  | BarChartData
+  | LineChartData
+  | ComboChartData
+  | ScatterChartData;
 
 /** 标题配置，各图表类型共用 */
 export type TitleSetting = {
@@ -68,8 +107,15 @@ export type BarLabelSetting = {
   formatter: string;
 };
 
+/** 折线图数值标签配置 */
+export type LineLabelSetting = {
+  show: boolean;
+  position: 'top' | 'bottom' | 'inside';
+  formatter: string;
+};
+
 /** 数值标签配置 */
-export type LabelSetting = PieLabelSetting | BarLabelSetting;
+export type LabelSetting = PieLabelSetting | BarLabelSetting | LineLabelSetting;
 
 /** 饼图提示框配置 */
 export type PieTooltipSetting = {
@@ -84,13 +130,22 @@ export type BarTooltipSetting = {
   formatter: string;
 };
 
+/** 直角坐标系提示框配置，折线图、散点图、折线柱状图共用 */
+export type CartesianTooltipSetting = {
+  show: boolean;
+  trigger: 'item' | 'axis';
+  formatter: string;
+};
+
 /** 提示框配置 */
-export type TooltipSetting = PieTooltipSetting | BarTooltipSetting;
+export type TooltipSetting = PieTooltipSetting | BarTooltipSetting | CartesianTooltipSetting;
 
 /** X 轴配置 */
 export type XAxisSetting = {
   show: boolean;
   name: string;
+  /** 轴名称位置：起点、居中、末端 */
+  nameLocation: 'start' | 'middle' | 'end';
   labelRotate: number;
 };
 
@@ -107,6 +162,38 @@ export type SeriesSetting = {
   borderRadius: number;
   stack: boolean;
 };
+
+/** 折线图系列样式配置 */
+export type LineSeriesSetting = {
+  lineWidth: number;
+  smooth: boolean;
+  area: boolean;
+  showSymbol: boolean;
+  symbolSize: number;
+};
+
+/** 折线柱状图系列样式配置：柱状与折线样式合并，共用单 Y 轴 */
+export type ComboSeriesSetting = {
+  barWidth: number;
+  borderRadius: number;
+  lineWidth: number;
+  smooth: boolean;
+  area: boolean;
+  symbolSize: number;
+};
+
+/** 散点图系列样式配置 */
+export type ScatterSeriesSetting = {
+  symbolSize: number;
+  symbol: 'circle' | 'rect' | 'triangle' | 'diamond';
+};
+
+/** 系列样式配置，按图表类型区分 */
+export type SeriesStyleSetting =
+  | SeriesSetting
+  | LineSeriesSetting
+  | ComboSeriesSetting
+  | ScatterSeriesSetting;
 
 /** 饼图配置项集合 */
 export type PieChartSettings = {
@@ -127,8 +214,46 @@ export type BarChartSettings = {
   series: SeriesSetting;
 };
 
+/** 折线图配置项集合 */
+export type LineChartSettings = {
+  title: TitleSetting;
+  legend: LegendSetting;
+  label: LineLabelSetting;
+  tooltip: CartesianTooltipSetting;
+  xAxis: XAxisSetting;
+  yAxis: YAxisSetting;
+  series: LineSeriesSetting;
+};
+
+/** 散点图配置项集合 */
+export type ScatterChartSettings = {
+  title: TitleSetting;
+  legend: LegendSetting;
+  label: LineLabelSetting;
+  tooltip: CartesianTooltipSetting;
+  xAxis: XAxisSetting;
+  yAxis: YAxisSetting;
+  series: ScatterSeriesSetting;
+};
+
+/** 折线柱状图配置项集合 */
+export type ComboChartSettings = {
+  title: TitleSetting;
+  legend: LegendSetting;
+  label: LineLabelSetting;
+  tooltip: CartesianTooltipSetting;
+  xAxis: XAxisSetting;
+  yAxis: YAxisSetting;
+  series: ComboSeriesSetting;
+};
+
 /** 图表配置项集合，按图表类型区分 */
-export type ChartSettings = PieChartSettings | BarChartSettings;
+export type ChartSettings =
+  | PieChartSettings
+  | BarChartSettings
+  | LineChartSettings
+  | ScatterChartSettings
+  | ComboChartSettings;
 
 /** 饼图配置项 */
 export type PieChartConfig = {
@@ -146,17 +271,54 @@ export type BarChartConfig = {
   settings: BarChartSettings;
 };
 
+/** 折线图配置项 */
+export type LineChartConfig = {
+  version: 1;
+  type: 'line';
+  data: LineChartData;
+  settings: LineChartSettings;
+};
+
+/** 散点图配置项 */
+export type ScatterChartConfig = {
+  version: 1;
+  type: 'scatter';
+  data: ScatterChartData;
+  settings: ScatterChartSettings;
+};
+
+/** 折线柱状图配置项 */
+export type ComboChartConfig = {
+  version: 1;
+  type: 'combo';
+  data: ComboChartData;
+  settings: ComboChartSettings;
+};
+
 /** 图表配置项，可直接序列化后存入数据库 */
-export type ChartConfig = PieChartConfig | BarChartConfig;
+export type ChartConfig =
+  | PieChartConfig
+  | BarChartConfig
+  | LineChartConfig
+  | ScatterChartConfig
+  | ComboChartConfig;
 
 /** 图表类型与配置项的映射，供元数据与默认配置做类型关联 */
 export type ChartConfigMap = {
   pie: PieChartConfig;
   bar: BarChartConfig;
+  line: LineChartConfig;
+  scatter: ScatterChartConfig;
+  combo: ComboChartConfig;
 };
 
 /** 表单可编辑的配置块 */
-export type SettingFieldKey = keyof PieChartSettings | keyof BarChartSettings;
+export type SettingFieldKey =
+  | keyof PieChartSettings
+  | keyof BarChartSettings
+  | keyof LineChartSettings
+  | keyof ScatterChartSettings
+  | keyof ComboChartSettings;
 
 /** 抽屉中可编辑的表单块：配置块 + 数据块 */
 export type SettingItemKey = SettingFieldKey | 'data';

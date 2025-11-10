@@ -4,8 +4,8 @@ import { CEchart } from 'chart-constructor';
 import type { ChartConfig, ToolItem } from 'chart-constructor';
 import type { ChartExample } from './examples';
 
-/** 卡片图表区固定高度，保证四列布局下每行高度一致 */
-const CHART_HEIGHT = 260;
+/** 卡片图表区固定高度，保证两列布局下每行高度一致 */
+const CHART_HEIGHT = 360;
 
 /** 工具栏只保留图标：清空内置项文字并用 tooltip 补名称，交互仍走内置逻辑（重置项除外） */
 const createCardTools = (onReset: () => void): ToolItem[] => [
@@ -36,6 +36,7 @@ const ExampleCard: FC<ExampleCardProps> = ({ example, config, onChange, onSave, 
 
   return (
     <article className="demo_card">
+      <div className="demo_card__header">{example.title}</div>
       <CEchart
         value={config}
         height={CHART_HEIGHT}
@@ -43,7 +44,6 @@ const ExampleCard: FC<ExampleCardProps> = ({ example, config, onChange, onSave, 
         onChange={(next) => onChange(example.id, next)}
         onSave={(next) => onSave(example.id, next)}
       />
-      <div className="demo_card__title">{example.title}</div>
     </article>
   );
 };

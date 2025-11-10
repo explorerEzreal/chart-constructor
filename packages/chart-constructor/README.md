@@ -1,6 +1,6 @@
 # chart-constructor
 
-基于 React 与 ECharts 的图表构造器组件。传入配置项 JSON 即可渲染图表，组件自带操作栏与右侧配置抽屉，编辑过程实时预览，保存时通过回调输出最新配置项，可直接写入数据库。
+基于 React 与 ECharts 的图表构造器组件。传入配置项 JSON 即可渲染图表，组件自带操作栏与右侧配置抽屉，抽屉顶部内嵌实时预览图；编辑只改草稿，点保存才提交并通过回调输出最新配置项，可直接写入数据库。
 
 ## 安装
 
@@ -48,7 +48,7 @@ export const Demo = () => (
     <CEchart
       value={config}
       height="100%"
-      onChange={(next) => console.log('实时配置', next)}
+      onChange={(next) => console.log('保存后的配置', next)}
       onSave={(next) => saveToDatabase(next)}
     />
   </div>

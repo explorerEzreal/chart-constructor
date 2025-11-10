@@ -23,5 +23,5 @@ export const settingItems: Record<SettingItemKey, SettingItemDefinition> = {
   tooltip: { title: '提示框', component: TooltipSettingItem },
   xAxis: { title: 'X 轴', component: XAxisSettingItem },
   yAxis: { title: 'Y 轴', component: YAxisSettingItem },
-  series: { title: '柱状样式', component: SeriesSettingItem },
+  series: { title: '系列样式', component: SeriesSettingItem },
 };

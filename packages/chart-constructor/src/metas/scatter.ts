@@ -1,5 +1,5 @@
 import type { EChartsOption } from 'echarts';
-import type { BarChartConfig } from '../types';
+import type { ScatterChartConfig } from '../types';
 import type { ChartMeta } from './type';
 import {
   buildCartesianAxes,
@@ -11,21 +11,50 @@ import {
 } from './builders';
 import type { SettingBuildContext } from './builders';
 
-/** 柱状图默认配置项 */
-export const defaultConfig: BarChartConfig = {
+/** 散点图默认配置项 */
+export const defaultConfig: ScatterChartConfig = {
   version: 1,
-  type: 'bar',
+  type: 'scatter',
   data: {
-    categories: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
     series: [
-      { name: '线上', data: [120, 200, 150, 80, 70, 110, 130] },
-      { name: '线下', data: [60, 90, 80, 40, 50, 70, 90] },
+      {
+        name: '样本A',
+        data: [
+          [10, 8.04],
+          [8, 6.95],
+          [13, 7.58],
+          [9, 8.81],
+          [11, 8.33],
+          [14, 9.96],
+          [6, 7.24],
+          [4, 4.26],
+          [12, 10.84],
+          [7, 4.82],
+          [5, 5.68],
+        ],
+      },
+      {
+        name: '样本B',
+        data: [
+          [10, 9.14],
+          [8, 8.14],
+          [13, 8.74],
+          [9, 8.77],
+          [11, 9.26],
+          [14, 8.1],
+          [6, 6.13],
+          [4, 3.1],
+          [12, 9.13],
+          [7, 7.26],
+          [5, 4.74],
+        ],
+      },
     ],
   },
   settings: {
     title: {
       show: true,
-      text: '每周销量',
+      text: '变量分布',
       subtext: '示例数据',
       left: 'center',
       textStyle: {
@@ -46,59 +75,55 @@ export const defaultConfig: BarChartConfig = {
     },
     tooltip: {
       show: true,
-      trigger: 'axis',
-      formatter: '{b}: {c}',
+      trigger: 'item',
+      formatter: '{a}: ({c})',
     },
     xAxis: {
       show: true,
-      name: '星期',
+      name: 'X 轴',
       nameLocation: 'end',
       labelRotate: 0,
     },
     yAxis: {
       show: true,
-      name: '销量',
+      name: 'Y 轴',
       showSplitLine: true,
     },
     series: {
-      barWidth: 16,
-      borderRadius: 4,
-      stack: false,
+      symbolSize: 12,
+      symbol: 'circle',
     },
   },
 };
 
-/** 由配置项派生柱状图 ECharts option */
-export const buildOption = (config: BarChartConfig): EChartsOption => {
+/** 由配置项派生散点图 ECharts option */
+export const buildOption = (config: ScatterChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip, xAxis, yAxis, series } = settings;
-  // 标题与图例自上而下排布，柱状图图例随标题下移
-  const context: SettingBuildContext = { type: 'bar', settings, legendBelowTitle: true };
+  // 散点图 X 轴为数值轴，坐标由数据点自带
+  const context: SettingBuildContext = { type: 'scatter', settings, legendBelowTitle: true };
 
   return {
     title: buildTitleOption(title),
     tooltip: buildTooltipOption(tooltip),
     legend: buildLegendOption(legend, context),
     grid: buildCartesianGrid(context, xAxis),
-    ...buildCartesianAxes({ xAxis, yAxis, categories: data.categories }),
+    ...buildCartesianAxes({ xAxis, yAxis, xAxisType: 'value' }),
     series: data.series.map((item) => ({
       name: item.name,
-      type: 'bar',
+      type: 'scatter',
       data: item.data,
-      barWidth: series.barWidth,
-      stack: series.stack ? 'total' : undefined,
-      itemStyle: {
-        borderRadius: series.borderRadius,
-      },
+      symbolSize: series.symbolSize,
+      symbol: series.symbol,
       label: buildLabelOption(label),
     })),
   };
 };
 
-/** 柱状图元数据 */
-export const barMeta: ChartMeta<'bar'> = {
-  type: 'bar',
-  name: '柱状图',
+/** 散点图元数据 */
+export const scatterMeta: ChartMeta<'scatter'> = {
+  type: 'scatter',
+  name: '散点图',
   defaultConfig,
   settingKeys: ['data', 'title', 'legend', 'xAxis', 'yAxis', 'series', 'label', 'tooltip'],
   buildOption,

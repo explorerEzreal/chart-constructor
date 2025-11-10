@@ -10,7 +10,7 @@ export const Toolbar: FC<ToolbarProps> = ({ items, className }) => {
 
   return (
     <div className={['cc-toolbar', className].filter(Boolean).join(' ')}>
-      <Space size={4} wrap>
+      <Space size={2} wrap>
         {items.map((item) => (
           <Tooltip key={item.key} title={item.tooltip}>
             <Button

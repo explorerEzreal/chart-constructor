@@ -1,17 +1,23 @@
 import type { FC } from 'react';
-import { Button, Input, InputNumber } from 'antd';
+import { Button, Input, InputNumber, Select } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { DataMatrix, Field } from '../components';
-import type { BarChartSeries, SettingItemProps } from '../../types';
+import type { ComboChartSeries, SettingItemProps } from '../../types';
 
-export type BarDataFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
+export type ComboDataFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
 
-/** 柱状图数据表单：系列（列）与分类（行）二维编辑 */
-const BarDataSettingItem: FC<BarDataFormProps> = ({ value, onChange }) => {
+/** 折线柱状图系列渲染形态选项 */
+const SERIES_TYPE_OPTIONS = [
+  { label: '柱状', value: 'bar' },
+  { label: '折线', value: 'line' },
+];
+
+/** 折线柱状图数据表单：分类（行）与系列（列）二维编辑，系列可切换柱状/折线 */
+const ComboDataSettingItem: FC<ComboDataFormProps> = ({ value, onChange }) => {
   const categories: string[] = value.categories ?? [];
-  const series: BarChartSeries[] = value.series ?? [];
+  const series: ComboChartSeries[] = value.series ?? [];
   const updateCategories = (next: string[]) => onChange({ name: 'categories', payload: next });
-  const updateSeries = (next: BarChartSeries[]) => onChange({ name: 'series', payload: next });
+  const updateSeries = (next: ComboChartSeries[]) => onChange({ name: 'series', payload: next });
 
   // 分类增删改需要同步维护各系列的数据长度
   const updateCategory = (index: number, name: string) => {
@@ -32,9 +38,10 @@ const BarDataSettingItem: FC<BarDataFormProps> = ({ value, onChange }) => {
   };
 
   const updateSeriesName = (index: number, name: string) => {
-    updateSeries(
-      series.map((item, current) => (current === index ? { ...item, name } : item))
-    );
+    updateSeries(series.map((item, current) => (current === index ? { ...item, name } : item)));
+  };
+  const updateSeriesType = (index: number, type: ComboChartSeries['type']) => {
+    updateSeries(series.map((item, current) => (current === index ? { ...item, type } : item)));
   };
   const updateValue = (seriesIndex: number, categoryIndex: number, payload: number) => {
     updateSeries(
@@ -53,7 +60,11 @@ const BarDataSettingItem: FC<BarDataFormProps> = ({ value, onChange }) => {
   const addSeries = () => {
     updateSeries([
       ...series,
-      { name: `系列${series.length + 1}`, data: categories.map(() => 0) },
+      {
+        name: `系列${series.length + 1}`,
+        type: series.length % 2 === 0 ? 'bar' : 'line',
+        data: categories.map(() => 0),
+      },
     ]);
   };
   const removeSeries = (index: number) => {
@@ -66,6 +77,12 @@ const BarDataSettingItem: FC<BarDataFormProps> = ({ value, onChange }) => {
         <div className="cc-data-list">
           {series.map((item, index) => (
             <div className="cc-data-list__row" key={`${item.name}-${index}`}>
+              <Select
+                style={{ width: 88 }}
+                options={SERIES_TYPE_OPTIONS}
+                value={item.type}
+                onChange={(type) => updateSeriesType(index, type as ComboChartSeries['type'])}
+              />
               <Input
                 value={item.name}
                 placeholder="系列名称"
@@ -127,4 +144,4 @@ const BarDataSettingItem: FC<BarDataFormProps> = ({ value, onChange }) => {
   );
 };
 
-export default BarDataSettingItem;
+export default ComboDataSettingItem;

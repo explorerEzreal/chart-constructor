@@ -1,5 +1,5 @@
 import type { EChartsOption } from 'echarts';
-import type { BarChartConfig } from '../types';
+import type { LineChartConfig } from '../types';
 import type { ChartMeta } from './type';
 import {
   buildCartesianAxes,
@@ -11,21 +11,21 @@ import {
 } from './builders';
 import type { SettingBuildContext } from './builders';
 
-/** 柱状图默认配置项 */
-export const defaultConfig: BarChartConfig = {
+/** 折线图默认配置项 */
+export const defaultConfig: LineChartConfig = {
   version: 1,
-  type: 'bar',
+  type: 'line',
   data: {
-    categories: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+    categories: ['1月', '2月', '3月', '4月', '5月', '6月'],
     series: [
-      { name: '线上', data: [120, 200, 150, 80, 70, 110, 130] },
-      { name: '线下', data: [60, 90, 80, 40, 50, 70, 90] },
+      { name: '访问量', data: [820, 932, 901, 934, 1290, 1330] },
+      { name: '下单量', data: [420, 532, 501, 634, 890, 1030] },
     ],
   },
   settings: {
     title: {
       show: true,
-      text: '每周销量',
+      text: '月度趋势',
       subtext: '示例数据',
       left: 'center',
       textStyle: {
@@ -51,29 +51,31 @@ export const defaultConfig: BarChartConfig = {
     },
     xAxis: {
       show: true,
-      name: '星期',
+      name: '月份',
       nameLocation: 'end',
       labelRotate: 0,
     },
     yAxis: {
       show: true,
-      name: '销量',
+      name: '数量',
       showSplitLine: true,
     },
     series: {
-      barWidth: 16,
-      borderRadius: 4,
-      stack: false,
+      lineWidth: 2,
+      smooth: true,
+      area: false,
+      showSymbol: true,
+      symbolSize: 6,
     },
   },
 };
 
-/** 由配置项派生柱状图 ECharts option */
-export const buildOption = (config: BarChartConfig): EChartsOption => {
+/** 由配置项派生折线图 ECharts option */
+export const buildOption = (config: LineChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip, xAxis, yAxis, series } = settings;
-  // 标题与图例自上而下排布，柱状图图例随标题下移
-  const context: SettingBuildContext = { type: 'bar', settings, legendBelowTitle: true };
+  // 标题与图例自上而下排布，图例随标题下移
+  const context: SettingBuildContext = { type: 'line', settings, legendBelowTitle: true };
 
   return {
     title: buildTitleOption(title),
@@ -83,22 +85,24 @@ export const buildOption = (config: BarChartConfig): EChartsOption => {
     ...buildCartesianAxes({ xAxis, yAxis, categories: data.categories }),
     series: data.series.map((item) => ({
       name: item.name,
-      type: 'bar',
+      type: 'line',
       data: item.data,
-      barWidth: series.barWidth,
-      stack: series.stack ? 'total' : undefined,
-      itemStyle: {
-        borderRadius: series.borderRadius,
+      smooth: series.smooth,
+      showSymbol: series.showSymbol,
+      symbolSize: series.symbolSize,
+      lineStyle: {
+        width: series.lineWidth,
       },
+      areaStyle: series.area ? {} : undefined,
       label: buildLabelOption(label),
     })),
   };
 };
 
-/** 柱状图元数据 */
-export const barMeta: ChartMeta<'bar'> = {
-  type: 'bar',
-  name: '柱状图',
+/** 折线图元数据 */
+export const lineMeta: ChartMeta<'line'> = {
+  type: 'line',
+  name: '折线图',
   defaultConfig,
   settingKeys: ['data', 'title', 'legend', 'xAxis', 'yAxis', 'series', 'label', 'tooltip'],
   buildOption,

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Segmented, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
-import { listChartMetas, setDefaultTheme } from 'chart-constructor';
+import { getChartMeta, listChartMetas, setDefaultTheme } from 'chart-constructor';
 import type { ChartConfig, ChartType } from 'chart-constructor';
 import { ChartTypePicker } from '@/components';
 import ExampleCard from './ExampleCard';
@@ -18,14 +18,16 @@ const THEME_OPTIONS = [
   { label: '深色主题', value: 'dark' },
 ];
 
-/** 示例页：左侧图表类型列表，右侧所选类型的示例画廊，宽屏一行四个 */
+/** 示例页：左侧图表类型列表，右侧所选类型的示例画廊，宽屏一行两个 */
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const chartTypes = useMemo(() => listChartMetas().map((meta) => meta.type), []);
   // 地址栏参数是选中类型的唯一真源，刷新与分享都能保持当前类型
   const chartType = resolveChartType(searchParams.get('type'), chartTypes);
   const examples = chartExamples[chartType];
-  // 卡片配置按示例 id 常驻，切换类型后返回仍保留编辑结果
+  // 头部标题取元数据里的中文名，避免在页面里硬编码类型名称
+  const chartTypeName = useMemo(() => getChartMeta(chartType).name, [chartType]);
+  // 卡片配置按示例 id 常驻，保存后切换类型再返回仍保留编辑结果
   const [configs, setConfigs] = useState<Record<string, ChartConfig>>(createExampleConfigMap);
   // 全局默认主题：切换后所有未显式传 theme 的图表同步重建
   const [theme, setTheme] = useState('default');
@@ -63,7 +65,11 @@ const Index = () => {
         <ChartTypePicker value={chartType} onChange={handleTypeChange} />
       </aside>
       <div className="demo_main">
-        <div className="demo_toolbar">
+        <div className="demo_header">
+          <div className="demo_header__info">
+            <h2 className="demo_header__title">{chartTypeName}</h2>
+            <span className="demo_header__desc">共 {examples.length} 个示例，可直接编辑与导出</span>
+          </div>
           <Segmented options={THEME_OPTIONS} value={theme} onChange={handleThemeChange} />
         </div>
         <div className="demo_grid">

@@ -17,24 +17,168 @@
   display: block;
 }
 
+// 编辑抽屉：左侧实时预览撑满，右侧配置表单独立滚动
+.cc-edit-drawer {
+  // 内边距交给预览区与表单区各自控制，滚动只由表单区承担
+  .ant-drawer-body {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  // 窄窗口下抽屉不宽于视口
+  .ant-drawer-content-wrapper {
+    max-width: 100vw;
+  }
+
+  &__body {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+  }
+
+  // 左侧图表占满剩余宽度与整个抽屉高度
+  &__chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    padding: 16px;
+    background: #ffffff;
+    border-right: 1px solid #f0f0f0;
+  }
+
+  // 预览框按 4:3 取高并在剩余空间内居中，窄长容器下饼图外标签才不会被裁
+  &__chart-box {
+    width: 100%;
+    max-height: 100%;
+    aspect-ratio: 4 / 3;
+  }
+
+  // 右侧表单固定宽度，内部滚动
+  &__form {
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    padding: 16px 24px;
+    overflow: auto;
+  }
+
+  &__body.is-split &__form {
+    flex: 0 0 400px;
+  }
+
+  // 分组标题：加字重与左侧色条，突出层级
+  // 选择器对齐 antd 结构提升权重，否则会被组件库默认内边距覆盖
+  .ant-collapse > .ant-collapse-item {
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    position: relative;
+    align-items: center;
+    padding: 12px 0 12px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 3px;
+      height: 14px;
+      background: #1677ff;
+      border-radius: 2px;
+      content: '';
+      transform: translateY(-50%);
+    }
+  }
+
+  .ant-collapse > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
+    padding: 2px 0 14px;
+  }
+}
+
+// 窄屏：抽屉占满视口并改为上下堆叠
+@media (max-width: 900px) {
+  .cc-edit-drawer {
+    &__body {
+      flex-direction: column;
+    }
+
+    &__chart {
+      flex: 0 0 300px;
+      border-right: none;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    &__body.is-split &__form {
+      flex: 1 1 auto;
+    }
+  }
+}
+
 .cc-toolbar {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   box-sizing: border-box;
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-bottom: 1px solid #f0f0f0;
   background: #ffffff;
+
+  // 图标按钮统一为方形点击区，悬停给出轻量反馈
+  .ant-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    color: rgba(0, 0, 0, 0.65);
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+
+    &:hover {
+      color: #1677ff;
+      background: #f5f5f5;
+    }
+
+    &:active {
+      color: #1677ff;
+      background: #e6f4ff;
+    }
+  }
 }
 
 .cc-field {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  // 表格类宽控件：标签在上、控件占满整行
+  &--block {
+    display: block;
+
+    .cc-field__label {
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
 
   &__label {
-    flex: 0 0 72px;
+    flex: 0 0 84px;
     font-size: 13px;
     color: rgba(0, 0, 0, 0.65);
   }
@@ -42,6 +186,18 @@
   &__control {
     flex: 1;
     min-width: 0;
+
+    // 输入类撑满控件区，数字与颜色等窄控件统一固定宽
+    > .ant-input,
+    > .ant-select {
+      width: 100%;
+    }
+
+    > .ant-input-number,
+    > .ant-input-number-group-wrapper,
+    > .ant-color-picker-trigger {
+      width: 96px;
+    }
   }
 }
 
@@ -52,26 +208,84 @@
     gap: 8px;
     margin-bottom: 8px;
 
-    // 数值输入与删除按钮不参与压缩，避免被挤到不可读
-    .ant-input-number,
-    .ant-btn {
+    // 数值输入不参与压缩，避免被挤到不可读
+    .ant-input-number {
       flex: 0 0 auto;
+    }
+
+    // 删除按钮统一 32px，与矩阵表头的操作列对齐
+    > .ant-btn {
+      flex: 0 0 32px;
     }
   }
 }
 
-// 柱状图二维数据表，系列较多时横向滚动
+// 二维数据表：表头与数据行共用同一套列宽，系列较多时整体横向滚动
 .cc-data-matrix {
   overflow-x: auto;
 
-  .cc-data-list__row {
-    flex-wrap: nowrap;
-    width: max-content;
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
     min-width: 100%;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.45);
+    border-bottom: 1px solid #f0f0f0;
   }
 
-  .ant-input {
-    flex: 0 0 120px;
-    min-width: 120px;
+  &__cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.is-name {
+      flex: 0 0 112px;
+    }
+
+    &.is-value {
+      flex: 0 0 88px;
+    }
+
+    &.is-action {
+      flex: 0 0 32px;
+      // 操作列吸附右侧，系列较多横向滚动时删除按钮仍可点
+      position: sticky;
+      right: 0;
+      z-index: 1;
+      background: #ffffff;
+    }
+  }
+
+  // 新增按钮挪到滚动容器外，避免横向滚动时跟着位移
+  &__actions {
+    margin-top: 12px;
+  }
+
+  .cc-data-list__row {
+    flex-wrap: nowrap;
+    min-width: 100%;
+
+    > .ant-input {
+      flex: 0 0 112px;
+      min-width: 112px;
+    }
+
+    > .ant-input-number {
+      flex: 0 0 88px;
+      width: 88px;
+    }
+
+    // 操作按钮列宽与表头操作列对齐
+    > .ant-btn {
+      flex: 0 0 32px;
+      position: sticky;
+      right: 0;
+      z-index: 1;
+      background: #ffffff;
+    }
   }
 }

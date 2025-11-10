@@ -1,40 +1,22 @@
 import type { FC } from 'react';
-import { InputNumber, Switch } from 'antd';
-import { Field } from '../components';
+import BarSeriesSettingItem from './series-bar';
+import ComboSeriesSettingItem from './series-combo';
+import LineSeriesSettingItem from './series-line';
+import ScatterSeriesSettingItem from './series-scatter';
 import type { SettingItemProps } from '../../types';
 
-/** 柱状图系列样式表单 */
-const SeriesSettingItem: FC<SettingItemProps> = ({ value, onChange }) => {
-  const update = (name: string, payload: unknown) => onChange({ name, payload });
-
-  return (
-    <>
-      <Field label="柱子宽度">
-        <InputNumber
-          min={1}
-          max={80}
-          addonAfter="px"
-          value={value.barWidth}
-          onChange={(barWidth) => update('barWidth', barWidth ?? 16)}
-        />
-      </Field>
-      <Field label="柱子圆角">
-        <InputNumber
-          min={0}
-          max={40}
-          addonAfter="px"
-          value={value.borderRadius}
-          onChange={(borderRadius) => update('borderRadius', borderRadius ?? 0)}
-        />
-      </Field>
-      <Field label="堆叠显示">
-        <Switch
-          checked={value.stack}
-          onChange={(checked) => update('stack', checked)}
-        />
-      </Field>
-    </>
-  );
+/** 系列样式表单：按图表类型分发到对应子表单 */
+const SeriesSettingItem: FC<SettingItemProps> = ({ chartType, value, onChange }) => {
+  if (chartType === 'line') {
+    return <LineSeriesSettingItem value={value} onChange={onChange} />;
+  }
+  if (chartType === 'scatter') {
+    return <ScatterSeriesSettingItem value={value} onChange={onChange} />;
+  }
+  if (chartType === 'combo') {
+    return <ComboSeriesSettingItem value={value} onChange={onChange} />;
+  }
+  return <BarSeriesSettingItem value={value} onChange={onChange} />;
 };
 
 export default SeriesSettingItem;

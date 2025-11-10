@@ -1,5 +1,8 @@
 import { barMeta } from './bar';
+import { comboMeta } from './combo';
+import { lineMeta } from './line';
 import { pieMeta } from './pie';
+import { scatterMeta } from './scatter';
 import type { ChartMeta } from './type';
 import type { ChartType } from '../types';
 
@@ -7,9 +10,15 @@ import type { ChartType } from '../types';
 export const chartMetas: {
   pie: ChartMeta<'pie'>;
   bar: ChartMeta<'bar'>;
+  line: ChartMeta<'line'>;
+  scatter: ChartMeta<'scatter'>;
+  combo: ChartMeta<'combo'>;
 } = {
   pie: pieMeta,
   bar: barMeta,
+  line: lineMeta,
+  scatter: scatterMeta,
+  combo: comboMeta,
 };
 
 /**
@@ -31,4 +40,4 @@ export const getChartMeta = <T extends ChartType>(type: T): ChartMeta<T> => {
 };
 
 export type { ChartMeta };
-export { barMeta, pieMeta };
+export { barMeta, comboMeta, lineMeta, pieMeta, scatterMeta };

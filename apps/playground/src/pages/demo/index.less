@@ -11,39 +11,61 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    padding: 12px;
+    padding: 16px;
     overflow: auto;
     background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(29, 43, 90, 0.06);
   }
 
   .demo_main {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
     min-height: 0;
     overflow: auto;
   }
 
-  // 主题切换栏：右对齐，与下方图例保持间距
-  .demo_toolbar {
+  // 页面头部：左侧类型名称与示例数量，右侧主题切换
+  .demo_header {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 12px;
-  }
-
-  // 宽屏一行四个，窄屏依次降级为三列、两列
-  .demo_grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+    justify-content: space-between;
     gap: 16px;
-    padding-bottom: 16px;
+    margin-bottom: 16px;
 
-    @media (max-width: 1400px) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    &__info {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      min-width: 0;
     }
 
+    &__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+    }
+
+    &__desc {
+      overflow: hidden;
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.45);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // 宽屏一行两个，窄屏降为一行一个
+  .demo_grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    padding-bottom: 16px;
+
     @media (max-width: 1100px) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
@@ -54,23 +76,28 @@
     overflow: hidden;
     background: #ffffff;
     border: 1px solid #f0f0f0;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     transition: border-color 0.2s, box-shadow 0.2s;
 
     &:hover {
       border-color: #d6e4ff;
-      box-shadow: 0 4px 16px rgba(22, 119, 255, 0.12);
+      box-shadow: 0 6px 20px rgba(22, 119, 255, 0.12);
     }
 
-    &__title {
-      padding: 8px 12px;
-      font-size: 13px;
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.75);
-      text-align: center;
-      background: #fafafa;
-      border-top: 1px solid #f5f5f5;
+    // 卡片标题置于顶部，与图表之间用细分隔线区分层次
+    &__header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    // 卡片头部已提供分隔线，去掉操作栏自带下边框避免两条线叠加
+    .cc-toolbar {
+      padding-top: 2px;
+      border-bottom: none;
     }
   }
 }

@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { Button, Input, InputNumber } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { Field } from '../components';
+import { DataMatrix, Field } from '../components';
 import type { ChartDataItem, SettingItemProps } from '../../types';
 
 export type PieDataFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
@@ -34,8 +34,14 @@ const PieDataSettingItem: FC<PieDataFormProps> = ({ value, onChange }) => {
           onChange={(event) => onChange({ name: 'seriesName', payload: event.target.value })}
         />
       </Field>
-      <Field label="数据列表">
-        <div className="cc-data-list">
+      <Field label="数据列表" layout="block">
+        <DataMatrix
+          columns={[
+            { label: '名称', variant: 'name' },
+            { label: '数值', variant: 'value' },
+            { variant: 'action' },
+          ]}
+        >
           {list.map((item, index) => (
             <div className="cc-data-list__row" key={`${item.name}-${index}`}>
               <Input
@@ -44,7 +50,6 @@ const PieDataSettingItem: FC<PieDataFormProps> = ({ value, onChange }) => {
                 onChange={(event) => updateItem(index, 'name', event.target.value)}
               />
               <InputNumber
-                style={{ width: 96 }}
                 value={item.value}
                 placeholder="数值"
                 onChange={(number) => updateItem(index, 'value', number ?? 0)}
@@ -57,6 +62,8 @@ const PieDataSettingItem: FC<PieDataFormProps> = ({ value, onChange }) => {
               />
             </div>
           ))}
+        </DataMatrix>
+        <div className="cc-data-matrix__actions">
           <Button type="dashed" block icon={<PlusOutlined />} onClick={addItem}>
             新增数据项
           </Button>
