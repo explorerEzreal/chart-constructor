@@ -22,10 +22,10 @@ export default defineConfig(({ mode }) => ({
       ...(mode === 'development'
         ? [
             {
-              find: /^chart-constructor\/style\.css$/,
+              find: /^react-chart-constructor\/style\.css$/,
               replacement: `${librarySrc}/style/index.less`,
             },
-            { find: /^chart-constructor$/, replacement: `${librarySrc}/index.ts` },
+            { find: /^react-chart-constructor$/, replacement: `${librarySrc}/index.ts` },
           ]
         : []),
     ],

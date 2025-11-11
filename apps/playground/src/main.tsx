@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import 'chart-constructor/style.css';
+import 'react-chart-constructor/style.css';
 import './index.less';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

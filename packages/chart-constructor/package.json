@@ -1,8 +1,16 @@
 {
-  "name": "chart-constructor",
-  "version": "0.1.0",
+  "name": "react-chart-constructor",
+  "version": "1.0.0",
   "description": "基于 React 与 ECharts 的图表构造器组件，支持配置项编辑、实时预览与配置导出",
   "license": "MIT",
+  "author": "explorerEzreal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/explorerEzreal/chart-constructor.git",
+    "directory": "packages/chart-constructor"
+  },
+  "homepage": "https://github.com/explorerEzreal/chart-constructor#readme",
+  "bugs": "https://github.com/explorerEzreal/chart-constructor/issues",
   "type": "module",
   "sideEffects": ["**/*.css", "**/*.less"],
   "main": "./dist/index.cjs",
@@ -17,8 +25,12 @@
     "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md"],
+  "files": ["dist", "README.md", "LICENSE"],
   "keywords": ["react", "echarts", "chart", "constructor"],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",

@@ -29,15 +29,15 @@ importers:
       antd:
         specifier: ^5.19.1
         version: 5.29.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      chart-constructor:
-        specifier: workspace:*
-        version: link:../../packages/chart-constructor
       echarts:
         specifier: ^5.5.1
         version: 5.6.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
+      react-chart-constructor:
+        specifier: workspace:*
+        version: link:../../packages/chart-constructor
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)

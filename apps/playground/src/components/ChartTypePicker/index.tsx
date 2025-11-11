@@ -8,8 +8,8 @@ import {
   LineChartOutlined,
   PieChartOutlined,
 } from '@ant-design/icons';
-import { listChartMetas } from 'chart-constructor';
-import type { ChartType } from 'chart-constructor';
+import { listChartMetas } from 'react-chart-constructor';
+import type { ChartType } from 'react-chart-constructor';
 import './index.less';
 
 /** 图表类型与图标的映射，未登记的类型回退到通用图标 */

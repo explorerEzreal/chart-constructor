@@ -1,5 +1,7 @@
 # chart-constructor
 
+> 发布包名：`react-chart-constructor`（npm 上 `chart-constructor` 已被他人占用，仅包名不同，API 与目录结构不变）
+
 基于 React 与 ECharts 的图表构造器组件库。传入一段配置项 JSON 即可渲染图表，组件自带操作栏与右侧配置抽屉：抽屉顶部内嵌实时预览图，编辑只改草稿，点保存才提交并通过回调输出最新配置项，可直接写入数据库。
 
 ## 仓库结构
@@ -9,7 +11,7 @@
 ├── apps
 │   └── playground                                # 本地调试站（首页 + 示例页）
 ├── packages
-│   ├── chart-constructor                         # 唯一发布包
+│   ├── chart-constructor                         # 唯一发布包（发布名 react-chart-constructor）
 │   │   └── src
 │   │       ├── components                        # CEchart / ChartView / Toolbar / EditDrawer
 │   │       ├── metas                             # 图表类型元数据与 option 派生
@@ -37,15 +39,15 @@ pnpm typecheck        # 全量类型检查
 pnpm lint             # 全量代码规范检查
 pnpm clean            # 清理构建产物
 pnpm changeset        # 记录变更
-pnpm version-packages # 生成版本号与 CHANGELOG（当前阶段不发布）
+pnpm version-packages # 生成版本号与 CHANGELOG
 ```
 
 ## CEchart 用法
 
 ```tsx
-import { CEchart } from 'chart-constructor';
-import type { ChartConfig } from 'chart-constructor';
-import 'chart-constructor/style.css';
+import { CEchart } from 'react-chart-constructor';
+import type { ChartConfig } from 'react-chart-constructor';
+import 'react-chart-constructor/style.css';
 
 export const Demo = () => (
   <div style={{ height: 420 }}>
@@ -246,7 +248,7 @@ type ComboChartConfig = {
 主题复用 ECharts 原生机制，不进入 `ChartConfig`、不写入数据库。组件初始化时按 `theme` prop 优先、全局默认主题兜底的方式决定外观。
 
 ```tsx
-import { CEchart, registerTheme, setDefaultTheme } from 'chart-constructor';
+import { CEchart, registerTheme, setDefaultTheme } from 'react-chart-constructor';
 
 // 1. 注册自定义主题：需在图表初始化前调用
 registerTheme('business', {
@@ -267,11 +269,12 @@ ECharts 5 自带 `dark` 主题可直接使用。运行期调用 `setDefaultTheme
 
 ## 依赖约定
 
-`react`、`react-dom`、`echarts`、`antd` 为 `chart-constructor` 的 peerDependencies，由使用方安装；`lodash`、`ahooks`、`@ant-design/icons` 为包内依赖。
+`react`、`react-dom`、`echarts`、`antd` 为 `react-chart-constructor` 的 peerDependencies，由使用方安装；`ahooks`、`@ant-design/icons` 为包内依赖。
 
 ## 发布前检查
 
 1. `pnpm build` 产出 `packages/chart-constructor/dist/index.js`、`index.cjs`、`index.d.ts`、`style.css`
 2. `pnpm typecheck`、`pnpm lint` 全量通过
 3. 在 playground 中验证渲染、编辑回显、保存回调、复制与导出
-4. 执行 `pnpm changeset` 记录变更后再发布
+4. 执行 `pnpm changeset` 记录变更，`pnpm version-packages` 生成版本号与 CHANGELOG
+5. 在 `packages/chart-constructor` 下执行 `npm publish --dry-run` 校验 tarball，再执行 `npm publish --access public` 发布

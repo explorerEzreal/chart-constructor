@@ -10,4 +10,11 @@ pnpm changeset
 pnpm version-packages
 ```
 
-当前阶段仅初始化流程，不执行发布；内部包与 playground 已在 `config.json` 中忽略。
+发布包为 `react-chart-constructor`，内部包与 playground 已在 `config.json` 中忽略。
+
+```bash
+# 发布流程
+pnpm changeset          # 记录变更
+pnpm version-packages   # 生成版本号与 CHANGELOG
+cd packages/chart-constructor && npm publish --access public
+```

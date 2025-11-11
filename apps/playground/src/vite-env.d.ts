@@ -1,3 +1,3 @@
 /// <reference types="vite/client" />
 
-declare module 'chart-constructor/style.css';
+declare module 'react-chart-constructor/style.css';

@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "chart-constructor": ["../../packages/chart-constructor/src/index.ts"]
+      "react-chart-constructor": ["../../packages/chart-constructor/src/index.ts"]
     },
     "types": ["node", "vite/client"]
   },

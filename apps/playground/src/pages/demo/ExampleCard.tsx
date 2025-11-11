@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { FC } from 'react';
-import { CEchart } from 'chart-constructor';
-import type { ChartConfig, ToolItem, ToolbarMode } from 'chart-constructor';
+import { CEchart } from 'react-chart-constructor';
+import type { ChartConfig, ToolItem, ToolbarMode } from 'react-chart-constructor';
 import type { ChartExample } from './examples';
 
 /** 卡片图表区固定高度，保证两列布局下每行高度一致 */

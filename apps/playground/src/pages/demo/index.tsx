@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Segmented, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
-import { getChartMeta, listChartMetas, setDefaultTheme } from 'chart-constructor';
-import type { ChartConfig, ChartType, ToolbarMode } from 'chart-constructor';
+import { getChartMeta, listChartMetas, setDefaultTheme } from 'react-chart-constructor';
+import type { ChartConfig, ChartType, ToolbarMode } from 'react-chart-constructor';
 import { ChartTypePicker } from '@/components';
 import ExampleCard from './ExampleCard';
 import { chartExamples, createExampleConfigMap, getExampleInitialConfig } from './examples';

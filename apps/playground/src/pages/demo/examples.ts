@@ -1,5 +1,5 @@
-import { createDefaultConfig } from 'chart-constructor';
-import type { ChartConfig, ChartConfigMap, ChartType } from 'chart-constructor';
+import { createDefaultConfig } from 'react-chart-constructor';
+import type { ChartConfig, ChartConfigMap, ChartType } from 'react-chart-constructor';
 
 /** 单个示例：示例名称 + 一份完整配置项 */
 export type ChartExample = {
