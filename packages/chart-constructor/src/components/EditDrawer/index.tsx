@@ -1,8 +1,9 @@
+import { useEffect, useMemo, useState } from 'react';
 import type { FC } from 'react';
-import { Button, Collapse, Drawer, Space } from 'antd';
+import { Button, Collapse, Drawer, Space, Tabs } from 'antd';
 import type { EChartsOption } from 'echarts';
 import { ChartView } from '../ChartView';
-import { settingItems } from '../../settings/items';
+import { settingGroups, settingItems } from '../../settings/items';
 import { getSettingValue } from '../../utils/config';
 import type {
   ChartConfig,
@@ -37,10 +38,31 @@ export const EditDrawer: FC<EditDrawerProps> = ({
   onSave,
   onCancel,
 }) => {
-  const items = settingKeys.map((key) => {
+  // 按分组收敛表单块，空分组（如饼图无坐标轴与系列样式）自动隐藏
+  const groups = useMemo(
+    () =>
+      settingGroups
+        .map((group) => ({
+          key: group.key,
+          title: group.title,
+          keys: settingKeys.filter((key) => group.items.includes(key)),
+        }))
+        .filter((group) => group.keys.length > 0),
+    [settingKeys]
+  );
+  const [activeKey, setActiveKey] = useState(() => groups[0]?.key ?? '');
+
+  // 可见分组变化（切换图表类型）后当前选中项失效时，回落首个分组
+  useEffect(() => {
+    if (!groups.some((group) => group.key === activeKey)) {
+      setActiveKey(groups[0]?.key ?? '');
+    }
+  }, [groups, activeKey]);
+
+  // 单个表单块：取值并分发到注册表组件
+  const renderSettingItem = (key: SettingItemKey) => {
     const settingItem = settingItems[key];
     const SettingComponent = settingItem.component;
-
     return {
       key,
       label: settingItem.title,
@@ -52,7 +74,20 @@ export const EditDrawer: FC<EditDrawerProps> = ({
         />
       ),
     };
-  });
+  };
+
+  // 分组内保留折叠区块，默认全部展开
+  const tabItems = groups.map((group) => ({
+    key: group.key,
+    label: group.title,
+    children: (
+      <Collapse
+        items={group.keys.map(renderSettingItem)}
+        defaultActiveKey={group.keys}
+        bordered={false}
+      />
+    ),
+  }));
   // 仅有草稿配置时才分栏，未传 option 时表单占满抽屉
   const showChart = open && Boolean(option);
 
@@ -86,7 +121,12 @@ export const EditDrawer: FC<EditDrawerProps> = ({
           </div>
         ) : null}
         <div className="cc-edit-drawer__form">
-          <Collapse items={items} defaultActiveKey={settingKeys} bordered={false} />
+          <Tabs
+            className="cc-edit-drawer__tabs"
+            items={tabItems}
+            activeKey={activeKey}
+            onChange={setActiveKey}
+          />
         </div>
       </div>
     </Drawer>

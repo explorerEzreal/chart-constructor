@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { FC } from 'react';
 import { CEchart } from 'chart-constructor';
-import type { ChartConfig, ToolItem } from 'chart-constructor';
+import type { ChartConfig, ToolItem, ToolbarMode } from 'chart-constructor';
 import type { ChartExample } from './examples';
 
 /** 卡片图表区固定高度，保证两列布局下每行高度一致 */
@@ -22,6 +22,8 @@ export type ExampleCardProps = {
   example: ChartExample;
   /** 该示例的实时配置项 */
   config: ChartConfig;
+  /** 操作栏形态，常驻或悬浮 */
+  toolbarMode: ToolbarMode;
   /** 编辑过程中输出最新配置项 */
   onChange: (id: string, config: ChartConfig) => void;
   /** 点击保存时输出最新配置项 */
@@ -31,7 +33,14 @@ export type ExampleCardProps = {
 };
 
 /** 示例卡片：上方图标工具栏 + 图表 + 下方示例名称 */
-const ExampleCard: FC<ExampleCardProps> = ({ example, config, onChange, onSave, onReset }) => {
+const ExampleCard: FC<ExampleCardProps> = ({
+  example,
+  config,
+  toolbarMode,
+  onChange,
+  onSave,
+  onReset,
+}) => {
   const tools = useMemo(() => createCardTools(() => onReset(example.id)), [example.id, onReset]);
 
   return (
@@ -40,6 +49,7 @@ const ExampleCard: FC<ExampleCardProps> = ({ example, config, onChange, onSave, 
       <CEchart
         value={config}
         height={CHART_HEIGHT}
+        toolbarMode={toolbarMode}
         tools={tools}
         onChange={(next) => onChange(example.id, next)}
         onSave={(next) => onSave(example.id, next)}

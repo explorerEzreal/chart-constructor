@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Segmented, message } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { getChartMeta, listChartMetas, setDefaultTheme } from 'chart-constructor';
-import type { ChartConfig, ChartType } from 'chart-constructor';
+import type { ChartConfig, ChartType, ToolbarMode } from 'chart-constructor';
 import { ChartTypePicker } from '@/components';
 import ExampleCard from './ExampleCard';
 import { chartExamples, createExampleConfigMap, getExampleInitialConfig } from './examples';
@@ -18,6 +18,12 @@ const THEME_OPTIONS = [
   { label: '深色主题', value: 'dark' },
 ];
 
+/** 操作栏形态切换项：常驻在图表上方，或悬浮在图表右上角 */
+const TOOLBAR_OPTIONS = [
+  { label: '常驻操作栏', value: 'static' },
+  { label: '悬浮操作栏', value: 'float' },
+];
+
 /** 示例页：左侧图表类型列表，右侧所选类型的示例画廊，宽屏一行两个 */
 const Index = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -31,6 +37,8 @@ const Index = () => {
   const [configs, setConfigs] = useState<Record<string, ChartConfig>>(createExampleConfigMap);
   // 全局默认主题：切换后所有未显式传 theme 的图表同步重建
   const [theme, setTheme] = useState('default');
+  // 操作栏形态：所有示例卡片同步切换，便于对比两种展示效果
+  const [toolbarMode, setToolbarMode] = useState<ToolbarMode>('static');
 
   const handleTypeChange = useCallback(
     (type: ChartType) => {
@@ -59,6 +67,10 @@ const Index = () => {
     setDefaultTheme(next === 'dark' ? 'dark' : undefined);
   }, []);
 
+  const handleToolbarModeChange = useCallback((value: string | number) => {
+    setToolbarMode(String(value) as ToolbarMode);
+  }, []);
+
   return (
     <div className="page_demo">
       <aside className="demo_side">
@@ -70,7 +82,14 @@ const Index = () => {
             <h2 className="demo_header__title">{chartTypeName}</h2>
             <span className="demo_header__desc">共 {examples.length} 个示例，可直接编辑与导出</span>
           </div>
-          <Segmented options={THEME_OPTIONS} value={theme} onChange={handleThemeChange} />
+          <div className="demo_header__actions">
+            <Segmented
+              options={TOOLBAR_OPTIONS}
+              value={toolbarMode}
+              onChange={handleToolbarModeChange}
+            />
+            <Segmented options={THEME_OPTIONS} value={theme} onChange={handleThemeChange} />
+          </div>
         </div>
         <div className="demo_grid">
           {examples.map((example) => (
@@ -78,6 +97,7 @@ const Index = () => {
               key={example.id}
               example={example}
               config={configs[example.id]}
+              toolbarMode={toolbarMode}
               onChange={handleChange}
               onSave={handleSave}
               onReset={handleReset}

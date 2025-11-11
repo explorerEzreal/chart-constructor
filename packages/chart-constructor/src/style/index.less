@@ -69,6 +69,26 @@
     flex: 0 0 400px;
   }
 
+  // 分组 tab：吸顶常驻，负偏移抵消表单区上内边距，滚动时与顶部保持间距
+  &__tabs {
+    .ant-tabs-nav {
+      position: sticky;
+      top: -16px;
+      z-index: 1;
+      margin: 0;
+      padding: 16px 0 8px;
+      background: #ffffff;
+    }
+
+    .ant-tabs-tab {
+      padding: 8px 0;
+    }
+
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 24px;
+    }
+  }
+
   // 分组标题：加字重与左侧色条，突出层级
   // 选择器对齐 antd 结构提升权重，否则会被组件库默认内边距覆盖
   .ant-collapse > .ant-collapse-item {
@@ -133,6 +153,20 @@
   border-bottom: 1px solid #f0f0f0;
   background: #ffffff;
 
+  // 悬浮形态：脱离文档流贴右上角，整圈描边替代常驻态底边线，加圆角与浅阴影
+  &--float {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+    padding: 4px 6px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+
   // 图标按钮统一为方形点击区，悬停给出轻量反馈
   .ant-btn {
     display: inline-flex;
@@ -154,6 +188,14 @@
       color: #1677ff;
       background: #e6f4ff;
     }
+  }
+}
+
+// 悬浮操作栏默认隐藏，悬停图表或聚焦内部时淡入；无 hover 能力的设备保持常显
+@media (hover: hover) {
+  .cc-echart:not(:hover):not(:focus-within) .cc-toolbar--float {
+    opacity: 0;
+    visibility: hidden;
   }
 }
 

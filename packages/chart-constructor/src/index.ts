@@ -54,6 +54,7 @@ export type {
   TitleSetting,
   ToolContext,
   ToolItem,
+  ToolbarMode,
   TooltipSetting,
   XAxisSetting,
   YAxisSetting,

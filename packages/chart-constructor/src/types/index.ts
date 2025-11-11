@@ -7,6 +7,9 @@ export type ChartType = 'pie' | 'bar' | 'line' | 'scatter' | 'combo';
 /** 图表主题：ECharts 主题名称或主题对象 */
 export type ChartTheme = string | object;
 
+/** 操作栏展示形态：常驻占据图表上方，或悬浮于图表右上角 */
+export type ToolbarMode = 'static' | 'float';
+
 /** 饼图数据项 */
 export type ChartDataItem = {
   name: string;
@@ -383,6 +386,8 @@ export type CEchartProps = {
   onSave?: (config: ChartConfig) => void;
   /** 是否展示操作栏，默认 true */
   showToolbar?: boolean;
+  /** 操作栏展示形态，默认常驻；悬浮形态贴图表右上角并在悬停时淡入 */
+  toolbarMode?: ToolbarMode;
   /** 自定义工具项，同 key 覆盖内置项，新 key 追加 */
   tools?: ToolItem[];
   /** 是否允许编辑，默认 true */

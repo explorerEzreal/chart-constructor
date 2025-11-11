@@ -14,6 +14,14 @@ export type SettingItemDefinition = {
   component: FC<SettingItemProps>;
 };
 
+/** 抽屉表单项分组，数组顺序即 tab 顺序 */
+export type SettingGroupDefinition = {
+  key: string;
+  title: string;
+  /** 归属该分组的表单块，块内顺序以图表元数据的 settingKeys 为准 */
+  items: SettingItemKey[];
+};
+
 /** 抽屉表单块注册表，key 与配置项字段保持一致 */
 export const settingItems: Record<SettingItemKey, SettingItemDefinition> = {
   data: { title: '数据', component: DataSettingItem },
@@ -25,3 +33,14 @@ export const settingItems: Record<SettingItemKey, SettingItemDefinition> = {
   yAxis: { title: 'Y 轴', component: YAxisSettingItem },
   series: { title: '系列样式', component: SeriesSettingItem },
 };
+
+/** 抽屉表单分组：数据独立，标注收纳说明性元素，系列样式归入其他 */
+export const settingGroups: SettingGroupDefinition[] = [
+  { key: 'data', title: '数据', items: ['data'] },
+  {
+    key: 'annotation',
+    title: '标注',
+    items: ['title', 'legend', 'label', 'tooltip', 'xAxis', 'yAxis'],
+  },
+  { key: 'other', title: '其他', items: ['series'] },
+];

@@ -23,6 +23,7 @@ export const CEchart: FC<CEchartProps> = ({
   onChange,
   onSave,
   showToolbar = true,
+  toolbarMode = 'static',
   tools,
   editable = true,
   width = '100%',
@@ -111,7 +112,13 @@ export const CEchart: FC<CEchartProps> = ({
       className={['cc-echart', className].filter(Boolean).join(' ')}
       style={{ width, height, ...style }}
     >
-      {showToolbar ? <Toolbar items={toolbarItems} /> : null}
+      {/* 悬浮形态贴右上角并脱离文档流，图表因此占满整个高度 */}
+      {showToolbar ? (
+        <Toolbar
+          items={toolbarItems}
+          className={toolbarMode === 'float' ? 'cc-toolbar--float' : undefined}
+        />
+      ) : null}
       <div className="cc-echart__body">
         <ChartView option={option} theme={theme} onReady={handleReady} />
       </div>

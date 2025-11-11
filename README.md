@@ -223,6 +223,7 @@ type ComboChartConfig = {
 | `onChange` | `(config: ChartConfig) => void` | - | 点击保存后输出的配置项，草稿与已提交值一致时不触发 |
 | `onSave` | `(config: ChartConfig) => void` | - | 点击保存时输出的最新配置项，始终触发 |
 | `showToolbar` | `boolean` | `true` | 是否展示操作栏 |
+| `toolbarMode` | `'static' \| 'float'` | `'static'` | 操作栏展示形态：`static` 常驻在图表上方，`float` 悬浮在图表右上角并在悬停时淡入 |
 | `tools` | `ToolItem[]` | - | 自定义工具项，同 key 覆盖内置项，新 key 追加 |
 | `editable` | `boolean` | `true` | 是否允许编辑 |
 | `width` / `height` | `number \| string` | `'100%'` | 容器尺寸 |
@@ -234,9 +235,11 @@ type ComboChartConfig = {
 
 自定义工具项结构为 `{ key, label, icon?, tooltip?, onClick? }`：`label` 为按钮文字，`tooltip` 为可选的悬停提示，仅在显式传入时展示，适合把工具栏做成纯图标按钮的场景。
 
+悬浮形态下操作栏脱离文档流，图表占满整个高度；鼠标悬停图表或键盘聚焦内部时淡入，移出淡出，触屏等无 hover 能力的设备保持常显。
+
 ### 导出内容
 
-组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`registerTheme`、`setDefaultTheme`、`getDefaultTheme`，以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`LineChartConfig`、`ScatterChartConfig`、`ComboChartConfig`、`ChartType`、`ChartTheme`、`ChartMeta`、`ToolItem` 等类型。
+组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`registerTheme`、`setDefaultTheme`、`getDefaultTheme`，以及 `CEchartProps`、`ChartConfig`、`PieChartConfig`、`BarChartConfig`、`LineChartConfig`、`ScatterChartConfig`、`ComboChartConfig`、`ChartType`、`ChartTheme`、`ChartMeta`、`ToolItem`、`ToolbarMode` 等类型。
 
 ## 主题
 
