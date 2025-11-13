@@ -1,11 +1,19 @@
 import { createDefaultConfig } from 'react-chart-constructor';
-import type { ChartConfig, ChartConfigMap, ChartType } from 'react-chart-constructor';
+import type {
+  BarChartData,
+  ChartConfig,
+  ChartConfigMap,
+  ChartType,
+  DataSource,
+} from 'react-chart-constructor';
 
-/** 单个示例：示例名称 + 一份完整配置项 */
+/** 单个示例：示例名称 + 一份完整配置项，可选数据源用于演示取数能力 */
 export type ChartExample = {
   id: string;
   title: string;
   config: ChartConfig;
+  /** 数据源：静态数据或取数函数，未提供时使用配置项里的数据 */
+  data?: DataSource<ChartConfig>;
 };
 
 /** 递归可选类型，示例只需声明相对默认值的差异字段 */
@@ -17,7 +25,6 @@ type DeepPartial<T> = {
       : T[K];
 };
 
-/** 判断是否为可递归合并的普通对象 */
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
@@ -38,7 +45,6 @@ const mergeConfig = (
   return result;
 };
 
-/** 生成示例配置：以图表类型默认配置为底，仅覆盖示例声明的字段 */
 const createExampleConfig = <T extends ChartType>(
   type: T,
   patch: DeepPartial<ChartConfigMap[T]>
@@ -47,6 +53,24 @@ const createExampleConfig = <T extends ChartType>(
     createDefaultConfig(type) as unknown as Record<string, unknown>,
     patch as unknown as Record<string, unknown>
   ) as unknown as ChartConfigMap[T];
+
+/** 模拟异步接口：延迟返回一周销量，支持通过 signal 取消在途请求 */
+const fetchBarData = (signal: AbortSignal): Promise<BarChartData> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      resolve({
+        categories: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        series: [
+          { name: '线上', data: [120, 200, 150, 80, 70, 110, 130] },
+          { name: '线下', data: [60, 90, 80, 40, 50, 70, 90] },
+        ],
+      });
+    }, 800);
+    signal.addEventListener('abort', () => {
+      clearTimeout(timer);
+      reject(new DOMException('请求已取消', 'AbortError'));
+    });
+  });
 
 /** 内置示例清单，按图表类型分组，新增示例直接追加 */
 export const chartExamples: Record<ChartType, ChartExample[]> = {
@@ -114,6 +138,25 @@ export const chartExamples: Record<ChartType, ChartExample[]> = {
         },
       }),
     },
+    {
+      id: 'pie-data-source',
+      title: '静态数据源饼图',
+      config: createExampleConfig('pie', {
+        settings: {
+          title: { text: '静态数据源', subtext: '数据由 data prop 提供' },
+        },
+      }),
+      // 静态数据源直接给出数据块，初始化即覆盖配置中的数据，无请求与加载态
+      data: {
+        seriesName: '销售渠道',
+        list: [
+          { name: '直营', value: 335 },
+          { name: '分销', value: 310 },
+          { name: '电商', value: 234 },
+          { name: '其他', value: 135 },
+        ],
+      },
+    },
   ],
   bar: [
     {
@@ -175,6 +218,21 @@ export const chartExamples: Record<ChartType, ChartExample[]> = {
           yAxis: { show: false },
         },
       }),
+    },
+    {
+      id: 'bar-async',
+      title: '异步取数柱状图',
+      config: createExampleConfig('bar', {
+        data: { categories: [], series: [{ name: '加载中', data: [] }] },
+        settings: {
+          title: { text: '异步取数示例', subtext: '首帧占位后请求，可点刷新数据' },
+          legend: { show: true, orient: 'horizontal', left: 'center' },
+          xAxis: { name: '星期' },
+          yAxis: { name: '销量' },
+        },
+      }),
+      // 异步数据源：挂载后请求，工具栏出现「刷新数据」，重置后自动重新取数
+      data: ({ signal }) => fetchBarData(signal),
     },
   ],
   line: [

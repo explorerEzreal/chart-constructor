@@ -5,7 +5,6 @@ import type { ChartTheme } from '../types';
 /** 全局默认主题，未显式传入 theme 的图表使用 */
 let defaultTheme: ChartTheme | undefined;
 
-/** 全局默认主题的变更订阅集合 */
 const listeners = new Set<() => void>();
 
 /** 注册 ECharts 主题，作为对外统一入口；需在图表初始化前调用 */
@@ -19,7 +18,6 @@ export const setDefaultTheme = (theme?: ChartTheme): void => {
   listeners.forEach((listener) => listener());
 };
 
-/** 读取当前全局默认主题 */
 export const getDefaultTheme = (): ChartTheme | undefined => defaultTheme;
 
 /** 订阅全局默认主题变更，返回取消订阅函数 */

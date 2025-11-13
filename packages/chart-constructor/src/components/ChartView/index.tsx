@@ -7,7 +7,6 @@ import { useDefaultTheme } from '../../utils/theme';
 import type { ChartTheme } from '../../types';
 
 export type ChartViewProps = {
-  /** ECharts 配置 */
   option: EChartsOption;
   /** 主题名称或主题对象，未传入时使用全局默认主题 */
   theme?: ChartTheme;
@@ -29,7 +28,6 @@ export const ChartView: FC<ChartViewProps> = ({ option, theme, className, style,
   const globalTheme = useDefaultTheme();
   const resolvedTheme = theme ?? globalTheme;
 
-  // 初始化实例，卸载时销毁实例释放内存
   useEffect(() => {
     const container = containerRef.current;
     if (!container) {
@@ -55,7 +53,6 @@ export const ChartView: FC<ChartViewProps> = ({ option, theme, className, style,
     chartInstance?.setOption(option, true);
   }, [chartInstance, option]);
 
-  // 容器尺寸变化时自适应
   useEffect(() => {
     if (size?.width && size.height) {
       chartRef.current?.resize();

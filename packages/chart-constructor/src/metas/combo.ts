@@ -71,7 +71,6 @@ export const defaultConfig: ComboChartConfig = {
   },
 };
 
-/** 由配置项派生折线柱状图 ECharts option */
 export const buildOption = (config: ComboChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip, xAxis, yAxis, series } = settings;
@@ -113,7 +112,6 @@ export const buildOption = (config: ComboChartConfig): EChartsOption => {
   };
 };
 
-/** 折线柱状图元数据 */
 export const comboMeta: ChartMeta<'combo'> = {
   type: 'combo',
   name: '折线柱状图',

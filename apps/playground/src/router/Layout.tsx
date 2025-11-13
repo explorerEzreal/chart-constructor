@@ -10,7 +10,6 @@ const menuItems = menuRoutes.map((item) => ({
   label: item.name,
 }));
 
-/** 应用整体布局：顶部菜单 + 内容区 + 页脚 */
 const PageLayout = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();

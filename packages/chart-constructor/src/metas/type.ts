@@ -6,10 +6,8 @@ export type ChartMeta<T extends ChartType = ChartType> = {
   type: T;
   /** 中文名称 */
   name: string;
-  /** 默认配置项 */
   defaultConfig: ChartConfigMap[T];
   /** 抽屉中表单块的展示顺序 */
   settingKeys: SettingItemKey[];
-  /** 由配置项派生 ECharts option */
   buildOption: (config: ChartConfigMap[T]) => EChartsOption;
 };

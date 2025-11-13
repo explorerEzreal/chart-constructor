@@ -8,7 +8,6 @@ import TitleSettingItem from './title';
 import TooltipSettingItem from './tooltip';
 import type { SettingItemKey, SettingItemProps } from '../../types';
 
-/** 表单项定义 */
 export type SettingItemDefinition = {
   title: string;
   component: FC<SettingItemProps>;

@@ -46,7 +46,6 @@ export const buildCartesianGrid = (
   };
 };
 
-/** 直角坐标系坐标轴构建参数 */
 export type CartesianAxisOptions = {
   xAxis: XAxisSetting;
   yAxis: YAxisSetting;

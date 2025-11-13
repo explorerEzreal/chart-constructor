@@ -18,7 +18,6 @@ const THEME_OPTIONS = [
   { label: '深色主题', value: 'dark' },
 ];
 
-/** 操作栏形态切换项：常驻在图表上方，或悬浮在图表右上角 */
 const TOOLBAR_OPTIONS = [
   { label: '常驻操作栏', value: 'static' },
   { label: '悬浮操作栏', value: 'float' },

@@ -7,32 +7,33 @@ import type { ChartExample } from './examples';
 /** 卡片图表区固定高度，保证两列布局下每行高度一致 */
 const CHART_HEIGHT = 360;
 
-/** 工具栏只保留图标：清空内置项文字并用 tooltip 补名称，交互仍走内置逻辑（重置项除外） */
-const createCardTools = (onReset: () => void): ToolItem[] => [
+/**
+ * 工具栏只保留图标：清空内置项文字并用 tooltip 补名称
+ * 静态示例的重置回到示例初始配置；带数据源的示例不覆盖 onClick，沿用内置重置以便重置后重新取数
+ */
+const createCardTools = (onReset: () => void, hasDataSource: boolean): ToolItem[] => [
   { key: 'edit', label: '', tooltip: '编辑' },
+  // 数据源卡片补一个图标态刷新项（不覆盖 onClick，沿用内置取数逻辑）
+  ...(hasDataSource ? [{ key: 'refreshData', label: '', tooltip: '刷新数据' }] : []),
   { key: 'copyConfig', label: '', tooltip: '复制配置项' },
   { key: 'copyOption', label: '', tooltip: '复制 Options' },
   { key: 'downloadPng', label: '', tooltip: '下载图片' },
   { key: 'screenshot', label: '', tooltip: '截图分享' },
-  { key: 'reset', label: '', tooltip: '重置', onClick: onReset },
+  hasDataSource
+    ? { key: 'reset', label: '', tooltip: '重置' }
+    : { key: 'reset', label: '', tooltip: '重置', onClick: onReset },
 ];
 
 export type ExampleCardProps = {
-  /** 当前渲染的示例定义 */
   example: ChartExample;
-  /** 该示例的实时配置项 */
   config: ChartConfig;
-  /** 操作栏形态，常驻或悬浮 */
   toolbarMode: ToolbarMode;
-  /** 编辑过程中输出最新配置项 */
   onChange: (id: string, config: ChartConfig) => void;
-  /** 点击保存时输出最新配置项 */
   onSave: (id: string, config: ChartConfig) => void;
   /** 点击重置时回到示例初始配置 */
   onReset: (id: string) => void;
 };
 
-/** 示例卡片：上方图标工具栏 + 图表 + 下方示例名称 */
 const ExampleCard: FC<ExampleCardProps> = ({
   example,
   config,
@@ -41,13 +42,17 @@ const ExampleCard: FC<ExampleCardProps> = ({
   onSave,
   onReset,
 }) => {
-  const tools = useMemo(() => createCardTools(() => onReset(example.id)), [example.id, onReset]);
+  const tools = useMemo(
+    () => createCardTools(() => onReset(example.id), Boolean(example.data)),
+    [example.id, example.data, onReset]
+  );
 
   return (
     <article className="demo_card">
       <div className="demo_card__header">{example.title}</div>
       <CEchart
         value={config}
+        data={example.data}
         height={CHART_HEIGHT}
         toolbarMode={toolbarMode}
         tools={tools}

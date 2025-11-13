@@ -1,0 +1,28 @@
+// 文档小节：白底卡片，小节之间保持统一间距
+.cc-guide-section {
+  padding: 20px 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(29, 43, 90, 0.06);
+
+  & + & {
+    margin-top: 16px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+  }
+
+  &__desc {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  &__body {
+    margin-top: 16px;
+  }
+}

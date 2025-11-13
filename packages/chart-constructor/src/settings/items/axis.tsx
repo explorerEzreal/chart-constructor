@@ -5,7 +5,6 @@ import type { SettingItemProps } from '../../types';
 
 export type AxisVariant = 'x' | 'y';
 
-/** X 轴名称位置选项 */
 const NAME_LOCATION_OPTIONS = [
   { label: '起点', value: 'start' },
   { label: '居中', value: 'middle' },
@@ -60,12 +59,10 @@ const AxisSettingItem: FC<AxisSettingProps> = ({ variant, value, onChange }) => 
   );
 };
 
-/** X 轴配置表单 */
 export const XAxisSettingItem: FC<SettingItemProps> = ({ value, onChange }) => (
   <AxisSettingItem variant="x" value={value} onChange={onChange} />
 );
 
-/** Y 轴配置表单 */
 export const YAxisSettingItem: FC<SettingItemProps> = ({ value, onChange }) => (
   <AxisSettingItem variant="y" value={value} onChange={onChange} />
 );

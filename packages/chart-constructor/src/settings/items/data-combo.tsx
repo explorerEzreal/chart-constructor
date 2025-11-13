@@ -6,7 +6,6 @@ import type { ComboChartSeries, SettingItemProps } from '../../types';
 
 export type ComboDataFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
 
-/** 折线柱状图系列渲染形态选项 */
 const SERIES_TYPE_OPTIONS = [
   { label: '柱状', value: 'bar' },
   { label: '折线', value: 'line' },

@@ -9,7 +9,6 @@ import {
 } from './builders';
 import type { SettingBuildContext } from './builders';
 
-/** 饼图默认配置项 */
 export const defaultConfig: PieChartConfig = {
   version: 1,
   type: 'pie',
@@ -52,7 +51,6 @@ export const defaultConfig: PieChartConfig = {
   },
 };
 
-/** 由配置项派生饼图 ECharts option */
 export const buildOption = (config: PieChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip } = settings;
@@ -83,7 +81,6 @@ export const buildOption = (config: PieChartConfig): EChartsOption => {
   };
 };
 
-/** 饼图元数据 */
 export const pieMeta: ChartMeta<'pie'> = {
   type: 'pie',
   name: '饼图',

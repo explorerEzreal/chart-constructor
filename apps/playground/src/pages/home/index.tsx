@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import homeLogo from '@/assets/homeLogo.svg';
 import './index.less';
 
-/** 首页：项目介绍与入口 */
 const Index = () => {
   const navigate = useNavigate();
 

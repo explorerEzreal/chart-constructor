@@ -16,7 +16,6 @@ const FONT_WEIGHT_OPTIONS = [
   { label: 'lighter', value: 'lighter' },
 ];
 
-/** 标题配置表单 */
 const TitleSettingItem: FC<SettingItemProps> = ({ value, onChange }) => {
   const textStyle = value.textStyle;
   const update = (name: string, payload: unknown) => onChange({ name, payload });

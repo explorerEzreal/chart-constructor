@@ -22,9 +22,7 @@ const TYPE_ICONS: Partial<Record<ChartType, ReactNode>> = {
 };
 
 export type ChartTypePickerProps = {
-  /** 当前选中的图表类型 */
   value: ChartType;
-  /** 选中新类型时触发 */
   onChange: (type: ChartType) => void;
 };
 

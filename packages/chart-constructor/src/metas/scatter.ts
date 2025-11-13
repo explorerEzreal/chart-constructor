@@ -11,7 +11,6 @@ import {
 } from './builders';
 import type { SettingBuildContext } from './builders';
 
-/** 散点图默认配置项 */
 export const defaultConfig: ScatterChartConfig = {
   version: 1,
   type: 'scatter',
@@ -96,7 +95,6 @@ export const defaultConfig: ScatterChartConfig = {
   },
 };
 
-/** 由配置项派生散点图 ECharts option */
 export const buildOption = (config: ScatterChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip, xAxis, yAxis, series } = settings;
@@ -120,7 +118,6 @@ export const buildOption = (config: ScatterChartConfig): EChartsOption => {
   };
 };
 
-/** 散点图元数据 */
 export const scatterMeta: ChartMeta<'scatter'> = {
   type: 'scatter',
   name: '散点图',

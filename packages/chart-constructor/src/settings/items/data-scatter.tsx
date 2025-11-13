@@ -6,7 +6,6 @@ import type { ScatterChartSeries, SettingItemProps } from '../../types';
 
 export type ScatterDataFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
 
-/** 散点图数据表单：系列名称 + 每个系列的数值 x/y 坐标点增删改 */
 const ScatterDataSettingItem: FC<ScatterDataFormProps> = ({ value, onChange }) => {
   const series: ScatterChartSeries[] = value.series ?? [];
   const updateSeries = (next: ScatterChartSeries[]) =>

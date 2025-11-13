@@ -14,7 +14,6 @@ const LEFT_OPTIONS = [
   { label: '右', value: 'right' },
 ];
 
-/** 图例配置表单 */
 const LegendSettingItem: FC<SettingItemProps> = ({ value, onChange }) => {
   const update = (name: string, payload: unknown) => onChange({ name, payload });
 

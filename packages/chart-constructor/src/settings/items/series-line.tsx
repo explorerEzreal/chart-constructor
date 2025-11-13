@@ -5,7 +5,6 @@ import type { SettingItemProps } from '../../types';
 
 export type LineSeriesFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
 
-/** 折线图系列样式表单 */
 const LineSeriesSettingItem: FC<LineSeriesFormProps> = ({ value, onChange }) => {
   const update = (name: string, payload: unknown) => onChange({ name, payload });
 

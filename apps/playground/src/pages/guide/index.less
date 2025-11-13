@@ -1,0 +1,137 @@
+// 指南页：左侧目录 + 右侧文档流，仅右侧内容区滚动
+.page_guide {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
+  height: 100%;
+  min-height: 0;
+
+  // 左侧目录卡片：常驻展示，不随右侧内容滚动
+  .guide_side {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 16px;
+    overflow: auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(29, 43, 90, 0.06);
+
+    &__title {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.45);
+    }
+  }
+
+  .guide_main {
+    min-width: 0;
+    min-height: 0;
+    max-width: 1080px;
+    padding: 4px 4px 32px 0;
+    overflow: auto;
+  }
+
+  .guide_header {
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(29, 43, 90, 0.06);
+
+    &__title {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1d2b5a;
+    }
+
+    &__desc {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.8;
+      color: rgba(0, 0, 0, 0.55);
+    }
+  }
+
+  // 表格内的类型与结构用等宽字体，与代码块保持一致的观感
+  .guide_table {
+    margin-bottom: 16px;
+
+    code {
+      padding: 1px 6px;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 12px;
+      color: #1d2b5a;
+      word-break: break-all;
+      background: #f2f4f8;
+      border-radius: 4px;
+    }
+  }
+
+  .guide_tip {
+    margin: 0 0 16px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  .guide_exports {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    &__item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      font-size: 13px;
+      line-height: 1.8;
+
+      & + & {
+        border-top: 1px solid #f5f5f5;
+      }
+    }
+
+    &__label {
+      flex: 0 0 72px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    &__value {
+      color: #1d2b5a;
+      word-break: break-all;
+    }
+  }
+}
+
+// 中等宽度下隐藏目录，内容占满整宽
+@media (max-width: 992px) {
+  .page_guide {
+    grid-template-columns: minmax(0, 1fr);
+
+    .guide_side {
+      display: none;
+    }
+
+    .guide_main {
+      max-width: none;
+      padding-right: 0;
+    }
+  }
+}
+
+// 窄屏下压缩内边距，表格允许横向滚动
+@media (max-width: 768px) {
+  .page_guide {
+    .guide_main {
+      padding: 4px 0 24px;
+    }
+
+    .guide_table {
+      overflow-x: auto;
+    }
+  }
+}

@@ -11,7 +11,6 @@ import {
 } from './builders';
 import type { SettingBuildContext } from './builders';
 
-/** 折线图默认配置项 */
 export const defaultConfig: LineChartConfig = {
   version: 1,
   type: 'line',
@@ -70,7 +69,6 @@ export const defaultConfig: LineChartConfig = {
   },
 };
 
-/** 由配置项派生折线图 ECharts option */
 export const buildOption = (config: LineChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip, xAxis, yAxis, series } = settings;
@@ -99,7 +97,6 @@ export const buildOption = (config: LineChartConfig): EChartsOption => {
   };
 };
 
-/** 折线图元数据 */
 export const lineMeta: ChartMeta<'line'> = {
   type: 'line',
   name: '折线图',

@@ -59,7 +59,6 @@ export const EditDrawer: FC<EditDrawerProps> = ({
     }
   }, [groups, activeKey]);
 
-  // 单个表单块：取值并分发到注册表组件
   const renderSettingItem = (key: SettingItemKey) => {
     const settingItem = settingItems[key];
     const SettingComponent = settingItem.component;

@@ -6,7 +6,6 @@ import type { ChartDataItem, SettingItemProps } from '../../types';
 
 export type PieDataFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
 
-/** 饼图数据表单：系列名称 + 数据列表增删改 */
 const PieDataSettingItem: FC<PieDataFormProps> = ({ value, onChange }) => {
   const list: ChartDataItem[] = value.list ?? [];
   const updateList = (nextList: ChartDataItem[]) => onChange({ name: 'list', payload: nextList });

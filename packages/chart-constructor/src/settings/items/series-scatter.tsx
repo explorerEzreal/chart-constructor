@@ -3,7 +3,6 @@ import { InputNumber, Select } from 'antd';
 import { Field } from '../components';
 import type { SettingItemProps } from '../../types';
 
-/** 散点图形状选项 */
 const SYMBOL_OPTIONS = [
   { label: '圆形', value: 'circle' },
   { label: '方形', value: 'rect' },
@@ -13,7 +12,6 @@ const SYMBOL_OPTIONS = [
 
 export type ScatterSeriesFormProps = Pick<SettingItemProps, 'value' | 'onChange'>;
 
-/** 散点图系列样式表单 */
 const ScatterSeriesSettingItem: FC<ScatterSeriesFormProps> = ({ value, onChange }) => {
   const update = (name: string, payload: unknown) => onChange({ name, payload });
 

@@ -4,11 +4,9 @@ import type { ChartConfig } from '../types';
 import { copyImage, copyText } from './clipboard';
 import { createPngFileName, downloadDataUrl } from './download';
 
-/** 导出图表为 PNG dataUrl */
 export const getChartDataUrl = (instance: ECharts): string =>
   instance.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#ffffff' });
 
-/** 复制配置项 JSON */
 export const copyConfigToClipboard = async (config: ChartConfig): Promise<void> => {
   const success = await copyText(JSON.stringify(config, null, 2));
   if (success) {
@@ -18,7 +16,6 @@ export const copyConfigToClipboard = async (config: ChartConfig): Promise<void> 
   message.error('复制失败，请稍后重试');
 };
 
-/** 复制派生的 ECharts option */
 export const copyOptionToClipboard = async (option: EChartsOption): Promise<void> => {
   const success = await copyText(JSON.stringify(option, null, 2));
   if (success) {
@@ -28,7 +25,6 @@ export const copyOptionToClipboard = async (option: EChartsOption): Promise<void
   message.error('复制失败，请稍后重试');
 };
 
-/** 下载图表 PNG */
 export const downloadChartPng = (instance: ECharts | null): void => {
   if (!instance) {
     message.warning('图表尚未初始化，请稍后重试');

@@ -74,6 +74,35 @@ export const Demo = () => (
 
 柱状图数据为 `{ categories, series: [{ name, data }] }`，配置项额外包含 `xAxis`、`yAxis`、`series` 三个表单块。
 
+### 数据源
+
+`data` 支持数据块、同步函数与异步函数三种写法，取数结果写回配置中的数据块并参与抽屉编辑与保存输出。函数入参为 `{ type, config, signal }`，返回值需匹配该图表类型的数据结构（泛型据此收敛）。
+
+```tsx
+import { CEchart } from 'react-chart-constructor';
+import type { BarChartConfig, BarChartData } from 'react-chart-constructor';
+
+// 异步取数：挂载后请求，操作栏出现「刷新数据」，请求失败保留上一次数据并提示
+const loadBarData = async ({ signal }: { signal: AbortSignal }): Promise<BarChartData> => {
+  const res = await fetch('/api/bar', { signal });
+  return res.json();
+};
+
+export const Demo = () => (
+  <div style={{ height: 420 }}>
+    <CEchart<BarChartConfig>
+      value={config}
+      height="100%"
+      data={loadBarData}
+      defaultData={{ series: [{ name: '加载中', data: [] }] }}
+      onSave={(next) => saveToDatabase(next)}
+    />
+  </div>
+);
+```
+
+数据优先级为「`data` 取数结果 → `value.data` → `defaultData` → 内置默认数据」。`data` 为函数时数据由数据源托管：外部 `value` 变化只同步类型与配置项，不会冲掉取数结果；切换图表类型回落该类型并重新取数；「重置」回到默认配置后同样重新取数。请求期间图表区盖半透明遮罩，失败统一提示「请求失败，请稍后重试」，竞态下只保留最后一次结果。
+
 ### 枚举图表类型
 
 ```tsx
@@ -117,7 +146,7 @@ setDefaultTheme(undefined);
 
 - 组件：`CEchart`（同时作为默认导出）
 - 工具函数：`buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`registerTheme`、`setDefaultTheme`、`getDefaultTheme`、`CONFIG_VERSION`
-- 类型：`CEchartProps`、`ChartConfig`、`ChartConfigMap`、`ChartData`、`ChartDataItem`、`ChartType`、`ChartMeta`、`ChartTheme`、`ChartSettings`、`PieChartConfig`、`BarChartConfig`、`LineChartConfig`、`ScatterChartConfig`、`ComboChartConfig`、`ToolItem`、`ToolContext`、`ToolbarMode`、`SettingChangeEvent`、`SettingItemKey`
+- 类型：`CEchartProps`、`ChartConfig`、`ChartConfigMap`、`ChartData`、`ChartDataItem`、`ChartDataMap`、`ChartDataOf`、`DataSource`、`DataSourceContext`、`DeepPartial`、`ChartType`、`ChartMeta`、`ChartTheme`、`ChartSettings`、`PieChartConfig`、`BarChartConfig`、`LineChartConfig`、`ScatterChartConfig`、`ComboChartConfig`、`ToolItem`、`ToolContext`、`ToolbarMode`、`SettingChangeEvent`、`SettingItemKey`
 
 ## 发布前检查
 

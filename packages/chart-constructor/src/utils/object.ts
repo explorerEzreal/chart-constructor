@@ -1,4 +1,3 @@
-/** 判断是否为可递归处理的普通对象 */
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   Object.prototype.toString.call(value) === '[object Object]';
 

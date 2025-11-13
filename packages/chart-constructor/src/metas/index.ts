@@ -29,7 +29,6 @@ export const chartMetas: {
 export const listChartMetas = (): ChartMeta[] =>
   Object.values(chartMetas) as unknown as ChartMeta[];
 
-/** 获取指定图表类型的元数据 */
 export const getChartMeta = <T extends ChartType>(type: T): ChartMeta<T> => {
   // 注册表按键声明已保证类型关联，此处仅做键到泛型的收窄
   const meta = chartMetas[type] as unknown as ChartMeta<T> | undefined;

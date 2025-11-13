@@ -4,7 +4,6 @@ import type { FC, ReactNode } from 'react';
 export type DataMatrixColumn = {
   /** 列标题，留空时仅占位对齐 */
   label?: string;
-  /** 列宽类型 */
   variant?: 'name' | 'value' | 'action';
   /** 悬停提示，长系列名截断后仍可查看完整内容 */
   title?: string;

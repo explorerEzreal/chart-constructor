@@ -11,13 +11,22 @@
     flex: 1;
     min-height: 0;
   }
+
+  // 取数遮罩：铺满图表区提示加载中，不设 z-index 以便悬浮操作栏仍在最上层可点
+  &__loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.6);
+  }
 }
 
 .cc-chart-view {
   display: block;
 }
 
-// 编辑抽屉：左侧实时预览撑满，右侧配置表单独立滚动
 .cc-edit-drawer {
   // 内边距交给预览区与表单区各自控制，滚动只由表单区承担
   .ant-drawer-body {
@@ -25,7 +34,6 @@
     overflow: hidden;
   }
 
-  // 窄窗口下抽屉不宽于视口
   .ant-drawer-content-wrapper {
     max-width: 100vw;
   }
@@ -36,7 +44,6 @@
     min-height: 0;
   }
 
-  // 左侧图表占满剩余宽度与整个抽屉高度
   &__chart {
     display: flex;
     align-items: center;
@@ -56,7 +63,6 @@
     aspect-ratio: 4 / 3;
   }
 
-  // 右侧表单固定宽度，内部滚动
   &__form {
     box-sizing: border-box;
     flex: 1;
@@ -89,7 +95,6 @@
     }
   }
 
-  // 分组标题：加字重与左侧色条，突出层级
   // 选择器对齐 antd 结构提升权重，否则会被组件库默认内边距覆盖
   .ant-collapse > .ant-collapse-item {
     border-bottom: 1px solid #f0f0f0;
@@ -125,7 +130,6 @@
   }
 }
 
-// 窄屏：抽屉占满视口并改为上下堆叠
 @media (max-width: 900px) {
   .cc-edit-drawer {
     &__body {
@@ -209,7 +213,6 @@
     margin-bottom: 0;
   }
 
-  // 表格类宽控件：标签在上、控件占满整行
   &--block {
     display: block;
 

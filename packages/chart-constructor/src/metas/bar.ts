@@ -11,7 +11,6 @@ import {
 } from './builders';
 import type { SettingBuildContext } from './builders';
 
-/** 柱状图默认配置项 */
 export const defaultConfig: BarChartConfig = {
   version: 1,
   type: 'bar',
@@ -68,7 +67,6 @@ export const defaultConfig: BarChartConfig = {
   },
 };
 
-/** 由配置项派生柱状图 ECharts option */
 export const buildOption = (config: BarChartConfig): EChartsOption => {
   const { data, settings } = config;
   const { title, legend, label, tooltip, xAxis, yAxis, series } = settings;
@@ -95,7 +93,6 @@ export const buildOption = (config: BarChartConfig): EChartsOption => {
   };
 };
 
-/** 柱状图元数据 */
 export const barMeta: ChartMeta<'bar'> = {
   type: 'bar',
   name: '柱状图',
