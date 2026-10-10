@@ -52,7 +52,7 @@ const Index = () => {
 
   const handleSave = useCallback((id: string, config: ChartConfig) => {
     setConfigs((prev) => ({ ...prev, [id]: config }));
-    message.success('配置项已保存，可直接写入数据库');
+    message.success('配置项已保存');
   }, []);
 
   const handleReset = useCallback((id: string) => {
