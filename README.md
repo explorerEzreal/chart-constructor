@@ -9,7 +9,7 @@
 ```
 .
 ├── apps
-│   └── playground                                # 本地调试站（首页 + 示例页）
+│   └── playground                                # 在线演示站（首页 + 指南 + 示例页），线上 https://chart.supershiba.cn
 ├── packages
 │   ├── chart-constructor                         # 唯一发布包（发布名 react-chart-constructor）
 │   │   └── src
@@ -158,6 +158,51 @@ ECharts 5 自带 `dark` 主题可直接使用。运行期调用 `setDefaultTheme
 ## 依赖约定
 
 `react`、`react-dom`、`echarts`、`antd` 为 `react-chart-constructor` 的 peerDependencies，由使用方安装；`ahooks`、`@ant-design/icons` 为包内依赖。
+
+## playground 部署上线
+
+线上地址：`https://chart.supershiba.cn`，部署在腾讯云服务器 `106.55.36.91`，复用 Dubhe 已有的 Caddy 负责 HTTPS 与反向代理。
+
+### 架构
+
+- 服务器目录 `/opt/chart-constructor`：`releases/<版本>` 存历史产物，`current` 为相对软链指向当前版本，`caddy/` 存 Caddy 站点片段
+- 静态站点由 `chart-constructor-web`（`nginx:alpine`）容器提供，只加入 Dubhe 的 `dubhe_default` 网络，不占用宿主机端口
+- Dubhe 的 Caddy 通过 `import /etc/caddy/sites/chart-constructor.caddy` 加载子域名站点块，证书由 Caddy 自动签发与续期
+- 保留最近 5 个版本，回滚只需切换软链
+
+### 自动发布
+
+推送 `master`，或在 GitHub Actions 页面手动触发「发布 playground」：先执行 `pnpm typecheck`、`pnpm lint`、`pnpm build`，全部通过后上传产物、切换软链、重启容器并做线上健康检查。
+
+需要在仓库 Settings → Secrets and variables → Actions 中配置：
+
+| Secret | 值 |
+| --- | --- |
+| `DEPLOY_HOST` | `106.55.36.91` |
+| `DEPLOY_USER` | `ubuntu` |
+| `DEPLOY_SSH_KEY` | 服务器登录私钥全文 |
+| `DEPLOY_PATH` | `/opt/chart-constructor`，可省略，默认同值 |
+
+### 首次初始化
+
+```bash
+# 1. 本地把部署资产推到服务器后，在服务器上创建目录并启动静态容器（目录创建需要 sudo）
+rsync -az deploy/ ubuntu@106.55.36.91:/tmp/chart-constructor-deploy/
+ssh ubuntu@106.55.36.91 "sudo mkdir -p /opt/chart-constructor && bash /tmp/chart-constructor-deploy/bootstrap.sh"
+
+# 2. Dubhe 仓库同步 Caddy 站点挂载，让 Caddy 加载子域名配置（会造成数秒中断）
+cd /opt/dubhe && git pull --ff-only origin main && docker compose up -d proxy
+```
+
+前置条件：在域名服务商把 `chart.supershiba.cn` 解析到 `106.55.36.91`，否则 HTTPS 证书签发失败（Caddy 会自动重试，失败期间域名不可访问）。
+
+### 回滚
+
+```bash
+cd /opt/chart-constructor
+ls -1dt releases/*/                    # 查看历史版本
+ln -sfn releases/<目标版本> current     # 切回目标版本，无需重启容器
+```
 
 ## 发布前检查
 

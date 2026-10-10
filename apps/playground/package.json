@@ -2,7 +2,7 @@
   "name": "@chart-constructor/playground",
   "private": true,
   "version": "0.0.0",
-  "description": "chart-constructor 本地调试站",
+  "description": "chart-constructor 在线演示站",
   "type": "module",
   "scripts": {
     "dev": "vite",

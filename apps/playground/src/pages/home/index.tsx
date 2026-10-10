@@ -15,8 +15,8 @@ const Index = () => {
           <Button className="home_btn" type="primary" onClick={() => navigate('/demo')}>
             立即体验
           </Button>
-          <Button className="home_btn" onClick={() => navigate('/demo')}>
-            使用案例
+          <Button className="home_btn" onClick={() => navigate('/guide')}>
+            使用指南
           </Button>
         </Flex>
         <img className="home_logo" src={homeLogo} alt="chart-constructor" />

@@ -1,0 +1,5 @@
+# playground 站点：静态产物由独立 nginx 容器提供，HTTPS 由 Caddy 自动签发续期
+chart.supershiba.cn {
+  encode gzip
+  reverse_proxy chart-constructor-web:80
+}

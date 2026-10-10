@@ -36,4 +36,18 @@ export default defineConfig(({ mode }) => ({
       allow: [searchForWorkspaceRoot(process.cwd())],
     },
   },
+  build: {
+    // 按依赖体积分包，避免 antd 与 echarts 一起挤进入口 chunk
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          antd: ['antd', '@ant-design/icons'],
+          echarts: ['echarts'],
+        },
+      },
+    },
+    // echarts 单包体积本身较大，阈值放宽到与现状匹配
+    chunkSizeWarningLimit: 1200,
+  },
 }));

@@ -1,0 +1,7 @@
+<!-- 站点图标：柱状图造型，主色与站点主题色保持一致 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#1677ff" />
+  <rect x="14" y="32" width="8" height="18" rx="3" fill="#ffffff" opacity="0.85" />
+  <rect x="28" y="24" width="8" height="26" rx="3" fill="#ffffff" opacity="0.92" />
+  <rect x="42" y="14" width="8" height="36" rx="3" fill="#ffffff" />
+</svg>

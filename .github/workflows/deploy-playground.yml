@@ -1,0 +1,106 @@
+# playground 自动发布：master 推送或手动触发，产物以 releases + current 软链原子切换
+name: 发布 playground
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同一时间只跑一个发布任务，避免软链互相覆盖
+concurrency:
+  group: playground-deploy
+  cancel-in-progress: false
+
+env:
+  SITE_URL: https://chart.supershiba.cn
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 类型检查
+        run: pnpm typecheck
+
+      - name: 代码规范检查
+        run: pnpm lint
+
+      - name: 构建产物
+        run: pnpm build
+
+      # 缺少密钥时直接失败，避免静默跳过发布
+      - name: 校验部署密钥
+        run: |
+          if [ -z "${{ secrets.DEPLOY_HOST }}" ] || [ -z "${{ secrets.DEPLOY_USER }}" ] || [ -z "${{ secrets.DEPLOY_SSH_KEY }}" ]; then
+            echo "缺少 DEPLOY_HOST / DEPLOY_USER / DEPLOY_SSH_KEY，请在仓库 Settings → Secrets 中配置"
+            exit 1
+          fi
+
+      - name: 配置 SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > "$HOME/.ssh/deploy_key"
+          chmod 600 "$HOME/.ssh/deploy_key"
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: 上传产物与部署资产
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_ROOT: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          set -euo pipefail
+          DEPLOY_ROOT="${DEPLOY_ROOT:-/opt/chart-constructor}"
+          VERSION="$(date -u +%Y%m%d%H%M%S)-$(echo "${GITHUB_SHA}" | cut -c1-7)"
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "DEPLOY_ROOT=${DEPLOY_ROOT}" >> "$GITHUB_ENV"
+
+          SSH_OPTS=(-i "$HOME/.ssh/deploy_key" -o StrictHostKeyChecking=yes)
+          TARGET="${DEPLOY_USER}@${DEPLOY_HOST}"
+          ssh "${SSH_OPTS[@]}" "$TARGET" "mkdir -p '${DEPLOY_ROOT}/releases/${VERSION}' '${DEPLOY_ROOT}/caddy'"
+
+          # 先传产物，再传部署资产，最后在服务器上切软链
+          rsync -az --delete -e "ssh ${SSH_OPTS[*]}" apps/playground/dist/ "$TARGET:${DEPLOY_ROOT}/releases/${VERSION}/"
+          rsync -az -e "ssh ${SSH_OPTS[*]}" deploy/nginx.conf deploy/docker-compose.yml deploy/bootstrap.sh deploy/release.sh "$TARGET:${DEPLOY_ROOT}/"
+          rsync -az -e "ssh ${SSH_OPTS[*]}" deploy/caddy/ "$TARGET:${DEPLOY_ROOT}/caddy/"
+
+      - name: 切换软链并重启容器
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/deploy_key" -o StrictHostKeyChecking=yes "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "bash '${DEPLOY_ROOT}/release.sh' '${VERSION}' '${DEPLOY_ROOT}'"
+
+      - name: 线上健康检查
+        run: |
+          set -euo pipefail
+          for path in / /demo /guide; do
+            code="$(curl -s -o /dev/null -w '%{http_code}' -m 20 "${SITE_URL}${path}")"
+            echo "${path} -> ${code}"
+            if [ "$code" != "200" ]; then
+              echo "健康检查失败：${SITE_URL}${path} 返回 ${code}"
+              exit 1
+            fi
+          done

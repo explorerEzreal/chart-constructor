@@ -1,0 +1,17 @@
+# playground 静态站点：独立 nginx 容器，仅加入 Dubhe 现有网络，不占用宿主机端口
+services:
+  web:
+    image: nginx:alpine
+    container_name: chart-constructor-web
+    restart: unless-stopped
+    volumes:
+      # 只读挂载发布根目录，容器内通过 /srv/current 读取当前版本
+      - /opt/chart-constructor:/srv:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - dubhe_default
+
+networks:
+  # 复用 Dubhe 已创建的网络，Caddy 才能按容器名反代
+  dubhe_default:
+    external: true
