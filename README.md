@@ -61,75 +61,9 @@ export const Demo = () => (
 );
 ```
 
-### 配置项结构
 
-内置图表类型：`pie`（饼图）、`bar`（柱状图）、`line`（折线图）、`scatter`（散点图）、`combo`（折线柱状图）。切换类型时用 `createDefaultConfig(type)` 生成对应默认配置。
 
-`ChartConfig` 为下列配置的联合类型，统一为 `{ version: 1, type, data, settings }`：
 
-| 图表类型 | `data` 结构 | `settings.series` 专属字段 |
-| --- | --- | --- |
-| `pie` | `{ seriesName, list: [{ name, value }] }` | - |
-| `bar` | `{ categories, series: [{ name, data }] }` | `barWidth`、`borderRadius`、`stack` |
-| `line` | `{ categories, series: [{ name, data }] }` | `lineWidth`、`smooth`、`area`、`showSymbol`、`symbolSize` |
-| `scatter` | `{ series: [{ name, data: [[x, y]] }] }`（数值 x/y 轴） | `symbolSize`、`symbol` |
-| `combo` | `{ categories, series: [{ name, type: 'bar' \| 'line', data }] }` | 柱状与折线字段合并，共用单 Y 轴 |
-
-`settings` 共用 `title`、`legend`、`label`、`tooltip`，直角坐标系图表另有 `xAxis`、`yAxis`。`title` 为 `{ show, text, subtext, left, textStyle }`；`label` 的 `position` 取值随图表类型不同；`xAxis` 含 `nameLocation` 与 `labelRotate`，`yAxis` 含 `showSplitLine`。
-
-### 组件 props
-
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `value` / `defaultValue` | `ChartConfig` | - | 初始配置项，未传入时使用内置饼图默认配置；`defaultValue` 为 `value` 的别名 |
-| `data` | `DataSource` | - | 数据源：数据块、同步取数函数或异步取数函数；取数结果优先于 `value` 中的数据 |
-| `defaultData` | `DeepPartial<ChartData>` | - | 实例级兜底数据，仅在无取数结果且未提供 `value.data` 时生效，按差异字段深合并 |
-| `onChange` | `(config: ChartConfig) => void` | - | 点击保存后输出的配置项，草稿与已提交值一致时不触发 |
-| `onSave` | `(config: ChartConfig) => void` | - | 点击保存时输出的最新配置项，始终触发 |
-| `showToolbar` | `boolean` | `true` | 是否展示操作栏 |
-| `toolbarMode` | `'static' \| 'float'` | `'static'` | 操作栏展示形态：`static` 常驻在图表上方，`float` 悬浮在图表右上角并在悬停时淡入 |
-| `tools` | `ToolItem[]` | - | 自定义工具项，同 key 覆盖内置项，新 key 追加 |
-| `editable` | `boolean` | `true` | 是否允许编辑 |
-| `width` / `height` | `number \| string` | `'100%'` | 容器尺寸 |
-| `theme` | `string \| object` | - | ECharts 主题 |
-| `className` / `style` | - | - | 容器样式扩展 |
-| `onReady` | `(instance: ECharts) => void` | - | 图表实例就绪回调 |
-
-内置工具项：`edit`、`refreshData`（仅 `data` 为取数函数时出现）、`copyConfig`、`copyOption`、`downloadPng`、`screenshot`、`reset`。
-
-自定义工具项结构为 `{ key, label, icon?, tooltip?, onClick? }`：`label` 为按钮文字，`tooltip` 为可选的悬停提示，仅在显式传入时展示，适合把工具栏做成纯图标按钮的场景。
-
-悬浮形态下操作栏脱离文档流，图表占满整个高度；鼠标悬停图表或键盘聚焦内部时淡入，移出淡出，触屏等无 hover 能力的设备保持常显。
-
-### 数据源
-
-`data` 可传数据块、同步函数或异步函数，取数结果写回配置中的数据块，抽屉照常可编辑，保存后经 `onSave` 输出。`data` 为函数时组件挂载后立即请求，并在操作栏提供「刷新数据」；请求期间图表区盖半透明遮罩，失败提示「请求失败，请稍后重试」并保留上一次数据，连点刷新只取最后一次结果。
-
-```tsx
-import { CEchart } from 'react-chart-constructor';
-import type { LineChartConfig } from 'react-chart-constructor';
-
-// data 为函数时，入参给出图表类型、当前配置与取消信号，返回值需匹配该图表类型的数据结构
-export const Demo = () => (
-  <div style={{ height: 420 }}>
-    <CEchart<LineChartConfig>
-      value={config}
-      height="100%"
-      data={async ({ type, signal }) => {
-        const res = await fetch(`/api/chart/${type}`, { signal });
-        return res.json();
-      }}
-      onSave={(next) => saveToDatabase(next)}
-    />
-  </div>
-);
-```
-
-三层数据的优先级为「`data` 取数结果 → `value.data` → `defaultData` → 内置默认数据」：`data` 为函数时数据由数据源托管，外部 `value` 变化只同步类型与配置项，不会冲掉取数结果；切换图表类型时回落该类型并重新取数；「重置」回到该类型默认配置后同样会重新取数。
-
-### 导出内容
-
-组件 `CEchart`（同时作为默认导出）、工具函数 `buildOption`、`createDefaultConfig`、`normalizeConfig`、`listChartMetas`、`getChartMeta`、`registerTheme`、`setDefaultTheme`、`getDefaultTheme`，以及 `CEchartProps`、`ChartConfig`、`ChartConfigMap`、`ChartDataMap`、`ChartData`、`DataSource`、`DataSourceContext`、`DeepPartial`、`PieChartConfig`、`BarChartConfig`、`LineChartConfig`、`ScatterChartConfig`、`ComboChartConfig`、`ChartType`、`ChartTheme`、`ChartMeta`、`ToolItem`、`ToolContext`、`ToolbarMode` 等类型。
 
 ## 主题
 
