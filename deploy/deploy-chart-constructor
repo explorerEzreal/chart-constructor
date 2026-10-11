@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
-# chart-constructor 服务器发布：接收 CI 静态产物并原子切换版本，保留旧构建方式作为迁移回退
+# chart-constructor 服务器发布：接收 CI 静态产物并原子切换版本
 set -Eeuo pipefail
 umask 022
 
-APP_NAME="chart-constructor"
 ROOT_DIR="/srv/chart-constructor"
-REPO_DIR="${ROOT_DIR}/repo.git"
 RELEASES_DIR="${ROOT_DIR}/releases"
 CURRENT_LINK="${ROOT_DIR}/current"
 PREVIOUS_LINK="${ROOT_DIR}/previous"
-REPOSITORY_URL="https://github.com/explorerEzreal/chart-constructor.git"
-BRANCH="master"
 HEALTH_URL="https://chart.supershiba.cn"
 KEEP_RELEASES="${KEEP_RELEASES:-5}"
-PNPM_VERSION="${PNPM_VERSION:-11.25.0}"
 LOCK_FILE="${ROOT_DIR}/.deploy.lock"
 TMP_DIR=""
 ARCHIVE_TMP=""
@@ -39,23 +34,6 @@ trap cleanup EXIT
 
 validate_sha() {
   [[ "${1:-}" =~ ^[0-9a-f]{40}$ ]] || fail "提交 SHA 格式不正确"
-}
-
-ensure_repo() {
-  if [[ ! -d "${REPO_DIR}" ]]; then
-    git init --bare "${REPO_DIR}" >/dev/null
-  fi
-  git --git-dir="${REPO_DIR}" remote set-url origin "${REPOSITORY_URL}"
-}
-
-fetch_branch() {
-  git --git-dir="${REPO_DIR}" fetch --prune --no-tags origin "+refs/heads/${BRANCH}:refs/heads/${BRANCH}"
-}
-
-validate_branch_commit() {
-  local sha="$1"
-  git --git-dir="${REPO_DIR}" merge-base --is-ancestor "${sha}" "refs/heads/${BRANCH}" \
-    || fail "提交不在 ${BRANCH} 分支历史中"
 }
 
 activate_release() {
@@ -197,71 +175,6 @@ publish() {
   restore_after_failed_health "${current_target}"
 }
 
-deploy() {
-  local sha="${1:-}"
-  local current_target release_dir pnpm_bin
-  validate_sha "${sha}"
-  command -v git >/dev/null 2>&1 || fail "缺少 git"
-  command -v curl >/dev/null 2>&1 || fail "缺少 curl"
-  command -v pnpm >/dev/null 2>&1 || fail "缺少 pnpm ${PNPM_VERSION}"
-  pnpm_bin="$(command -v pnpm)"
-  [[ "$(${pnpm_bin} --version 2>/dev/null | tail -n 1)" == "${PNPM_VERSION}" ]] \
-    || fail "pnpm 版本不是 ${PNPM_VERSION}"
-
-  mkdir -p "${RELEASES_DIR}"
-  exec 9>"${LOCK_FILE}"
-  flock -n 9 || fail "已有发布任务正在执行"
-
-  ensure_repo
-  fetch_branch
-  validate_branch_commit "${sha}"
-  current_target="$(current_release)"
-
-  if [[ -n "${current_target}" && -f "${current_target}/.deploy-sha" ]] \
-      && [[ "$(cat "${current_target}/.deploy-sha")" == "${sha}" ]]; then
-    log "当前版本已是 ${sha}，执行幂等健康检查"
-    health_check || restore_after_failed_health "$(previous_release)"
-    log "发布成功：${sha}"
-    return 0
-  fi
-
-  TMP_DIR="$(mktemp -d "${ROOT_DIR}/.build-${sha:0:12}.XXXXXX")"
-  log "导出提交 ${sha}"
-  git --git-dir="${REPO_DIR}" archive --format=tar "${sha}" | tar -xf - -C "${TMP_DIR}"
-
-  log "安装依赖"
-  (cd "${TMP_DIR}" && pnpm install --frozen-lockfile)
-
-  log "类型检查"
-  (cd "${TMP_DIR}" && pnpm typecheck)
-
-  log "代码规范检查"
-  (cd "${TMP_DIR}" && pnpm lint)
-
-  log "构建 playground"
-  (cd "${TMP_DIR}" && pnpm build)
-
-  [[ -f "${TMP_DIR}/apps/playground/dist/index.html" ]] || fail "构建产物缺少 apps/playground/dist/index.html"
-
-  release_dir="${RELEASES_DIR}/${sha:0:12}-$(date '+%Y%m%d%H%M%S')-$$"
-  mkdir -p "${release_dir}"
-  cp -a "${TMP_DIR}/apps/playground/dist/." "${release_dir}/"
-  printf '%s\n' "${sha}" > "${release_dir}/.deploy-sha"
-  chmod -R a+rX "${release_dir}"
-
-  log "切换版本到 ${release_dir}"
-  activate_release "${release_dir}"
-
-  if health_check; then
-    set_previous_release "${current_target}"
-    prune_releases
-    log "发布成功：${sha}"
-    return 0
-  fi
-
-  restore_after_failed_health "${current_target}"
-}
-
 rollback() {
   local current_target previous_target
   exec 9>"${LOCK_FILE}"
@@ -291,7 +204,6 @@ mkdir -p "${ROOT_DIR}" "${RELEASES_DIR}"
 command="${SSH_ORIGINAL_COMMAND:-}"
 case "${command}" in
   publish\ *) publish "${command#publish }" ;;
-  deploy\ *) deploy "${command#deploy }" ;;
   rollback) rollback ;;
   *) fail "不允许的命令" ;;
 esac

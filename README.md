@@ -134,7 +134,6 @@ Nginx
 ```text
 publish <40位SHA>   # 从标准输入接收 tar.gz，校验后切换版本
 rollback            # 切换到 previous
-deploy <40位SHA>    # 迁移期兼容的服务器构建方式，验收后删除
 ```
 
 Jenkins 私钥在服务器 `authorized_keys` 中通过 `restrict,command="..."` 限制为上述命令，不能执行任意 Shell 命令。
@@ -142,9 +141,8 @@ Jenkins 私钥在服务器 `authorized_keys` 中通过 `restrict,command="..."` 
 ### 首次初始化
 
 ```bash
-# 1. 安装固定版本 pnpm 并部署发布脚本
+# 1. 部署发布脚本
 ssh ubuntu@106.55.36.91
-sudo npm install -g pnpm@11.25.0
 sudo install -m 0755 /tmp/deploy-chart-constructor /usr/local/bin/deploy-chart-constructor
 
 # 2. 初始化发布目录
