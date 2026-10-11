@@ -95,47 +95,67 @@ ECharts 5 自带 `dark` 主题可直接使用。运行期调用 `setDefaultTheme
 
 ## playground 部署上线
 
-线上地址：`https://chart.supershiba.cn`，部署在腾讯云服务器 `106.55.36.91`，复用 Dubhe 已有的 Caddy 负责 HTTPS 与反向代理。
+线上地址：`https://chart.supershiba.cn`，部署在腾讯云服务器 `106.55.36.91`。发布由 Jenkins 任务 `chart-constructor` 触发，静态产物由宿主机 Nginx 直接提供。
 
 ### 架构
 
-- 服务器目录 `/opt/chart-constructor`：`releases/<版本>` 存历史产物，`current` 为相对软链指向当前版本，`caddy/` 存 Caddy 站点片段
-- 静态站点由 `chart-constructor-web`（`nginx:alpine`）容器提供，只加入 Dubhe 的 `dubhe_default` 网络，不占用宿主机端口
-- Dubhe 的 Caddy 通过 `import /etc/caddy/sites/chart-constructor.caddy` 加载子域名站点块，证书由 Caddy 自动签发与续期
-- 保留最近 5 个版本，回滚只需切换软链
+- 服务器目录 `/srv/chart-constructor`：`repo.git` 是 Bare 仓库，`releases/<版本>` 保存历史产物，`current` 和 `previous` 为相对软链，保留最近 5 个版本。
+- Jenkins 仅负责检出提交和触发发布；生产构建在服务器执行 `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm lint`、`pnpm build`。
+- 构建成功后原子切换 `current`，健康检查失败自动恢复 `previous`。
+- Nginx 使用现有 `*.supershiba.cn` 证书，提供 SPA 回退、入口 HTML 不缓存和 `/assets/` 长期缓存策略。
 
-### 自动发布
+### Jenkins 配置
 
-推送 `master`，或在 GitHub Actions 页面手动触发「发布 playground」：先执行 `pnpm typecheck`、`pnpm lint`、`pnpm build`，全部通过后上传产物、切换软链、重启容器并做线上健康检查。
-
-需要在仓库 Settings → Secrets and variables → Actions 中配置：
-
-| Secret | 值 |
-| --- | --- |
-| `DEPLOY_HOST` | `106.55.36.91` |
-| `DEPLOY_USER` | `ubuntu` |
-| `DEPLOY_SSH_KEY` | 服务器登录私钥全文 |
-| `DEPLOY_PATH` | `/opt/chart-constructor`，可省略，默认同值 |
+1. 在 Jenkins 凭据中新增 SSH 用户名和私钥凭据，ID 为 `chart-constructor-server-deploy`，用户名 `ubuntu`。
+2. 在 Jenkins 凭据中新增 Secret text，ID 为 `github-webhook-jenkins`，值使用 GitHub Webhook Secret。
+3. 在 Jenkins 创建或更新任务 `chart-constructor`：Pipeline script from SCM，仓库地址 `https://github.com/explorerEzreal/chart-constructor.git`，分支 `*/master`，脚本路径 `Jenkinsfile`。
+4. 为任务启用 `GitHub hook trigger for GITScm polling`；手动构建可选填 `TARGET_SHA`，留空发布当前 `master`。
+5. 在 GitHub 仓库添加 Webhook：地址 `https://jenkins.supershiba.cn/github-webhook/`，事件选择 `Just the push event`，Secret 与 Jenkins 中的 `github-webhook-jenkins` 保持一致。
 
 ### 首次初始化
 
 ```bash
-# 1. 本地把部署资产推到服务器后，在服务器上创建目录并启动静态容器（目录创建需要 sudo）
-rsync -az deploy/ ubuntu@106.55.36.91:/tmp/chart-constructor-deploy/
-ssh ubuntu@106.55.36.91 "sudo mkdir -p /opt/chart-constructor && bash /tmp/chart-constructor-deploy/bootstrap.sh"
+# 1. 安装固定版本 pnpm 并部署发布脚本
+ssh ubuntu@106.55.36.91
+sudo npm install -g pnpm@11.25.0
+sudo install -m 0755 /tmp/deploy-chart-constructor /usr/local/bin/deploy-chart-constructor
 
-# 2. Dubhe 仓库同步 Caddy 站点挂载，让 Caddy 加载子域名配置（会造成数秒中断）
-cd /opt/dubhe && git pull --ff-only origin main && docker compose up -d proxy
+# 2. 初始化发布目录
+sudo mkdir -p /srv/chart-constructor/releases /var/www/certbot
+sudo chown -R ubuntu:ubuntu /srv/chart-constructor
+
+# 3. 安装 Nginx 站点配置
+sudo cp deploy/nginx/chart.supershiba.cn.conf /etc/nginx/sites-available/chart.supershiba.cn.conf
+sudo ln -sfn /etc/nginx/sites-available/chart.supershiba.cn.conf /etc/nginx/sites-enabled/chart.supershiba.cn.conf
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
-前置条件：在域名服务商把 `chart.supershiba.cn` 解析到 `106.55.36.91`，否则 HTTPS 证书签发失败（Caddy 会自动重试，失败期间域名不可访问）。
+为 Jenkins 生成独立部署密钥，并将公钥加入 `/home/ubuntu/.ssh/authorized_keys`：
 
-### 回滚
+```text
+restrict,command="/usr/local/bin/deploy-chart-constructor" ssh-ed25519 <公钥>
+```
+
+前置条件：`chart.supershiba.cn` 的 A 记录指向 `106.55.36.91`，Nginx 证书文件 `/etc/nginx/ssl/supershiba.cn/fullchain.pem` 和 `/etc/nginx/ssl/supershiba.cn/privkey.pem` 存在且覆盖该域名。
+
+### 手动发布与回滚
 
 ```bash
-cd /opt/chart-constructor
-ls -1dt releases/*/                    # 查看历史版本
-ln -sfn releases/<目标版本> current     # 切回目标版本，无需重启容器
+# 在 Jenkins 任务中填写 TARGET_SHA，可重发指定已合入 master 的提交
+# 不回滚构建缓存，直接切换到上一版本
+ssh -i <Jenkins私钥> ubuntu@106.55.36.91 rollback
+
+# 查看服务器版本
+ssh -i <登录密钥> ubuntu@106.55.36.91 "ls -1dt /srv/chart-constructor/releases/*/"
+```
+
+发布完成后检查：
+
+```bash
+curl -fsS -o /dev/null -w '%{http_code}\n' https://chart.supershiba.cn/
+curl -fsS -o /dev/null -w '%{http_code}\n' https://chart.supershiba.cn/demo
+curl -fsS -o /dev/null -w '%{http_code}\n' https://chart.supershiba.cn/guide
 ```
 
 ## 发布前检查
