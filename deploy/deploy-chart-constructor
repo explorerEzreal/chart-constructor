@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# chart-constructor 服务器端发布：拉取指定提交、构建静态产物并原子切换版本
+# chart-constructor 服务器发布：接收 CI 静态产物并原子切换版本，保留旧构建方式作为迁移回退
 set -Eeuo pipefail
 umask 022
 
@@ -16,6 +16,7 @@ KEEP_RELEASES="${KEEP_RELEASES:-5}"
 PNPM_VERSION="${PNPM_VERSION:-11.25.0}"
 LOCK_FILE="${ROOT_DIR}/.deploy.lock"
 TMP_DIR=""
+ARCHIVE_TMP=""
 
 log() {
   printf '[%s] %s\n' "$(date '+%F %T')" "$*"
@@ -29,6 +30,9 @@ fail() {
 cleanup() {
   if [[ -n "${TMP_DIR}" && -d "${TMP_DIR}" ]]; then
     rm -rf "${TMP_DIR}"
+  fi
+  if [[ -n "${ARCHIVE_TMP}" && -f "${ARCHIVE_TMP}" ]]; then
+    rm -f "${ARCHIVE_TMP}"
   fi
 }
 trap cleanup EXIT
@@ -120,6 +124,77 @@ restore_after_failed_health() {
   activate_release "${fallback}"
   health_check || fail "回滚后健康检查仍然失败"
   fail "发布失败，已回滚到上一版本"
+}
+
+validate_archive() {
+  local archive="$1"
+  local entries
+  [[ -s "${archive}" ]] || fail "未收到静态产物"
+  gzip -t "${archive}" >/dev/null 2>&1 || fail "静态产物不是有效的 tar.gz"
+
+  entries="$(tar -tzf "${archive}")"
+  if printf '%s\n' "${entries}" | grep -Eq '(^/|(^|/)\.\.(/|$))'; then
+    fail "静态产物包含非法路径"
+  fi
+  if ! printf '%s\n' "${entries}" | sed 's#^\./##' | grep -qx 'index.html'; then
+    fail "静态产物缺少 index.html"
+  fi
+  if ! printf '%s\n' "${entries}" | sed 's#^\./##' | grep -qx '.deploy-sha'; then
+    fail "静态产物缺少 .deploy-sha"
+  fi
+}
+
+publish() {
+  local sha="${1:-}"
+  local current_target release_dir artifact_sha
+  validate_sha "${sha}"
+  command -v tar >/dev/null 2>&1 || fail "缺少 tar"
+  command -v gzip >/dev/null 2>&1 || fail "缺少 gzip"
+  command -v curl >/dev/null 2>&1 || fail "缺少 curl"
+
+  mkdir -p "${RELEASES_DIR}"
+  exec 9>"${LOCK_FILE}"
+  flock -n 9 || fail "已有发布任务正在执行"
+
+  current_target="$(current_release)"
+
+  ARCHIVE_TMP="$(mktemp "${ROOT_DIR}/.artifact-${sha:0:12}.XXXXXX")"
+  log "接收静态产物 ${sha}"
+  cat > "${ARCHIVE_TMP}"
+  validate_archive "${ARCHIVE_TMP}"
+
+  if [[ -n "${current_target}" && -f "${current_target}/.deploy-sha" ]] \
+      && [[ "$(cat "${current_target}/.deploy-sha")" == "${sha}" ]]; then
+    log "当前版本已是 ${sha}，执行幂等健康检查"
+    health_check || restore_after_failed_health "$(previous_release)"
+    log "发布成功：${sha}"
+    return 0
+  fi
+
+  TMP_DIR="$(mktemp -d "${ROOT_DIR}/.publish-${sha:0:12}.XXXXXX")"
+  tar -xzf "${ARCHIVE_TMP}" -C "${TMP_DIR}"
+
+  [[ -f "${TMP_DIR}/index.html" ]] || fail "静态产物缺少 index.html"
+  [[ -f "${TMP_DIR}/.deploy-sha" ]] || fail "静态产物缺少 .deploy-sha"
+  artifact_sha="$(tr -d '\r\n' < "${TMP_DIR}/.deploy-sha")"
+  [[ "${artifact_sha}" == "${sha}" ]] || fail "静态产物 SHA 与发布参数不一致"
+
+  release_dir="${RELEASES_DIR}/${sha:0:12}-$(date '+%Y%m%d%H%M%S')-$$"
+  mv "${TMP_DIR}" "${release_dir}"
+  TMP_DIR=""
+  chmod -R a+rX "${release_dir}"
+
+  log "切换版本到 ${release_dir}"
+  activate_release "${release_dir}"
+
+  if health_check; then
+    set_previous_release "${current_target}"
+    prune_releases
+    log "发布成功：${sha}"
+    return 0
+  fi
+
+  restore_after_failed_health "${current_target}"
 }
 
 deploy() {
@@ -215,6 +290,7 @@ mkdir -p "${ROOT_DIR}" "${RELEASES_DIR}"
 
 command="${SSH_ORIGINAL_COMMAND:-}"
 case "${command}" in
+  publish\ *) publish "${command#publish }" ;;
   deploy\ *) deploy "${command#deploy }" ;;
   rollback) rollback ;;
   *) fail "不允许的命令" ;;

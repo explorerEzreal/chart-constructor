@@ -95,25 +95,49 @@ ECharts 5 自带 `dark` 主题可直接使用。运行期调用 `setDefaultTheme
 
 ## playground 部署上线
 
-线上地址：`https://chart.supershiba.cn`，部署在腾讯云服务器 `106.55.36.91`。发布由 Jenkins 任务 `chart-constructor` 手动触发，静态产物由宿主机 Nginx 直接提供。
+线上地址：`https://chart.supershiba.cn`。Jenkins 负责检出代码、构建静态产物并上传；服务器只负责发布、切换版本和回滚，Nginx 直接提供静态文件。
 
 ### 架构
 
-- 服务器目录 `/srv/chart-constructor`：`repo.git` 是 Bare 仓库，`releases/<版本>` 保存历史产物，`current` 和 `previous` 为相对软链，保留最近 5 个版本。
-- Jenkins 仅负责解析发布参数和触发发布；生产构建在服务器执行 `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm lint`、`pnpm build`。
-- Pipeline 脚本直接保存在 Jenkins 任务的 `Pipeline script` 配置中，项目仓库不再维护 `Jenkinsfile`。
-- 构建成功后原子切换 `current`，健康检查失败自动恢复 `previous`。
+```text
+GitHub
+  ↓
+Jenkins 检出并构建 apps/playground/dist
+  ↓ tar.gz + SSH 标准输入
+服务器执行 publish <SHA>
+  ↓ 原子切换 releases/current
+Nginx
+```
+
+- Jenkins 使用 Node `24.21.0` 和 pnpm `11.25.0`，不在生产服务器执行前端构建。
+- 服务器目录 `/srv/chart-constructor`：`releases/<版本>` 保存历史产物，`current` 和 `previous` 为相对软链，保留最近 5 个版本。
+- 构建产物解压后根目录直接包含 `index.html`、`assets/`、`favicon.svg` 和 `.deploy-sha`。
+- 服务器完成健康检查后切换 `current`；失败时自动恢复 `previous`。
 - Nginx 使用现有 `*.supershiba.cn` 证书，提供 SPA 回退、入口 HTML 不缓存和 `/assets/` 长期缓存策略。
 
 ### Jenkins 配置
 
-1. 在 Jenkins 凭据中新增 SSH 用户名和私钥凭据，ID 为 `chart-constructor-server-deploy`，用户名 `ubuntu`。
-2. 在 Jenkins 任务 `chart-constructor` 中选择 `Pipeline script`，将发布脚本粘贴到任务的内联脚本编辑器中。
-3. 任务参数：
+1. 安装 Jenkins `nodejs` 插件，新增全局 Node 工具 `node-24.21.0`，并安装全局包 `pnpm@11.25.0`。
+2. 在 Jenkins 凭据中配置 SSH 用户名和私钥凭据，ID 为 `chart-constructor-server-deploy`，用户名 `ubuntu`。
+3. Pipeline 脚本保存在 Jenkins 任务的 `Pipeline script` 配置中，项目仓库不维护 `Jenkinsfile`。
+4. 任务参数：
    - `ACTION`：`deploy` 或 `rollback`，默认 `deploy`。
-   - `TARGET_SHA`：完整 40 位 SHA；`ACTION=deploy` 且留空时，由 Jenkins 通过 `git ls-remote` 解析 `master` 当前 HEAD。
-4. `ACTION=rollback` 时忽略 `TARGET_SHA`，切换到服务器上的 `previous` 版本。
-5. 任务不配置 SCM、GitHub Webhook 或其他自动触发器，仅从 Jenkins 页面手动启动。
+   - `TARGET_SHA`：完整 40 位 SHA；发布时留空则使用 `master` 当前 HEAD。
+5. 发布流程为：检出目标 SHA、安装依赖、类型检查、代码检查、构建、归档 tar.gz、上传产物、执行服务器 `publish <SHA>`。
+6. `ACTION=rollback` 时跳过构建，直接调用服务器回滚命令。
+7. 任务不配置 SCM、GitHub Webhook 或其他自动触发器，只从 Jenkins 页面手动启动。
+
+### 服务器发布命令
+
+服务器 `/usr/local/bin/deploy-chart-constructor` 提供：
+
+```text
+publish <40位SHA>   # 从标准输入接收 tar.gz，校验后切换版本
+rollback            # 切换到 previous
+deploy <40位SHA>    # 迁移期兼容的服务器构建方式，验收后删除
+```
+
+Jenkins 私钥在服务器 `authorized_keys` 中通过 `restrict,command="..."` 限制为上述命令，不能执行任意 Shell 命令。
 
 ### 首次初始化
 
