@@ -95,22 +95,25 @@ ECharts 5 自带 `dark` 主题可直接使用。运行期调用 `setDefaultTheme
 
 ## playground 部署上线
 
-线上地址：`https://chart.supershiba.cn`，部署在腾讯云服务器 `106.55.36.91`。发布由 Jenkins 任务 `chart-constructor` 触发，静态产物由宿主机 Nginx 直接提供。
+线上地址：`https://chart.supershiba.cn`，部署在腾讯云服务器 `106.55.36.91`。发布由 Jenkins 任务 `chart-constructor` 手动触发，静态产物由宿主机 Nginx 直接提供。
 
 ### 架构
 
 - 服务器目录 `/srv/chart-constructor`：`repo.git` 是 Bare 仓库，`releases/<版本>` 保存历史产物，`current` 和 `previous` 为相对软链，保留最近 5 个版本。
-- Jenkins 仅负责检出提交和触发发布；生产构建在服务器执行 `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm lint`、`pnpm build`。
+- Jenkins 仅负责解析发布参数和触发发布；生产构建在服务器执行 `pnpm install --frozen-lockfile`、`pnpm typecheck`、`pnpm lint`、`pnpm build`。
+- Pipeline 脚本直接保存在 Jenkins 任务的 `Pipeline script` 配置中，项目仓库不再维护 `Jenkinsfile`。
 - 构建成功后原子切换 `current`，健康检查失败自动恢复 `previous`。
 - Nginx 使用现有 `*.supershiba.cn` 证书，提供 SPA 回退、入口 HTML 不缓存和 `/assets/` 长期缓存策略。
 
 ### Jenkins 配置
 
 1. 在 Jenkins 凭据中新增 SSH 用户名和私钥凭据，ID 为 `chart-constructor-server-deploy`，用户名 `ubuntu`。
-2. 在 Jenkins 凭据中新增 Secret text，ID 为 `github-webhook-jenkins`，值使用 GitHub Webhook Secret。
-3. 在 Jenkins 创建或更新任务 `chart-constructor`：Pipeline script from SCM，仓库地址 `https://github.com/explorerEzreal/chart-constructor.git`，分支 `*/master`，脚本路径 `Jenkinsfile`。
-4. 为任务启用 `GitHub hook trigger for GITScm polling`；手动构建可选填 `TARGET_SHA`，留空发布当前 `master`。
-5. 在 GitHub 仓库添加 Webhook：地址 `https://jenkins.supershiba.cn/github-webhook/`，事件选择 `Just the push event`，Secret 与 Jenkins 中的 `github-webhook-jenkins` 保持一致。
+2. 在 Jenkins 任务 `chart-constructor` 中选择 `Pipeline script`，将发布脚本粘贴到任务的内联脚本编辑器中。
+3. 任务参数：
+   - `ACTION`：`deploy` 或 `rollback`，默认 `deploy`。
+   - `TARGET_SHA`：完整 40 位 SHA；`ACTION=deploy` 且留空时，由 Jenkins 通过 `git ls-remote` 解析 `master` 当前 HEAD。
+4. `ACTION=rollback` 时忽略 `TARGET_SHA`，切换到服务器上的 `previous` 版本。
+5. 任务不配置 SCM、GitHub Webhook 或其他自动触发器，仅从 Jenkins 页面手动启动。
 
 ### 首次初始化
 
@@ -141,13 +144,16 @@ restrict,command="/usr/local/bin/deploy-chart-constructor" ssh-ed25519 <公钥>
 
 ### 手动发布与回滚
 
-```bash
-# 在 Jenkins 任务中填写 TARGET_SHA，可重发指定已合入 master 的提交
-# 不回滚构建缓存，直接切换到上一版本
-ssh -i <Jenkins私钥> ubuntu@106.55.36.91 rollback
+在 Jenkins 任务中点击“Build with Parameters”：
 
-# 查看服务器版本
-ssh -i <登录密钥> ubuntu@106.55.36.91 "ls -1dt /srv/chart-constructor/releases/*/"
+```text
+ACTION=deploy
+TARGET_SHA=完整提交 SHA；留空时发布 master 当前 HEAD
+```
+
+```text
+ACTION=rollback
+TARGET_SHA=留空
 ```
 
 发布完成后检查：
